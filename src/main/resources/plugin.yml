@@ -1,0 +1,4 @@
+name: TreeCuter
+version: '${version}'
+main: pl.norbit.treecuter.TreeCuter
+api-version: 1.19
