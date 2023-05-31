@@ -2,3 +2,6 @@ name: TreeCuter
 version: '${version}'
 main: pl.norbit.treecuter.TreeCuter
 api-version: 1.19
+author: Norbit4
+depend:
+  - Jobs

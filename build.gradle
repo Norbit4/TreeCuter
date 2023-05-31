@@ -18,8 +18,11 @@ repositories {
 }
 
 dependencies {
+    implementation files('src/main/resources/Jobs5.1.2.2.jar')
     compileOnly "io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT"
 }
+
+compileJava {options.encoding = "UTF-8"}
 
 def targetJavaVersion = 17
 java {
