@@ -4,7 +4,7 @@
   <img src="https://github.com/Norbit4/TreeCuter/assets/46154743/4788f12c-e68e-4de3-8e09-0746ab7a0ad4" width=950" alt="logo"/></a>
                                                                                                                             
   [![Spigot](https://img.shields.io/badge/Download-Spigot-gold.svg)](https://github.com/Norbit4/DiscordMc/blob/master/LICENSE) 
-  [![Ver](https://img.shields.io/badge/ver-1.19+-blue.svg)](https://github.com/Norbit4/DiscordMc/blob/master/LICENSE)                                                                                                                   
+  [![Ver](https://img.shields.io/badge/ver-1.19+-blue.svg)](https://github.com/Norbit4/TreeCuter)                                                                                                                   
   [![License: GPL v3](https://img.shields.io/badge/license-GPLv3-orange.svg)](https://github.com/Norbit4/DiscordMc/blob/master/LICENSE)                                                                                                                          
                                                                                                                             
 </div> 
