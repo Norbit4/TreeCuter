@@ -1,9 +1,5 @@
-package pl.norbit.treecuter;
+package pl.norbit.treecuter.listeners;
 
-import com.gamingmesh.jobs.Jobs;
-import com.gamingmesh.jobs.actions.BlockActionInfo;
-import com.gamingmesh.jobs.container.ActionType;
-import com.gamingmesh.jobs.container.JobsPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -18,36 +14,19 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import pl.norbit.treecuter.TreeCuter;
+import pl.norbit.treecuter.config.Settings;
+import pl.norbit.treecuter.jobs.JobsService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class BlockBreakListener implements Listener {
-
-    private static final int MAX_TREE_HEIGHT = 15;
-    private static final int MAX_TREE_WIDTH = 3;
-
-    private static final List<Material> materials = new ArrayList<>(){
-        {
-            add(Material.OAK_LOG);
-            add(Material.BIRCH_LOG);
-            add(Material.SPRUCE_LOG);
-            add(Material.JUNGLE_LOG);
-            add(Material.ACACIA_LOG);
-            add(Material.DARK_OAK_LOG);
-        }
-    };
-
-    private static final List<Material> exes = new ArrayList<>(){
-        {
-            add(Material.WOODEN_AXE);
-            add(Material.STONE_AXE);
-            add(Material.GOLDEN_AXE);
-            add(Material.IRON_AXE);
-            add(Material.DIAMOND_AXE);
-            add(Material.NETHERITE_AXE);
-        }
-    };
+    private static final List<UUID> sPlayers = new ArrayList<>();
+    private static final int MAX_TREE_HEIGHT = Settings.MAX_TREE_HEIGHT;
+    private static final List<Material> MATERIALS = Settings.ACCEPT_BLOCKS;
+    private static final List<Material> TOOLS = Settings.ACCEPT_TOOLS;
 
     @EventHandler
     public void onBlockInteract(PlayerInteractEvent e) {
@@ -59,22 +38,27 @@ public class BlockBreakListener implements Listener {
 
         if(action != Action.LEFT_CLICK_BLOCK) return;
 
-        if(!materials.contains(clickedBlock.getType())) return;
+        if(!MATERIALS.contains(clickedBlock.getType())) return;
 
         ItemStack item = p.getInventory().getItemInMainHand();
 
-        if(!exes.contains(item.getType())) return;
+        if(!Settings.ACCEPT_NO_TOOLS) if(!TOOLS.contains(item.getType())) return;
 
-        if(!p.isSneaking()) return;
+        if(Settings.SHIFT_MINING) if(!p.isSneaking()) return;
 
+        if(!Settings.APPLY_MINING_EFFECT) return;
+
+        sPlayers.add(p.getUniqueId());
         new BukkitRunnable() {
             @Override
             public void run() {
                 if(!p.isSneaking()) {
+                    sPlayers.remove(p.getUniqueId());
                     cancel();
                     return;
                 }
-                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, 1));
+                int level = Settings.EFFECT_LEVEL - 1;
+                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, level));
             }
         }.runTaskTimer(TreeCuter.getInstance(), 0, 10);
     }
@@ -87,17 +71,22 @@ public class BlockBreakListener implements Listener {
 
         if(e.isCancelled()) return;
 
-        if(!p.isSneaking()) return;
+        if(Settings.SHIFT_MINING) if(!p.isSneaking()) return;
 
-        if(!materials.contains(block.getType())) return;
+        if(!MATERIALS.contains(block.getType())) return;
 
         ItemStack item = e.getPlayer().getInventory().getItemInMainHand();
 
-        if(!exes.contains(item.getType())) return;
+        if(!Settings.ACCEPT_NO_TOOLS) if(!TOOLS.contains(item.getType())) return;
+
+        if(!sPlayers.contains(p.getUniqueId())) return;
 
         Block bottomBlock = getBottomBlock(block);
 
-        if (bottomBlock != null) destroyTree(bottomBlock, p);
+        if (bottomBlock == null) return;
+
+        e.setCancelled(true);
+        destroyTree(bottomBlock, p);
     }
 
     private Block getBottomBlock(Block b) {
@@ -120,6 +109,7 @@ public class BlockBreakListener implements Listener {
         Material logType = bottomBlock.getType();
 
         List<Block> blocks = new ArrayList<>();
+        blocks.add(bottomBlock);
 
         for (int y = 0; y <= MAX_TREE_HEIGHT; y++) for (int x = -1; x <= 1; x++) for (int z = -1; z <= 1; z++) {
 
@@ -133,7 +123,6 @@ public class BlockBreakListener implements Listener {
     }
 
     private void breakBlocks(List<Block> blocks, Player p) {
-        JobsPlayer jPlayer = Jobs.getPlayerManager().getJobsPlayer(p);
         updateItem(p, blocks.size() - 1);
 
         final int[] i = {0};
@@ -149,9 +138,12 @@ public class BlockBreakListener implements Listener {
 
                 Block block = blocks.get(i[0]);
 
-                if(jPlayer != null) Jobs.action(jPlayer, new BlockActionInfo(block, ActionType.BREAK), block);
+                if(Settings.JOBS_IS_ENABLED) JobsService.updateJobs(p, block);
 
-                block.breakNaturally();
+                if(Settings.ITEMS_TO_INVENTORY){
+                    p.getInventory().addItem(new ItemStack(block.getType()));
+                    block.setType(Material.AIR);
+                }else block.breakNaturally();
             }
         }.runTaskTimer(TreeCuter.getInstance(), 0, 1);
     }
@@ -165,7 +157,6 @@ public class BlockBreakListener implements Listener {
         ItemMeta meta = itemInHand.getItemMeta();
 
         meta = updateDurability(meta, durabilityDamage);
-
         itemInHand.setItemMeta(meta);
 
         p.getInventory().setItemInMainHand(itemInHand);

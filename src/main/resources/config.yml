@@ -1,0 +1,44 @@
+# -----------------------------------------------#
+#  _______             _____      _              #
+# |__   __|           / ____|    | |             #
+#    | |_ __ ___  ___| |    _   _| |_ ___ _ __   #
+#    | | '__/ _ \/ _ \ |   | | | | __/ _ \ '__|  #
+#    | | | |  __/  __/ |___| |_| | ||  __/ |     #
+#    |_|_|  \___|\___|\_____\__,_|\__\___|_|     #
+#                                                #
+# -----------------------------------------------#
+
+# TreeCuter by Norbit4
+
+# github: https://github.com/Norbit4
+
+# If you like the plugin, support me with a positive opinion on spigot.org, thanks! <3
+
+#---------------------------------------#
+#               [Config]                #
+#---------------------------------------#
+
+max-tree-height: 20
+
+shift-mining: true
+accept-no-tools: false
+apply-mining-effect: true
+effect-level: 2
+
+items-to-inventory: false
+
+accept-tools:
+  - 'WOODEN_AXE'
+  - 'STONE_AXE'
+  - 'IRON_AXE'
+  - 'GOLDEN_AXE'
+  - 'DIAMOND_AXE'
+  - 'NETHERITE_AXE'
+
+accept-blocks:
+  - 'OAK_LOG'
+  - 'SPRUCE_LOG'
+  - 'BIRCH_LOG'
+  - 'JUNGLE_LOG'
+  - 'ACACIA_LOG'
+  - 'DARK_OAK_LOG'
