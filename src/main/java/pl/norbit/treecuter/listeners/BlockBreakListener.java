@@ -60,7 +60,7 @@ public class BlockBreakListener implements Listener {
                 int level = Settings.EFFECT_LEVEL - 1;
                 p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, level));
             }
-        }.runTaskTimer(TreeCuter.getInstance(), 0, 10);
+        }.runTaskTimer(TreeCuter.getInstance(), 0, 4);
     }
 
     @EventHandler
@@ -71,15 +71,16 @@ public class BlockBreakListener implements Listener {
 
         if(e.isCancelled()) return;
 
-        if(Settings.SHIFT_MINING) if(!p.isSneaking()) return;
+        if(Settings.SHIFT_MINING){
+            if(!p.isSneaking()) return;
+            if(!sPlayers.contains(p.getUniqueId())) return;
+        }
 
         if(!MATERIALS.contains(block.getType())) return;
 
         ItemStack item = e.getPlayer().getInventory().getItemInMainHand();
 
         if(!Settings.ACCEPT_NO_TOOLS) if(!TOOLS.contains(item.getType())) return;
-
-        if(!sPlayers.contains(p.getUniqueId())) return;
 
         Block bottomBlock = getBottomBlock(block);
 
