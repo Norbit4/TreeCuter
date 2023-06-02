@@ -1,12 +1,12 @@
 <div align="center">
   
   <a href="https://github.com/Norbit4/TreeCuter/" target="_blank" rel="noreferrer"> 
-  <img src="https://github.com/Norbit4/TreeCuter/assets/46154743/4788f12c-e68e-4de3-8e09-0746ab7a0ad4" width=950" alt="logo"/></a>
+  <img src="https://github.com/Norbit4/TreeCuter/assets/46154743/0b99feef-655d-4901-a64f-b71fe3878b9d" width=950" alt="logo"/></a>
                                                                                                                             
   [![Spigot](https://img.shields.io/badge/Download-Spigot-gold.svg)](https://github.com/Norbit4/TreeCuter/blob/master/LICENSE) 
   [![Ver](https://img.shields.io/badge/ver-1.19+-blue.svg)](https://github.com/Norbit4/TreeCuter)                                                                                                                   
   [![License: GPL v3](https://img.shields.io/badge/license-GPLv3-orange.svg)](https://github.com/Norbit4/TreeCuter/blob/master/LICENSE)                                                                                                                          
-                                                                                                                            
+                                                                         
 </div> 
 
 #
@@ -14,11 +14,11 @@
 
 <div align="center">    
                    
-  **Cut down trees in a more realistic way!**    
+  **Cut down trees in a more realistic way! 🪓🌳**    
                    
   ⚠️**DEAFULT**: You need use **SHIFT** key to cut tree!
                                                                                                                             
-  ![cut](https://github.com/Norbit4/TreeCuter/assets/46154743/44febc78-d9de-408d-a7c5-c3f49adf1cdc)        
+  ![cut](https://github.com/Norbit4/TreeCuter/assets/46154743/43eed754-8df6-4580-b7f5-3208211a66a4)        
                            
  
 </div> 
