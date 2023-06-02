@@ -22,6 +22,8 @@ max-tree-height: 20
 
 shift-mining: true
 accept-no-tools: false
+
+# mining effect works only with shift-mining enabled!
 apply-mining-effect: true
 effect-level: 2
 
