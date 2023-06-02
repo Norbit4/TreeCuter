@@ -14,7 +14,9 @@
 
 <div align="center">    
                    
-  **Cut down trees in a more realistic way!**          
+  **Cut down trees in a more realistic way!**    
+                   
+  ⚠️**DEAFULT**: You need use **SHIFT** key to cut tree!
                                                                                                                             
   ![cut](https://github.com/Norbit4/TreeCuter/assets/46154743/44febc78-d9de-408d-a7c5-c3f49adf1cdc)        
                            
