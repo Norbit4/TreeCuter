@@ -3,7 +3,7 @@
   <a href="https://github.com/Norbit4/TreeCuter/" target="_blank" rel="noreferrer"> 
   <img src="https://github.com/Norbit4/TreeCuter/assets/46154743/0b99feef-655d-4901-a64f-b71fe3878b9d" width=950" alt="logo"/></a>
                                                                                                                             
-  [![Spigot](https://img.shields.io/badge/Download-Spigot-gold.svg)](https://github.com/Norbit4/TreeCuter/blob/master/LICENSE) 
+  [![Spigot](https://img.shields.io/badge/Download-Spigot-gold.svg)](https://www.spigotmc.org/resources/treecuter.110213/) 
   [![Ver](https://img.shields.io/badge/ver-1.19+-blue.svg)](https://github.com/Norbit4/TreeCuter)                                                                                                                   
   [![License: GPL v3](https://img.shields.io/badge/license-GPLv3-orange.svg)](https://github.com/Norbit4/TreeCuter/blob/master/LICENSE)                                                                                                                          
                                                                          
@@ -55,4 +55,4 @@ accept-blocks:
 ```                                                                                                                    
 ## Links
 
- [![Spigot](https://img.shields.io/badge/Download-Spigot-gold.svg)](https://github.com/Norbit4/TreeCuter/blob/master/LICENSE)    
+ [![Spigot](https://img.shields.io/badge/Download-Spigot-gold.svg)](https://www.spigotmc.org/resources/treecuter.110213/)    
