@@ -50,8 +50,7 @@ accept-blocks:
   - 'BIRCH_LOG'
   - 'JUNGLE_LOG'
   - 'ACACIA_LOG'
-  - 'DARK_OAK_LOG'    
-                                                                                                                  
+  - 'DARK_OAK_LOG'                                                                 
 ```                                                                                                                    
 ## Links
 
