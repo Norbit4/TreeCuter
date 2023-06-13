@@ -17,6 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import pl.norbit.treecuter.TreeCuter;
 import pl.norbit.treecuter.config.Settings;
 import pl.norbit.treecuter.jobs.JobsService;
+import pl.norbit.treecuter.utils.PermissionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +26,9 @@ import java.util.UUID;
 public class BlockBreakListener implements Listener {
     private static final List<UUID> sPlayers = new ArrayList<>();
     private static final int MAX_TREE_HEIGHT = Settings.MAX_TREE_HEIGHT;
-    private static final List<Material> MATERIALS = Settings.ACCEPT_BLOCKS;
+    private static final List<Material> MATERIALS = Settings.ACCEPT_WOOD_BLOCKS;
     private static final List<Material> TOOLS = Settings.ACCEPT_TOOLS;
+    private static final List<Material> MATERIALS_LEAVES = Settings.ACCEPT_LEAVES_BLOCKS;
 
     @EventHandler
     public void onBlockInteract(PlayerInteractEvent e) {
@@ -37,6 +39,11 @@ public class BlockBreakListener implements Listener {
         if(clickedBlock == null) return;
 
         if(action != Action.LEFT_CLICK_BLOCK) return;
+
+        if(Settings.USE_PERMISSIONS) {
+            PermissionUtil permissionUtil = new PermissionUtil(p);
+            if(!permissionUtil.hasPermission(Settings.PERMISSION, "*")) return;
+        }
 
         if(!MATERIALS.contains(clickedBlock.getType())) return;
 
@@ -76,6 +83,11 @@ public class BlockBreakListener implements Listener {
             if(!sPlayers.contains(p.getUniqueId())) return;
         }
 
+        if(Settings.USE_PERMISSIONS) {
+            PermissionUtil permissionUtil = new PermissionUtil(p);
+            if(!permissionUtil.hasPermission(Settings.PERMISSION, "*")) return;
+        }
+
         if(!MATERIALS.contains(block.getType())) return;
 
         ItemStack item = e.getPlayer().getInventory().getItemInMainHand();
@@ -86,8 +98,7 @@ public class BlockBreakListener implements Listener {
 
         if (bottomBlock == null) return;
 
-        e.setCancelled(true);
-        destroyTree(bottomBlock, p);
+        if(destroyTree(bottomBlock, p)) e.setCancelled(true);
     }
 
     private Block getBottomBlock(Block b) {
@@ -106,21 +117,31 @@ public class BlockBreakListener implements Listener {
         return null;
     }
 
-    private void destroyTree(Block bottomBlock, Player p) {
+    private boolean destroyTree(Block bottomBlock, Player p) {
         Material logType = bottomBlock.getType();
 
         List<Block> blocks = new ArrayList<>();
         blocks.add(bottomBlock);
+        int leavesAmount = 0;
 
-        for (int y = 0; y <= MAX_TREE_HEIGHT; y++) for (int x = -1; x <= 1; x++) for (int z = -1; z <= 1; z++) {
+        for (int y = 0; y <= MAX_TREE_HEIGHT; y++) for (int x = -2; x <= 2; x++) for (int z = -2; z <= 2; z++) {
+            Block cBlock = bottomBlock.getRelative(x, y + 2, z);
+            if (!MATERIALS_LEAVES.contains(cBlock.getType())) continue;
+            leavesAmount++;
+        }
+
+        if(leavesAmount < 10) return false;
+
+        for (int y = 0; y <= MAX_TREE_HEIGHT; y++) for (int x = -2; x <= 2; x++) for (int z = -2; z <= 2; z++) {
 
             Block cBlock = bottomBlock.getRelative(x, y, z);
 
-            if (cBlock.getType() != logType) continue;
+            if (!MATERIALS.contains(cBlock.getType())) continue;
 
             blocks.add(cBlock);
         }
         breakBlocks(blocks, p);
+        return true;
     }
 
     private void breakBlocks(List<Block> blocks, Player p) {
