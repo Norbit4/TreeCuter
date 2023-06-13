@@ -5,6 +5,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.norbit.treecuter.config.Settings;
 import pl.norbit.treecuter.listeners.BlockBreakListener;
+import pl.norbit.treecuter.tasks.TreePlanterService;
 
 
 public final class TreeCuter extends JavaPlugin {
@@ -16,9 +17,12 @@ public final class TreeCuter extends JavaPlugin {
         instance = this;
         Settings.loadConfig();
 
+        if(Settings.AUTO_PLANT) TreePlanterService.start();
+
         checkJobs();
 
-        getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
+        PluginManager pluginManager = getServer().getPluginManager();
+        pluginManager.registerEvents(new BlockBreakListener(), this);
     }
     private void checkJobs() {
         PluginManager pluginManager = getServer().getPluginManager();
