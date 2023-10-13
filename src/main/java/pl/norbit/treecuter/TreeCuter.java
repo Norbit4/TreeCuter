@@ -1,11 +1,10 @@
 package pl.norbit.treecuter;
 
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import pl.norbit.treecuter.commands.ReloadCommand;
 import pl.norbit.treecuter.config.Settings;
-import pl.norbit.treecuter.listeners.BlockBreakListener;
-import pl.norbit.treecuter.tasks.TreePlanterService;
+import pl.norbit.treecuter.service.BlockBreakService;
+import pl.norbit.treecuter.service.TreePlanterService;
 
 
 public final class TreeCuter extends JavaPlugin {
@@ -15,18 +14,23 @@ public final class TreeCuter extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        Settings.loadConfig();
+        Settings.loadConfig(false);
 
         if(Settings.AUTO_PLANT) TreePlanterService.start();
 
         checkJobs();
 
-        PluginManager pluginManager = getServer().getPluginManager();
-        pluginManager.registerEvents(new BlockBreakListener(), this);
+        BlockBreakService.start();
+
+        getCommand("treecuter").setExecutor(new ReloadCommand());
+
+        var pM = getServer().getPluginManager();
+        pM.registerEvents(new BlockBreakService(), this);
     }
+
     private void checkJobs() {
-        PluginManager pluginManager = getServer().getPluginManager();
-        Plugin jobsPlugin = pluginManager.getPlugin("Jobs");
+        var pM = getServer().getPluginManager();
+        var jobsPlugin = pM.getPlugin("Jobs");
 
         Settings.JOBS_IS_ENABLED = jobsPlugin != null && jobsPlugin.isEnabled();
     }

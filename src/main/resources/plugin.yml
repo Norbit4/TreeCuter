@@ -3,5 +3,13 @@ version: '${version}'
 main: pl.norbit.treecuter.TreeCuter
 api-version: 1.19
 author: Norbit4
+website: 'https://n0rbit.pl'
 softdepend:
   - Jobs
+commands:
+  treecuter:
+    permission: treecuter.admin
+    aliases:
+      - tc
+    description: TreeCuter command
+    usage: /treecuter [reload]

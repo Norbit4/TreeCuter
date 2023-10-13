@@ -1,33 +1,32 @@
 package pl.norbit.treecuter.config;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 import pl.norbit.treecuter.TreeCuter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Settings {
-    public static int EFFECT_LEVEL,  MAX_TREE_HEIGHT;
-    public static boolean SHIFT_MINING, ACCEPT_NO_TOOLS, APPLY_MINING_EFFECT, ITEMS_TO_INVENTORY, JOBS_IS_ENABLED,
+    public static int EFFECT_LEVEL,  MAX_BLOCKS;
+    public static boolean SHIFT_MINING, APPLY_MINING_EFFECT, ITEMS_TO_INVENTORY, JOBS_IS_ENABLED,
             AUTO_PLANT, USE_PERMISSIONS;
-    public static List<Material> ACCEPT_TOOLS, ACCEPT_WOOD_BLOCKS, ACCEPT_LEAVES_BLOCKS, AUTO_PLANT_SAPLINGS;
+    public static List<Material> ACCEPT_TOOLS, ACCEPT_WOOD_BLOCKS, AUTO_PLANT_SAPLINGS;
     public static String PERMISSION;
 
-    public static void loadConfig(){
+    public static void loadConfig(boolean reload) {
 
-        JavaPlugin javaPlugin = TreeCuter.getInstance();
-        FileConfiguration config = javaPlugin.getConfig();
+        var javaPlugin = TreeCuter.getInstance();
 
-        config.options().copyDefaults();
-        javaPlugin.saveDefaultConfig();
+        if(!reload) javaPlugin.saveDefaultConfig();
+        else javaPlugin.reloadConfig();
 
-        MAX_TREE_HEIGHT = config.getInt("max-tree-height");
+        var config = javaPlugin.getConfig();
+
+        MAX_BLOCKS = config.getInt("max-blocks");
         EFFECT_LEVEL = config.getInt("effect-level");
 
         SHIFT_MINING = config.getBoolean("shift-mining");
-        ACCEPT_NO_TOOLS = config.getBoolean("accept-no-tools");
         APPLY_MINING_EFFECT = config.getBoolean("apply-mining-effect");
         ITEMS_TO_INVENTORY = config.getBoolean("items-to-inventory");
 
@@ -37,39 +36,24 @@ public class Settings {
 
         ACCEPT_TOOLS = new ArrayList<>();
         ACCEPT_WOOD_BLOCKS = new ArrayList<>();
-        ACCEPT_LEAVES_BLOCKS = new ArrayList<>();
         AUTO_PLANT_SAPLINGS = new ArrayList<>();
 
-        for (String sMat : config.getStringList("accept-tools")) {
-            Material material = Material.getMaterial(sMat.toUpperCase());
+        config.getStringList("accept-tools")
+                .stream()
+                .map(Material::getMaterial)
+                .filter(Objects::nonNull)
+                .forEach(ACCEPT_TOOLS::add);
 
-            if (material == null) continue;
+        config.getStringList("accept-wood-blocks")
+                .stream()
+                .map(Material::getMaterial)
+                .filter(Objects::nonNull)
+                .forEach(ACCEPT_WOOD_BLOCKS::add);
 
-            ACCEPT_TOOLS.add(material);
-        }
-
-        for (String sMat : config.getStringList("accept-wood-blocks")) {
-            Material material = Material.getMaterial(sMat.toUpperCase());
-
-            if (material == null) continue;
-
-            ACCEPT_WOOD_BLOCKS.add(material);
-        }
-
-        for (String sMat : config.getStringList("accept-leaves-blocks")) {
-            Material material = Material.getMaterial(sMat.toUpperCase());
-
-            if (material == null) continue;
-
-            ACCEPT_LEAVES_BLOCKS.add(material);
-        }
-
-        for (String sMat : config.getStringList("auto-plant-saplings")) {
-            Material material = Material.getMaterial(sMat.toUpperCase());
-
-            if (material == null) continue;
-
-            AUTO_PLANT_SAPLINGS.add(material);
-        }
+        config.getStringList("auto-plant-saplings")
+                .stream()
+                .map(Material::getMaterial)
+                .filter(Objects::nonNull)
+                .forEach(AUTO_PLANT_SAPLINGS::add);
     }
 }
