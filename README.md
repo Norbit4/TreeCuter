@@ -22,7 +22,14 @@
                            
  
 </div> 
-         
+
+#  
+**Commands**
+
+    /treecuter reload - reload plugin config.
+
+  ⚠️Option **auto-plant** need server restart!     
+  
 #                                                                                                                          
                                                                                                                             
 ***Config***
