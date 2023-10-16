@@ -38,6 +38,7 @@
 #               [Config]                #
 #---------------------------------------#
 
+# if true, only players with permission can cut down trees
 use-permissions: false
 permission: 'treecuter.use'
 
@@ -45,11 +46,18 @@ permission: 'treecuter.use'
 # only important for GIANT custom trees!
 max-blocks: 100
 
+# if true, the player must hold shift to cut down trees
 shift-mining: true
 
 # mining effect works only with shift-mining enabled!
 apply-mining-effect: true
 effect-level: 2
+
+# if true, blocks that have been cut off, will glow
+glowing-blocks: true
+# colors: black, dark_blue, dark_green, dark_aqua, dark_red, dark_purple, gold, gray, dark_gray, blue, green
+#         aqua, red, magenta, light_purple, yellow, white
+glowing-color: 'red'
 
 # cut blocks automatically go to player inventory
 items-to-inventory: false
@@ -92,7 +100,7 @@ auto-plant-saplings:
   - 'ACACIA_SAPLING'
   - 'DARK_OAK_SAPLING'
   - 'MANGROVE_PROPAGULE'
-  - 'CHERRY_SAPLING'                                                             
+  - 'CHERRY_SAPLING'                     
 ```                                                                                                                    
 ## Links
 
