@@ -22,7 +22,14 @@
                            
  
 </div> 
-         
+
+#  
+**Commands**
+
+    /treecuter reload - reload plugin config.
+
+  ⚠️Option **auto-plant** need server restart!     
+  
 #                                                                                                                          
                                                                                                                             
 ***Config***
@@ -34,19 +41,21 @@
 use-permissions: false
 permission: 'treecuter.use'
 
-max-tree-height: 20
+# max blocks to cut at once
+# only important for GIANT custom trees!
+max-blocks: 100
 
 shift-mining: true
-accept-no-tools: false
 
 # mining effect works only with shift-mining enabled!
 apply-mining-effect: true
 effect-level: 2
 
+# cut blocks automatically go to player inventory
 items-to-inventory: false
 
 # automatically plants saplings that lie on the ground!
-auto-plant: true
+auto-plant: false
 
 accept-tools:
   - 'WOODEN_AXE'
@@ -55,9 +64,6 @@ accept-tools:
   - 'GOLDEN_AXE'
   - 'DIAMOND_AXE'
   - 'NETHERITE_AXE'
-
-#  if you want to add a tree, you need to add leaf blocks and wood blocks.
-#  probably trees available from mods will work too.
 
 accept-wood-blocks:
   - 'OAK_LOG'
@@ -69,16 +75,14 @@ accept-wood-blocks:
   - 'MANGROVE_LOG'
   - 'MANGROVE_ROOTS'
   - 'CHERRY_LOG'
-
-accept-leaves-blocks:
-  - 'OAK_LEAVES'
-  - 'SPRUCE_LEAVES'
-  - 'BIRCH_LEAVES'
-  - 'JUNGLE_LEAVES'
-  - 'ACACIA_LEAVES'
-  - 'DARK_OAK_LEAVES'
-  - 'MANGROVE_LEAVES'
-  - 'CHERRY_LEAVES'
+  - 'OAK_WOOD'
+  - 'SPRUCE_WOOD'
+  - 'BIRCH_WOOD'
+  - 'JUNGLE_WOOD'
+  - 'ACACIA_WOOD'
+  - 'DARK_OAK_WOOD'
+  - 'MANGROVE_WOOD'
+  - 'CHERRY_WOOD'
 
 auto-plant-saplings:
   - 'OAK_SAPLING'
@@ -88,7 +92,7 @@ auto-plant-saplings:
   - 'ACACIA_SAPLING'
   - 'DARK_OAK_SAPLING'
   - 'MANGROVE_PROPAGULE'
-  - 'CHERRY_SAPLING'                                                                
+  - 'CHERRY_SAPLING'                                                             
 ```                                                                                                                    
 ## Links
 
