@@ -1,6 +1,8 @@
 package pl.norbit.treecuter.service;
 
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,6 +12,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import pl.norbit.treecuter.config.Settings;
+import pl.norbit.treecuter.glow.GlowingService;
 import pl.norbit.treecuter.utils.PermissionUtil;
 import pl.norbit.treecuter.utils.TaskUtils;
 
@@ -53,6 +56,11 @@ public class BlockBreakService implements Listener {
 
         if(!Settings.ACCEPT_TOOLS.contains(item.getType())) return;
 
+        applyEffect(p);
+        colorTree(p, b);
+    }
+
+    private static void applyEffect(Player p){
         if(!Settings.SHIFT_MINING) return;
 
         if(!p.isSneaking()) return;
@@ -63,6 +71,12 @@ public class BlockBreakService implements Listener {
         int level = Settings.EFFECT_LEVEL - 1;
         p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 15, level));
     }
+
+    private static void colorTree(Player p, Block b){
+        if(Settings.SHIFT_MINING) if(!p.isSneaking()) return;
+        TreeCutService.colorSelectedTree(b, p);
+    }
+
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
         var b = e.getBlock();
@@ -70,6 +84,7 @@ public class BlockBreakService implements Listener {
         var p = e.getPlayer();
 
         if(e.isCancelled()) return;
+        GlowingService.unsetGlowing(b, p);
 
         if(Settings.SHIFT_MINING) if(!p.isSneaking()) return;
 

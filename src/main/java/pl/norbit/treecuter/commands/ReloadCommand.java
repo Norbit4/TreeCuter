@@ -28,9 +28,11 @@ public class ReloadCommand implements CommandExecutor {
     }
 
     private static void sendInfo(CommandSender sender){
+        sender.sendMessage("");
         sender.sendMessage(ChatUtils.format("&7TreeCuter by &aNorbit4!"));
         sender.sendMessage(ChatUtils.format("&7Website: &fhttps://n0rbit.pl/"));
         sender.sendMessage(ChatUtils.format(""));
         sender.sendMessage(ChatUtils.format("&7Type: &8/&btreecuter reload &7to reload plugin!"));
+        sender.sendMessage("");
     }
 }
