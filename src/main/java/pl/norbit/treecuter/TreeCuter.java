@@ -37,10 +37,8 @@ public final class TreeCuter extends JavaPlugin {
         pM.registerEvents(new BlockBreakService(), this);
     }
 
-    private static void infoMessage(){
-        Server server = TreeCuter.getInstance().getServer();
-
-        Logger log = server.getLogger();
+    private void infoMessage(){
+        Logger log = getServer().getLogger();
         log.info("");
         log.info("TreeCuter by Norbit4!");
         log.info("Website: https://n0rbit.pl/");
