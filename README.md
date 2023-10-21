@@ -5,7 +5,7 @@
 
   [![Spigot](https://img.shields.io/badge/Download-Spigot-gold.svg)](https://www.spigotmc.org/resources/treecuter.110213/) 
   [![builtbybit](https://img.shields.io/badge/Download-BuiltByBit-blue.svg)](https://builtbybit.com/resources/treecuter-cut-down-trees.32962/)   
-  [![Ver](https://img.shields.io/badge/ver-1.19+-blue.svg)](https://github.com/Norbit4/TreeCuter)                                                                                                                   
+  [![Ver](https://img.shields.io/badge/ver-1.20+-blue.svg)](https://github.com/Norbit4/TreeCuter)                                                                                                                   
   [![License: GPL v3](https://img.shields.io/badge/license-GPLv3-orange.svg)](https://github.com/Norbit4/TreeCuter/blob/master/LICENSE)                                                                                                                          
                                                                          
 </div> 
