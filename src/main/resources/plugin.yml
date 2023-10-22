@@ -6,6 +6,7 @@ author: Norbit4
 website: 'https://n0rbit.pl'
 softdepend:
   - Jobs
+  - WorldGuard
 commands:
   treecuter:
     permission: treecuter.admin

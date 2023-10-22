@@ -23,7 +23,8 @@ public final class TreeCuter extends JavaPlugin {
 
         if(Settings.AUTO_PLANT) TreePlanterService.start();
 
-        checkJobs();
+        Settings.JOBS_IS_ENABLED = checkPlugin("Jobs");
+        Settings.WORLDGUARD_IS_ENABLED = checkPlugin("WorldGuard");
 
         infoMessage();
 
@@ -45,11 +46,11 @@ public final class TreeCuter extends JavaPlugin {
         log.info("");
     }
 
-    private void checkJobs() {
+    private boolean checkPlugin(String pluginName) {
         var pM = getServer().getPluginManager();
-        var jobsPlugin = pM.getPlugin("Jobs");
+        var jobsPlugin = pM.getPlugin(pluginName);
 
-        Settings.JOBS_IS_ENABLED = jobsPlugin != null && jobsPlugin.isEnabled();
+        return jobsPlugin != null && jobsPlugin.isEnabled();
     }
 
     public static TreeCuter getInstance() {
