@@ -46,6 +46,8 @@ public class GlowingService {
     public static void setGlowing(Block b, Player p){
         if(!enable) return;
 
+        if(b == null) return;
+
         if(!Settings.GLOWING_BLOCKS) return;
 
         if(b.getType() == Material.AIR) return;
@@ -58,6 +60,8 @@ public class GlowingService {
     }
     public static void unsetGlowing(Block b, Player p){
         if(!enable) return;
+
+        if(b == null) return;
 
         if(!Settings.GLOWING_BLOCKS) return;
         try {

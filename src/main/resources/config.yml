@@ -46,6 +46,10 @@ items-to-inventory: false
 # automatically plants saplings that lie on the ground!
 auto-plant: false
 
+# blocked worlds
+block-worlds:
+  - 'example_world'
+
 accept-tools:
   - 'WOODEN_AXE'
   - 'STONE_AXE'

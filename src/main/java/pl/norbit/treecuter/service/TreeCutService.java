@@ -1,6 +1,5 @@
 package pl.norbit.treecuter.service;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -39,7 +38,6 @@ public class TreeCutService {
 
     public static void colorSelectedTree(Block b, Player p){
         TaskUtils.runTaskLaterAsynchronously(() ->{
-
             var gBlock = playerBlockMap.get(p);
             if (gBlock != null) gBlock.getBlocks().forEach(block -> GlowingService.unsetGlowing(block, p));
 
@@ -109,8 +107,6 @@ public class TreeCutService {
             checkBlock(blocks, b.getRelative(-1, i, -1));
             checkBlock(blocks, b.getRelative(-1, i, 1));
 
-            if(i == 0) continue;
-
             checkBlock(blocks, b.getRelative(-1, i, 0));
             checkBlock(blocks, b.getRelative(1, i, 0));
             checkBlock(blocks, b.getRelative(0, i, -1));
@@ -127,7 +123,6 @@ public class TreeCutService {
 
         if(blocks.size() >= Settings.MAX_BLOCKS) return;
 
-        blocks.add(b);
         getBlocksAround(blocks, b);
     }
 
