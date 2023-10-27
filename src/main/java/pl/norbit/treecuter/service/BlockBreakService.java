@@ -14,6 +14,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import pl.norbit.treecuter.config.Settings;
 import pl.norbit.treecuter.glow.GlowingService;
+import pl.norbit.treecuter.item.ItemService;
 import pl.norbit.treecuter.utils.PermissionUtil;
 import pl.norbit.treecuter.utils.TaskUtils;
 import pl.norbit.treecuter.wg.WorldGuardService;
@@ -64,6 +65,8 @@ public class BlockBreakService implements Listener {
 
         if(!Settings.ACCEPT_TOOLS.contains(item.getType())) return;
 
+        if(!ItemService.useTool(item)) return;
+
         applyEffect(p);
         colorTree(p, b);
     }
@@ -111,6 +114,8 @@ public class BlockBreakService implements Listener {
         var item = e.getPlayer().getInventory().getItemInMainHand();
 
         if(!Settings.ACCEPT_TOOLS.contains(item.getType())) return;
+
+        if(!ItemService.useTool(item)) return;
 
         TreeCutService.cutTree(b, p);
     }

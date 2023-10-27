@@ -11,12 +11,15 @@ import java.util.Objects;
 public class Settings {
     public static int EFFECT_LEVEL,  MAX_BLOCKS;
     public static boolean SHIFT_MINING, APPLY_MINING_EFFECT, ITEMS_TO_INVENTORY, JOBS_IS_ENABLED, WORLDGUARD_IS_ENABLED,
-            AUTO_PLANT, USE_PERMISSIONS, GLOWING_BLOCKS;
+            ITEMS_ADDER_IS_ENABLED, AUTO_PLANT, USE_PERMISSIONS, GLOWING_BLOCKS;
     public static List<Material> ACCEPT_TOOLS, ACCEPT_WOOD_BLOCKS, AUTO_PLANT_SAPLINGS;
     public static List<String> BLOCK_WORLDS;
     public static String PERMISSION;
     public static ChatColor GLOWING_COLOR;
-;
+    public static String TOOL_NAME;
+    public static String TOOL_MATERIAL;
+    public static boolean TOOL_ENABLE;
+
     public static void loadConfig(boolean reload) {
 
         var javaPlugin = TreeCuter.getInstance();
@@ -38,6 +41,11 @@ public class Settings {
         PERMISSION = config.getString("permission");
 
         BLOCK_WORLDS = config.getStringList("block-worlds");
+
+        TOOL_ENABLE = config.getBoolean("custom-tool.enable");
+        TOOL_NAME = config.getString("custom-tool.name");
+
+        TOOL_MATERIAL = config.getString("custom-tool.material");
 
         ACCEPT_TOOLS = new ArrayList<>();
         ACCEPT_WOOD_BLOCKS = new ArrayList<>();

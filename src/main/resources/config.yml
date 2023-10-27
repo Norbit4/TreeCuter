@@ -46,6 +46,13 @@ items-to-inventory: false
 # automatically plants saplings that lie on the ground!
 auto-plant: false
 
+custom-tool:
+  enable: false
+  # material support ItemsAdder, when you use item from ItemsAdder, you must use 'ia:<ID>' instead of 'MATERIAL'
+  # example: 'ia:example_item_id'
+  material: 'NETHERITE_AXE'
+  name: '&c&lGOD AXE'
+
 # blocked worlds
 block-worlds:
   - 'example_world'
