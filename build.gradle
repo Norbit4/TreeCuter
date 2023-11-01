@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'pl.norbit'
-version = '1.0'
+version = 'v1.6.0'
 
 repositories {
     mavenCentral()
@@ -19,9 +19,11 @@ repositories {
     maven { url "https://maven.enginehub.org/repo/" }
     maven { url 'https://jitpack.io' }
 }
+configurations {
+    excludeJar
+}
 
 dependencies {
-    implementation files('src/main/resources/Jobs5.1.2.2.jar')
     compileOnly "io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT"
     implementation 'io.github.skytasul:glowingentities:1.3.1'
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.8'
