@@ -31,6 +31,14 @@ dependencies {
 compileJava {options.encoding = "UTF-8"}
 
 def targetJavaVersion = 17
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
