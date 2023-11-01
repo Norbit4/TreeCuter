@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Item;
+import org.bukkit.scheduler.BukkitTask;
 import pl.norbit.treecuter.TreeCuter;
 import pl.norbit.treecuter.config.Settings;
 import pl.norbit.treecuter.utils.TaskUtils;
@@ -13,14 +14,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class TreePlanterService {
     private static final ConcurrentHashMap<UUID, Integer> S_UUIDS = new  ConcurrentHashMap<>();
+    private static BukkitTask task;
 
     public static void start() {
+        if(task != null) task.cancel();
         timer();
     }
 
+
     private static void timer(){
 
-        TaskUtils.runTaskTimer(() ->{
+        task = TaskUtils.runTaskTimer(() ->{
             var server = TreeCuter.getInstance().getServer();
 
             for (World world : server.getWorlds()) {

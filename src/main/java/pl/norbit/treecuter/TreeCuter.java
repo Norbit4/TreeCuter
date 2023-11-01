@@ -5,9 +5,8 @@ import pl.norbit.treecuter.commands.TreeCuterCommand;
 import pl.norbit.treecuter.config.Settings;
 import pl.norbit.treecuter.glow.GlowingService;
 import pl.norbit.treecuter.service.BlockBreakService;
+import pl.norbit.treecuter.service.ToggleService;
 import pl.norbit.treecuter.service.TreeCutService;
-import pl.norbit.treecuter.service.TreePlanterService;
-
 
 public final class TreeCuter extends JavaPlugin {
 
@@ -17,8 +16,6 @@ public final class TreeCuter extends JavaPlugin {
     public void onEnable() {
         instance = this;
         Settings.loadConfig(false);
-
-        if(Settings.AUTO_PLANT) TreePlanterService.start();
 
         infoMessage();
         checkPlugins();
@@ -31,15 +28,14 @@ public final class TreeCuter extends JavaPlugin {
 
         var pM = getServer().getPluginManager();
         pM.registerEvents(new BlockBreakService(), this);
+        pM.registerEvents(new ToggleService(), this);
     }
 
     private void checkPlugins(){
-        Settings.JOBS_IS_ENABLED = checkPlugin("Jobs");
         Settings.WORLDGUARD_IS_ENABLED = checkPlugin("WorldGuard");
         Settings.ITEMS_ADDER_IS_ENABLED = checkPlugin("ItemsAdder");
 
-        if(Settings.JOBS_IS_ENABLED || Settings.WORLDGUARD_IS_ENABLED || Settings.ITEMS_ADDER_IS_ENABLED)
-            getServer().getLogger().info("");
+        if(Settings.WORLDGUARD_IS_ENABLED || Settings.ITEMS_ADDER_IS_ENABLED) getServer().getLogger().info("");
     }
 
     private void infoMessage(){

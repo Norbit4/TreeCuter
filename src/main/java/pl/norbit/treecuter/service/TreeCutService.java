@@ -1,5 +1,6 @@
 package pl.norbit.treecuter.service;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -7,9 +8,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import pl.norbit.treecuter.TreeCuter;
+import pl.norbit.treecuter.api.listeners.TreeCutEvent;
+import pl.norbit.treecuter.api.listeners.TreeGlowEvent;
 import pl.norbit.treecuter.config.Settings;
 import pl.norbit.treecuter.glow.GlowingService;
-import pl.norbit.treecuter.jobs.JobsService;
 import pl.norbit.treecuter.model.GlowBlock;
 import pl.norbit.treecuter.utils.TaskUtils;
 
@@ -36,17 +39,24 @@ public class TreeCutService {
 
     }
 
-    public static void colorSelectedTree(Block b, Player p){
+    public static void colorSelectedTree(Block b, Player p, ChatColor color){
         TaskUtils.runTaskLaterAsynchronously(() ->{
             var gBlock = playerBlockMap.get(p);
             if (gBlock != null) gBlock.getBlocks().forEach(block -> GlowingService.unsetGlowing(block, p));
 
             Set<Block> blocks = getBlocksAround(new HashSet<>(), b);
 
-            GlowingService.setGlowing(b, p);
-            blocks.forEach(block ->  GlowingService.setGlowing(block, p));
+            TreeGlowEvent event = new TreeGlowEvent(blocks, p);
+            TaskUtils.runTaskLater(() -> TreeCuter.getInstance().getServer().getPluginManager().callEvent(event),0L);
 
-            playerBlockMap.compute(p, (player, blocks1) -> new GlowBlock(blocks));
+            TaskUtils.runTaskLaterAsynchronously(() -> {
+                if (event.isCancelled()) return;
+
+                GlowingService.setGlowing(b, p, color);
+                blocks.forEach(block -> GlowingService.setGlowing(block, p, color));
+
+                playerBlockMap.compute(p, (player, blocks1) -> new GlowBlock(blocks));
+            }, 2L);
         }, 0L);
     }
 
@@ -58,25 +68,31 @@ public class TreeCutService {
 
         GlowingService.unsetGlowing(b, p);
 
-        TaskUtils.runTaskLaterAsynchronously(() ->{
+        TaskUtils.runTaskLaterAsynchronously(() -> {
             Set<Block> blocks = getBlocksAround(new HashSet<>(), b);
 
-            blocks.forEach(block -> TaskUtils.runTaskLater(() -> {
+            TreeCutEvent event = new TreeCutEvent(blocks, p);
+            TaskUtils.runTaskLater(() -> TreeCuter.getInstance().getServer().getPluginManager().callEvent(event),0L);
 
-                GlowingService.unsetGlowing(block, p);
+            //wait for event
+            TaskUtils.runTaskLaterAsynchronously(() -> {
+                if(event.isCancelled()) return;
 
-                if(Settings.JOBS_IS_ENABLED) JobsService.updateJobs(p, block);
+                blocks.forEach(block -> TaskUtils.runTaskLater(() -> {
 
-                if(Settings.ITEMS_TO_INVENTORY){
-                    p.getInventory().addItem(new ItemStack(block.getType()));
-                    block.setType(Material.AIR);
-                }else block.breakNaturally();
+                    GlowingService.unsetGlowing(block, p);
 
-            }, 1L));
+                    if (Settings.ITEMS_TO_INVENTORY) {
+                        p.getInventory().addItem(new ItemStack(block.getType()));
+                        block.setType(Material.AIR);
+                    } else block.breakNaturally();
 
-            if(blocks.size() == 0) return;
+                }, 1L));
 
-            TaskUtils.runTaskLater(() -> updateItem(p, blocks.size()),1L);
+                if (blocks.size() == 0) return;
+
+                TaskUtils.runTaskLater(() -> updateItem(p, blocks.size()), 1L);
+            }, 2L);
 
         }, 0L);
     }
@@ -127,6 +143,8 @@ public class TreeCutService {
     }
 
     private static void updateItem(Player p, int durabilityDamage){
+
+        if(p == null) return;
 
         var itemInHand = p.getInventory().getItemInMainHand();
 

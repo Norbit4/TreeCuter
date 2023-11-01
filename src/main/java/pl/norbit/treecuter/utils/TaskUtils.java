@@ -1,5 +1,6 @@
 package pl.norbit.treecuter.utils;
 
+import org.bukkit.scheduler.BukkitTask;
 import pl.norbit.treecuter.TreeCuter;
 
 public class TaskUtils {
@@ -8,9 +9,9 @@ public class TaskUtils {
         TreeCuter inst = TreeCuter.getInstance();
         inst.getServer().getScheduler().runTaskLater(inst, runnable, delay);
     }
-    public static void runTaskTimer(Runnable runnable, long delay, long period){
+    public static BukkitTask runTaskTimer(Runnable runnable, long delay, long period){
         TreeCuter inst = TreeCuter.getInstance();
-        inst.getServer().getScheduler().runTaskTimer(inst, runnable, delay, period);
+        return inst.getServer().getScheduler().runTaskTimer(inst, runnable, delay, period);
     }
 
     public static void runTaskLaterAsynchronously(Runnable runnable, long delay){

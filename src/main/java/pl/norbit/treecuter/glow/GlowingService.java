@@ -1,6 +1,7 @@
 package pl.norbit.treecuter.glow;
 
 import fr.skytasul.glowingentities.GlowingBlocks;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.block.Block;
@@ -9,6 +10,7 @@ import pl.norbit.treecuter.TreeCuter;
 import pl.norbit.treecuter.config.Settings;
 import pl.norbit.treecuter.utils.VersionUtil;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 public class GlowingService {
@@ -17,7 +19,11 @@ public class GlowingService {
     private static boolean enable;
 
     public static void init() {
-        if(VersionUtil.isSupportedVersion(TreeCuter.getInstance().getServer().getVersion())) enable = true;
+        TreeCuter instance = TreeCuter.getInstance();
+
+        Server server = instance.getServer();
+
+        if(VersionUtil.isSupportedVersion(server.getVersion())) enable = true;
 
         if(!enable){
             send();
@@ -25,11 +31,13 @@ public class GlowingService {
         }
 
         try {
-            glowingBlocks = new GlowingBlocks(TreeCuter.getInstance());
+            glowingBlocks = new GlowingBlocks(instance);
         } catch (Exception e) {
             enable = false;
             send();
         }
+
+        if(enable) server.getPluginManager().registerEvents(new UnglowListener(), instance);
     }
 
     private static void send(){
@@ -43,17 +51,18 @@ public class GlowingService {
         log.warning("");
     }
 
-    public static void setGlowing(Block b, Player p){
+    public static void setGlowing(Block b, Player p,  ChatColor color){
         if(!enable) return;
 
         if(b == null) return;
 
         if(!Settings.GLOWING_BLOCKS) return;
 
-        if(b.getType() == Material.AIR) return;
+        if(p == null) return;
 
+        if(b.getType() == Material.AIR) return;
         try {
-            glowingBlocks.setGlowing(b, p, Settings.GLOWING_COLOR);
+            glowingBlocks.setGlowing(b, p, color);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -63,11 +72,30 @@ public class GlowingService {
 
         if(b == null) return;
 
+        if(p == null) return;
+
         if(!Settings.GLOWING_BLOCKS) return;
         try {
             glowingBlocks.unsetGlowing(b, p);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (ReflectiveOperationException ignored) {
+            System.out.println("error");
         }
+    }
+    public static void unsetGlowingAll(Block b, List<Player> players){
+        if(!enable) return;
+
+        if(b == null) return;
+
+        if(players == null) return;
+
+        if(!Settings.GLOWING_BLOCKS) return;
+
+        players.forEach(p -> {
+            try {
+                glowingBlocks.unsetGlowing(b, p);
+            } catch (ReflectiveOperationException ignored) {
+            }
+        });
+
     }
 }
