@@ -1,16 +1,14 @@
 name: TreeCuter
-version: '1.5.0'
+version: '${version}'
 main: pl.norbit.treecuter.TreeCuter
 api-version: 1.17
 author: Norbit4
 website: 'https://n0rbit.pl'
 softdepend:
-  - Jobs
   - WorldGuard
   - ItemsAdder
 commands:
   treecuter:
-    permission: treecuter.admin
     aliases:
       - tc
     description: TreeCuter main command.
