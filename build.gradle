@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
+apply plugin: 'maven-publish'
 
 group = 'pl.norbit'
 version = 'v1.6.0'
@@ -18,9 +19,6 @@ repositories {
     }
     maven { url "https://maven.enginehub.org/repo/" }
     maven { url 'https://jitpack.io' }
-}
-configurations {
-    excludeJar
 }
 
 dependencies {
