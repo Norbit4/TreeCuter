@@ -85,7 +85,7 @@ public class BlockBreakService implements Listener {
 
     private static void colorTree(Player p, Block b){
         if(Settings.SHIFT_MINING) if(!p.isSneaking()) return;
-        TreeCutService.colorSelectedTree(b, p);
+        TreeCutService.colorSelectedTree(b, p, Settings.GLOWING_COLOR);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

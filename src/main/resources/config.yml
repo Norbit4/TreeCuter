@@ -13,11 +13,13 @@
 # github: https://github.com/Norbit4
 # website: https://n0rbit.pl
 
-# If you like the plugin, support me with a positive opinion on spigot.org, thanks! <3
+# If you like the plugin, support me with a positive opinion, thanks! <3
 
 #---------------------------------------#
 #               [Config]                #
 #---------------------------------------#
+
+permission-message: '&cYou do not have permission to use this command!'
 
 # if true, only players with permission can cut down trees
 use-permissions: false
@@ -35,6 +37,7 @@ apply-mining-effect: true
 effect-level: 2
 
 # if true, blocks that have been cut off, will glow
+# [!] supports paper or forks versions: 1.17.1, 1.18.2, 1.19.4, 1.20.2
 glowing-blocks: true
 # colors: black, dark_blue, dark_green, dark_aqua, dark_red, dark_purple, gold, gray, dark_gray, blue, green
 #         aqua, red, magenta, light_purple, yellow, white
@@ -52,6 +55,11 @@ custom-tool:
   # example: 'ia:example_item_id'
   material: 'NETHERITE_AXE'
   name: '&c&lGOD AXE'
+
+#toogle messages
+toggle:
+  message-on: '&aEnabled &7cutting down trees!'
+  message-off: '&cDisabled &7cutting down trees!'
 
 # blocked worlds
 block-worlds:

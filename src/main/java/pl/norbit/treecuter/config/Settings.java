@@ -3,6 +3,7 @@ package pl.norbit.treecuter.config;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import pl.norbit.treecuter.TreeCuter;
+import pl.norbit.treecuter.service.TreePlanterService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.Objects;
 
 public class Settings {
     public static int EFFECT_LEVEL,  MAX_BLOCKS;
-    public static boolean SHIFT_MINING, APPLY_MINING_EFFECT, ITEMS_TO_INVENTORY, JOBS_IS_ENABLED, WORLDGUARD_IS_ENABLED,
+    public static boolean SHIFT_MINING, APPLY_MINING_EFFECT, ITEMS_TO_INVENTORY, WORLDGUARD_IS_ENABLED,
             ITEMS_ADDER_IS_ENABLED, AUTO_PLANT, USE_PERMISSIONS, GLOWING_BLOCKS;
     public static List<Material> ACCEPT_TOOLS, ACCEPT_WOOD_BLOCKS, AUTO_PLANT_SAPLINGS;
     public static List<String> BLOCK_WORLDS;
@@ -19,6 +20,8 @@ public class Settings {
     public static String TOOL_NAME;
     public static String TOOL_MATERIAL;
     public static boolean TOOL_ENABLE;
+
+    public static String PERMISSION_MESSAGE, TOGGLE_MESSAGE_ON, TOGGLE_MESSAGE_OFF;
 
     public static void loadConfig(boolean reload) {
 
@@ -79,5 +82,11 @@ public class Settings {
             TreeCuter.getInstance().getLogger().warning("Wrong glowing color: " + color);
             GLOWING_COLOR = ChatColor.RED;
         }
+
+        PERMISSION_MESSAGE = config.getString("permission-message");
+        TOGGLE_MESSAGE_ON = config.getString("toggle.message-on");
+        TOGGLE_MESSAGE_OFF = config.getString("toggle.message-off");
+
+        if(Settings.AUTO_PLANT) TreePlanterService.start();
     }
 }
