@@ -26,9 +26,9 @@ public class TreeCuterCommand implements CommandExecutor {
                 return true;
             }
 
-            sender.sendMessage(ChatUtils.format("&7Reloading plugin..."));
+            sender.sendMessage(ChatUtils.format(Settings.RELOAD_START));
             Settings.loadConfig(true);
-            sender.sendMessage(ChatUtils.format("&aPlugin reloaded!"));
+            sender.sendMessage(ChatUtils.format(Settings.RELOAD_END));
             return true;
         }else if(args[0].equalsIgnoreCase("get")){
 
@@ -38,12 +38,12 @@ public class TreeCuterCommand implements CommandExecutor {
             }
 
             if(!Settings.TOOL_ENABLE) {
-                sender.sendMessage(ChatUtils.format("&cTool is disabled! Enable it in config!"));
+                sender.sendMessage(ChatUtils.format(Settings.TOOL_DISABLED));
                 return true;
             }
 
             if(!(sender instanceof Player player)){
-                sender.sendMessage(ChatUtils.format("&cOnly players can use this command!"));
+                sender.sendMessage(ChatUtils.format(Settings.CONSOLE_MESSAGE));
                 return true;
             }
 
@@ -51,7 +51,7 @@ public class TreeCuterCommand implements CommandExecutor {
 
             player.getInventory().addItem(item);
 
-            player.sendMessage(ChatUtils.format("&aYou got tool!"));
+            player.sendMessage(ChatUtils.format(Settings.TOOL_GET));
             return true;
         }else if(args[0].equalsIgnoreCase("toggle")){
 
@@ -61,7 +61,7 @@ public class TreeCuterCommand implements CommandExecutor {
             }
 
             if(!(sender instanceof Player player)){
-                sender.sendMessage(ChatUtils.format("&cOnly players can use this command!"));
+                sender.sendMessage(ChatUtils.format(Settings.CONSOLE_MESSAGE));
                 return true;
             }
 
@@ -82,10 +82,7 @@ public class TreeCuterCommand implements CommandExecutor {
             sender.sendMessage(ChatUtils.format(Settings.PERMISSION_MESSAGE));
             return;
         }
-        sender.sendMessage("");
-        sender.sendMessage(ChatUtils.format("&7Type: &8/&btreecuter reload &7to reload plugin!"));
-        sender.sendMessage(ChatUtils.format("&7Type: &8/&btreecuter get &7to get tool!"));
-        sender.sendMessage(ChatUtils.format("&7Type: &8/&btreecuter toggle &7to toggle!"));
-        sender.sendMessage("");
+
+        Settings.HELP_MESSAGE.stream().map(ChatUtils::format).forEach(sender::sendMessage);
     }
 }

@@ -12,6 +12,7 @@
 
 # github: https://github.com/Norbit4
 # website: https://n0rbit.pl
+# wiki: https://docs.n0rbit.pl/free-resource/treecuter
 
 # If you like the plugin, support me with a positive opinion, thanks! <3
 
@@ -19,7 +20,26 @@
 #               [Config]                #
 #---------------------------------------#
 
-permission-message: '&cYou do not have permission to use this command!'
+messages:
+  permission: '&c&l» &7You do not have permission to use this command!'
+  console: '&c&l» &7Only players can use this command!'
+  help:
+    - '&8[&m------------------------------------------------]'
+    - ''
+    - ' &8&l» &8/&atreecuter reload &8- &7reload plugin!'
+    - ' &8&l» &8/&atreecuter get &8- &7get tool!'
+    - ' &8&l» &8/&atreecuter toggle &8- &7on/off!'
+    - ''
+    - '&8[&m------------------------------------------------]'
+  reload:
+    start: '&e&l» &7Reloading plugin...'
+    end: '&a&l» &7Plugin reloaded!'
+  tool:
+    get: '&a&l» &7You got tool!'
+    disabled: '&c&l» &7Tool is disabled! Enable it in config!'
+  toggle:
+    enable: '&a&l» &7Enabled cutting down trees!'
+    disable: '&c&l» &7Disabled cutting down trees!'
 
 # if true, only players with permission can cut down trees
 use-permissions: false
@@ -28,6 +48,8 @@ permission: 'treecuter.use'
 # max blocks to cut at once
 # only important for GIANT custom trees!
 max-blocks: 100
+# min blocks to cut at once
+min-blocks: 4
 
 # if true, the player must hold shift to cut down trees
 shift-mining: true
@@ -37,11 +59,19 @@ apply-mining-effect: true
 effect-level: 2
 
 # if true, blocks that have been cut off, will glow
-# [!] supports paper or forks versions: 1.17.1, 1.18.2, 1.19.4, 1.20.2
+
+# [!]                                                                            [!]
+# [!] GLOWING - SUPPORTS PAPER OR FORKS VERSIONS: 1.17.1, 1.18.2, 1.19.4, 1.20.2 [!]
+# [!]                                                                            [!]
+
 glowing-blocks: true
 # colors: black, dark_blue, dark_green, dark_aqua, dark_red, dark_purple, gold, gray, dark_gray, blue, green
 #         aqua, red, magenta, light_purple, yellow, white
 glowing-color: 'red'
+
+# [!]                                                                            [!]
+# [!] GLOWING - SUPPORTS PAPER OR FORKS VERSIONS: 1.17.1, 1.18.2, 1.19.4, 1.20.2 [!]
+# [!]                                                                            [!]
 
 # cut blocks automatically go to player inventory
 items-to-inventory: false
@@ -55,11 +85,6 @@ custom-tool:
   # example: 'ia:example_item_id'
   material: 'NETHERITE_AXE'
   name: '&c&lGOD AXE'
-
-#toogle messages
-toggle:
-  message-on: '&aEnabled &7cutting down trees!'
-  message-off: '&cDisabled &7cutting down trees!'
 
 # blocked worlds
 block-worlds:
