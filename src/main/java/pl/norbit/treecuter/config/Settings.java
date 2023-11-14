@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Settings {
-    public static int EFFECT_LEVEL,  MAX_BLOCKS;
+    public static int EFFECT_LEVEL,  MAX_BLOCKS, MIN_BLOCKS;
     public static boolean SHIFT_MINING, APPLY_MINING_EFFECT, ITEMS_TO_INVENTORY, WORLDGUARD_IS_ENABLED,
             ITEMS_ADDER_IS_ENABLED, AUTO_PLANT, USE_PERMISSIONS, GLOWING_BLOCKS;
     public static List<Material> ACCEPT_TOOLS, ACCEPT_WOOD_BLOCKS, AUTO_PLANT_SAPLINGS;
@@ -21,7 +21,9 @@ public class Settings {
     public static String TOOL_MATERIAL;
     public static boolean TOOL_ENABLE;
 
-    public static String PERMISSION_MESSAGE, TOGGLE_MESSAGE_ON, TOGGLE_MESSAGE_OFF;
+    public static String PERMISSION_MESSAGE, TOGGLE_MESSAGE_ON, TOGGLE_MESSAGE_OFF, CONSOLE_MESSAGE, RELOAD_START,
+            RELOAD_END, TOOL_GET,TOOL_DISABLED;
+    public static List<String> HELP_MESSAGE;
 
     public static void loadConfig(boolean reload) {
 
@@ -33,6 +35,7 @@ public class Settings {
         var config = javaPlugin.getConfig();
 
         MAX_BLOCKS = config.getInt("max-blocks");
+        MIN_BLOCKS = config.getInt("min-blocks");
         EFFECT_LEVEL = config.getInt("effect-level");
 
         SHIFT_MINING = config.getBoolean("shift-mining");
@@ -83,10 +86,17 @@ public class Settings {
             GLOWING_COLOR = ChatColor.RED;
         }
 
-        PERMISSION_MESSAGE = config.getString("permission-message");
-        TOGGLE_MESSAGE_ON = config.getString("toggle.message-on");
-        TOGGLE_MESSAGE_OFF = config.getString("toggle.message-off");
+        PERMISSION_MESSAGE = config.getString("messages.permission");
+        TOGGLE_MESSAGE_ON = config.getString("messages.toggle.enable");
+        TOGGLE_MESSAGE_OFF = config.getString("messages.toggle.disable");
+        CONSOLE_MESSAGE = config.getString("messages.console");
+        RELOAD_START = config.getString("messages.reload.start");
+        RELOAD_END = config.getString("messages.reload.end");
+        TOOL_GET = config.getString("messages.tool.get");
+        TOOL_DISABLED = config.getString("messages.tool.disabled");
+        HELP_MESSAGE = config.getStringList("messages.help");
 
-        if(Settings.AUTO_PLANT) TreePlanterService.start();
+        if(AUTO_PLANT) TreePlanterService.start();
+        else TreePlanterService.stop();
     }
 }
