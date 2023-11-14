@@ -19,7 +19,9 @@ public class TreePlanterService {
         if(task != null) task.cancel();
         timer();
     }
-
+    public static void stop() {
+        if(task != null) task.cancel();
+    }
 
     private static void timer(){
 

@@ -1,6 +1,5 @@
 package pl.norbit.treecuter.service;
 
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -30,13 +29,17 @@ public class BlockBreakService implements Listener {
             sPlayers.stream().filter(p -> !p.isSneaking()).toList().forEach(sPlayers::remove);
 
             int level = Settings.EFFECT_LEVEL - 1;
-            var potionEffect = new PotionEffect(PotionEffectType.SLOW_DIGGING, 15, level);
+            var potionEffect = new PotionEffect(PotionEffectType.SLOW_DIGGING, 24, level);
 
             TaskUtils.runTaskLater(()-> sPlayers.forEach(p -> p.addPotionEffect(potionEffect)), 0L);
-        }, 0L,14L);
+        }, 0L,20L);
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    public static void removePlayer(Player p){
+        sPlayers.remove(p);
+    }
+
+    @EventHandler
     public void onBlockInteract(PlayerInteractEvent e) {
         var b = e.getClickedBlock();
         var action = e.getAction();
@@ -80,7 +83,7 @@ public class BlockBreakService implements Listener {
 
         sPlayers.add(p);
         int level = Settings.EFFECT_LEVEL - 1;
-        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 15, level));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 24, level));
     }
 
     private static void colorTree(Player p, Block b){
@@ -88,7 +91,7 @@ public class BlockBreakService implements Listener {
         TreeCutService.colorSelectedTree(b, p, Settings.GLOWING_COLOR);
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
         var b = e.getBlock();
 

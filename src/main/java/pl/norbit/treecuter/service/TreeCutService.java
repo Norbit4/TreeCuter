@@ -1,6 +1,7 @@
 package pl.norbit.treecuter.service;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -8,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffectType;
 import pl.norbit.treecuter.TreeCuter;
 import pl.norbit.treecuter.api.listeners.TreeCutEvent;
 import pl.norbit.treecuter.api.listeners.TreeGlowEvent;
@@ -46,6 +48,12 @@ public class TreeCutService {
 
             Set<Block> blocks = getBlocksAround(new HashSet<>(), b);
 
+            if(blocks.size() < Settings.MIN_BLOCKS){
+                BlockBreakService.removePlayer(p);
+                TaskUtils.runTaskLater(() -> p.removePotionEffect(PotionEffectType.SLOW_DIGGING), 0L);
+                return;
+            }
+
             TreeGlowEvent event = new TreeGlowEvent(blocks, p);
             TaskUtils.runTaskLater(() -> TreeCuter.getInstance().getServer().getPluginManager().callEvent(event),0L);
 
@@ -70,6 +78,8 @@ public class TreeCutService {
 
         TaskUtils.runTaskLaterAsynchronously(() -> {
             Set<Block> blocks = getBlocksAround(new HashSet<>(), b);
+
+            if(blocks.size() + 1 < Settings.MIN_BLOCKS) return;
 
             TreeCutEvent event = new TreeCutEvent(blocks, p);
             TaskUtils.runTaskLater(() -> TreeCuter.getInstance().getServer().getPluginManager().callEvent(event),0L);
