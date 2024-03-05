@@ -1,175 +1,134 @@
 package pl.norbit.treecuter.service;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.plugin.PluginManager;
 import pl.norbit.treecuter.TreeCuter;
 import pl.norbit.treecuter.api.listeners.TreeCutEvent;
 import pl.norbit.treecuter.api.listeners.TreeGlowEvent;
 import pl.norbit.treecuter.config.Settings;
-import pl.norbit.treecuter.glow.GlowingService;
-import pl.norbit.treecuter.model.GlowBlock;
-import pl.norbit.treecuter.utils.TaskUtils;
+import pl.norbit.treecuter.utils.BlockUtils;
+import pl.norbit.treecuter.utils.GlowUtils;
+import pl.norbit.treecuter.utils.DurabilityUtils;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 
 public class TreeCutService {
+    private static final Map<UUID, Set<Block>> SELECTED_BLOCKS = new HashMap<>();
+    private static final PluginManager pluginManager = TreeCuter.getInstance().getServer().getPluginManager();
 
-    private static final ConcurrentHashMap<Player, GlowBlock> playerBlockMap = new ConcurrentHashMap<>();
-
-    public static void start(){
-        TaskUtils.runTaskTimerAsynchronously(() -> {
-            playerBlockMap.forEach((player, glowBlock) -> {
-                if(glowBlock.getTime() == 0){
-                    glowBlock.getBlocks().forEach(block -> GlowingService.unsetGlowing(block, player));
-                    playerBlockMap.compute(player, (player1, glowBlock1) -> null);
-                    return;
-                }
-                glowBlock.setTime(glowBlock.getTime() - 1);
-            });
-
-        }, 0L,20L);
-
+    private TreeCutService() {
+        throw new IllegalStateException("This class cannot be instantiated");
     }
 
-    public static void colorSelectedTree(Block b, Player p, ChatColor color){
-        TaskUtils.runTaskLaterAsynchronously(() ->{
-            var gBlock = playerBlockMap.get(p);
-            if (gBlock != null) gBlock.getBlocks().forEach(block -> GlowingService.unsetGlowing(block, p));
+    /**
+     * Get selected blocks (to cut) by player
+     * @param p Player
+     * @return Set of blocks, if player has no selected blocks, return empty set
+     */
+    public static Set<Block> getSelectedBlocks(Player p){
+        Set<Block> blocks = SELECTED_BLOCKS.get(p.getUniqueId());
 
-            Set<Block> blocks = getBlocksAround(new HashSet<>(), b);
+        if(blocks == null) return new HashSet<>();
 
-            if(blocks.size() < Settings.MIN_BLOCKS){
-                BlockBreakService.removePlayer(p);
-                TaskUtils.runTaskLater(() -> p.removePotionEffect(PotionEffectType.SLOW_DIGGING), 0L);
-                return;
-            }
-
-            TreeGlowEvent event = new TreeGlowEvent(blocks, p);
-            TaskUtils.runTaskLater(() -> TreeCuter.getInstance().getServer().getPluginManager().callEvent(event),0L);
-
-            TaskUtils.runTaskLaterAsynchronously(() -> {
-                if (event.isCancelled()) return;
-
-                GlowingService.setGlowing(b, p, color);
-                blocks.forEach(block -> GlowingService.setGlowing(block, p, color));
-
-                playerBlockMap.compute(p, (player, blocks1) -> new GlowBlock(blocks));
-            }, 2L);
-        }, 0L);
-    }
-
-    public static void cutTree(Block b, Player p) {
-
-        var type = b.getType();
-
-        if(!Settings.ACCEPT_WOOD_BLOCKS.contains(type)) return;
-
-        GlowingService.unsetGlowing(b, p);
-
-        TaskUtils.runTaskLaterAsynchronously(() -> {
-            Set<Block> blocks = getBlocksAround(new HashSet<>(), b);
-
-            if(blocks.size() + 1 < Settings.MIN_BLOCKS) return;
-
-            TreeCutEvent event = new TreeCutEvent(blocks, p);
-            TaskUtils.runTaskLater(() -> TreeCuter.getInstance().getServer().getPluginManager().callEvent(event),0L);
-
-            //wait for event
-            TaskUtils.runTaskLaterAsynchronously(() -> {
-                if(event.isCancelled()) return;
-
-                blocks.forEach(block -> TaskUtils.runTaskLater(() -> {
-
-                    GlowingService.unsetGlowing(block, p);
-
-                    if (Settings.ITEMS_TO_INVENTORY) {
-                        p.getInventory().addItem(new ItemStack(block.getType()));
-                        block.setType(Material.AIR);
-                    } else block.breakNaturally();
-
-                }, 1L));
-
-                if (blocks.size() == 0) return;
-
-                TaskUtils.runTaskLater(() -> updateItem(p, blocks.size()), 1L);
-            }, 2L);
-
-        }, 0L);
-    }
-
-    private static Set<Block> getBlocksAround(Set<Block> blocks, Block b) {
-
-        for (BlockFace v : BlockFace.values()) {
-            var relativeB = b.getRelative(v);
-
-            if(blocks.contains(relativeB)) continue;
-
-            if(!Settings.ACCEPT_WOOD_BLOCKS.contains(relativeB.getType())) continue;
-
-            if(blocks.size() >= Settings.MAX_BLOCKS) return blocks;
-
-            blocks.add(relativeB);
-            getBlocksAround(blocks, relativeB);
-            getDiagonalBlocks(blocks, relativeB);
-        }
         return blocks;
     }
 
-    private static void getDiagonalBlocks(Set<Block> blocks, Block b){
+    /**
+     * Remove selected blocks from player and remove glowing effect for blocks
+     * @param p Player
+     */
+    public static void removeColorFromTree(Player p){
+        Set<Block> blocks = SELECTED_BLOCKS.get(p.getUniqueId());
 
-        for (int i = -1; i < 2; i++) {
-            checkBlock(blocks, b.getRelative(1, i, -1));
-            checkBlock(blocks, b.getRelative(1, i, 1));
-            checkBlock(blocks, b.getRelative(-1, i, -1));
-            checkBlock(blocks, b.getRelative(-1, i, 1));
+        if(blocks == null) return;
 
-            checkBlock(blocks, b.getRelative(-1, i, 0));
-            checkBlock(blocks, b.getRelative(1, i, 0));
-            checkBlock(blocks, b.getRelative(0, i, -1));
-            checkBlock(blocks, b.getRelative(0, i, 1));
+        GlowUtils.unsetGlowing(blocks, p);
+        SELECTED_BLOCKS.remove(p.getUniqueId());
+    }
 
-            if(blocks.size() >= Settings.MAX_BLOCKS) return;
+    /**
+     * Select tree to player and apply glowing effect to blocks
+     * @param b Block
+     * @param p Player
+     * @param color Color of glowing effect
+     * @param item Item in player hand
+     */
+    public static void selectTreeByBlock(Block b, Player p, ChatColor color, ItemStack item){
+        //check max uses of player item
+        int maxBlock = DurabilityUtils.checkRemainingUses(item);
+
+        Set<Block> blocks = BlockUtils.getBlocksAround(new HashSet<>(), b, maxBlock);
+        blocks.add(b);
+
+        if(blocks.size() < Settings.MIN_BLOCKS){
+            SELECTED_BLOCKS.remove(p.getUniqueId());
+            return;
         }
+        //apply mining effect to player
+        EffectService.applyEffect(p);
+
+        var treeGlowEvent = new TreeGlowEvent(blocks, p);
+        pluginManager.callEvent(treeGlowEvent);
+
+        if(treeGlowEvent.isCancelled()) return;
+
+        GlowUtils.setGlowing(blocks, p, color);
+        SELECTED_BLOCKS.put(p.getUniqueId(), blocks);
     }
 
-    private static void checkBlock(Set<Block> blocks, Block b){
-        if(blocks.contains(b)) return;
+    /**
+     * Cut selected tree by player, when player cut tree, remove glowing effect from blocks and break blocks.
+     * When player has no selected blocks, do nothing.
+     * @param p Player
+     */
+    public static void cutTree(Player p) {
+        if (!EffectService.isEffectPlayer(p)) return;
 
-        if(!Settings.ACCEPT_WOOD_BLOCKS.contains(b.getType())) return;
+        Set<Block> blocks = SELECTED_BLOCKS.get(p.getUniqueId());
 
-        if(blocks.size() >= Settings.MAX_BLOCKS) return;
+        if(blocks == null) return;
 
-        getBlocksAround(blocks, b);
+        var treeCutEvent = new TreeCutEvent(blocks, p);
+
+        pluginManager.callEvent(treeCutEvent);
+
+        if(treeCutEvent.isCancelled()) return;
+
+        GlowUtils.unsetGlowing(blocks, p);
+
+        blocks.forEach(block -> breakBlock(p, block));
+
+        updateItem(p, blocks.size());
+
+        SELECTED_BLOCKS.remove(p.getUniqueId());
     }
+
+    private static void breakBlock(Player p, Block b){
+        if (Settings.ITEMS_TO_INVENTORY) {
+            Material material = b.getType();
+
+            if(material == Material.AIR) return;
+
+            p.getInventory().addItem(new ItemStack(material));
+            b.setType(Material.AIR);
+        } else b.breakNaturally();
+    }
+
 
     private static void updateItem(Player p, int durabilityDamage){
+        PlayerInventory inventory = p.getInventory();
 
-        if(p == null) return;
-
-        var itemInHand = p.getInventory().getItemInMainHand();
+        var itemInHand = inventory.getItemInMainHand();
 
         if(itemInHand.getType() == Material.AIR) return;
 
-        var meta = itemInHand.getItemMeta();
+        ItemStack itemStack = DurabilityUtils.updateDurability(itemInHand, durabilityDamage);
 
-        meta = updateDurability(meta, durabilityDamage);
-        itemInHand.setItemMeta(meta);
-
-        p.getInventory().setItemInMainHand(itemInHand);
-    }
-
-    private static ItemMeta updateDurability(ItemMeta meta,  int dmg){
-        if (meta instanceof Damageable damageable) damageable.setDamage((damageable.getDamage() + dmg));
-        return meta;
+        inventory.setItemInMainHand(itemStack);
     }
 }

@@ -15,6 +15,10 @@ public class TreePlanterService {
     private static final ConcurrentHashMap<UUID, Integer> S_UUIDS = new  ConcurrentHashMap<>();
     private static BukkitTask task;
 
+    private TreePlanterService() {
+        throw new IllegalStateException("This class cannot be instantiated");
+    }
+
     public static void start() {
         if(task != null) task.cancel();
         timer();
@@ -24,38 +28,43 @@ public class TreePlanterService {
     }
 
     private static void timer(){
+        var server = TreeCuter.getInstance().getServer();
 
-        task = TaskUtils.runTaskTimer(() ->{
-            var server = TreeCuter.getInstance().getServer();
-
+        task = TaskUtils.runTaskTimer(() -> {
             for (World world : server.getWorlds()) {
-                for (Item item : world.getEntitiesByClass(Item.class)) {
-                    var is = item.getItemStack();
-
-                    if (!Settings.AUTO_PLANT_SAPLINGS.contains(is.getType())) continue;
-
-                    var loc = item.getLocation();
-                    var blockUnderType = loc.getBlock().getRelative(0, -1, 0).getType();
-
-                    if (!(blockUnderType == Material.DIRT || blockUnderType == Material.GRASS_BLOCK
-                            || blockUnderType == Material.MUD || blockUnderType == Material.MOSS_BLOCK
-                            || blockUnderType == Material.PODZOL|| blockUnderType == Material.MYCELIUM
-                            || blockUnderType == Material.COARSE_DIRT)) continue;
-
-                    var type = loc.getBlock().getType();
-
-                    if(type != Material.AIR) continue;
-
-                    updateTime(item);
-                }
+                updateSaplingItemsInWorld(world);
             }
-        }, 0L, 20L);
+        }, 0L, 40L);
+    }
+    private static void updateSaplingItemsInWorld(World world){
+        world.getEntitiesByClass(Item.class).forEach(item -> {
+            var is = item.getItemStack();
+
+            if (!Settings.AUTO_PLANT_SAPLINGS.contains(is.getType())) return;
+
+            var loc = item.getLocation();
+            var blockUnderType = loc.getBlock().getRelative(0, -1, 0).getType();
+
+            if (!isGround(blockUnderType)) return;
+
+            var type = loc.getBlock().getType();
+
+            if (type != Material.AIR) return;
+            updateTime(item);
+        });
+    }
+
+    private static boolean isGround(Material type){
+        return type == Material.DIRT || type == Material.GRASS_BLOCK
+                || type == Material.MUD || type == Material.MOSS_BLOCK
+                || type == Material.PODZOL || type == Material.MYCELIUM
+                || type == Material.COARSE_DIRT;
     }
 
     private static void updateTime(Item item){
         var time = S_UUIDS.get(item.getUniqueId());
 
-        if(time == null) S_UUIDS.compute(item.getUniqueId(), (uuid, integer) -> 5);
+        if(time == null) S_UUIDS.compute(item.getUniqueId(), (uuid, integer) -> 3);
         else if(time == 0){
             plantSapling(item);
             S_UUIDS.compute(item.getUniqueId(), (uuid, integer) -> null);
