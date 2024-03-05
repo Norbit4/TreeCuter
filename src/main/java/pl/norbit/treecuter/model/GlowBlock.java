@@ -8,8 +8,8 @@ public class GlowBlock {
     private int time;
     private final Set<Block> blocks;
 
-    public GlowBlock(Set<Block> blocks) {
-        this.time = 12;
+    public GlowBlock(Set<Block> blocks, int time) {
+        this.time = time;
         this.blocks = blocks;
     }
 
