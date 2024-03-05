@@ -11,9 +11,9 @@ import java.util.Set;
 
 public class TreeCutEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    private boolean cancelled;
     private final Set<Block> blocks;
     private final Player p;
+    private boolean cancelled;
     public TreeCutEvent(Set<Block> blocks, Player p) {
         this.blocks = blocks;
         this.p = p;
@@ -42,7 +42,7 @@ public class TreeCutEvent extends Event implements Cancellable {
 
     @Override
     public boolean isCancelled() {
-        return cancelled;
+        return this.cancelled;
     }
 
     @Override

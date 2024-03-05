@@ -1,26 +1,30 @@
 package pl.norbit.treecuter.utils;
 
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import pl.norbit.treecuter.TreeCuter;
 
 public class TaskUtils {
+    private static final JavaPlugin inst = TreeCuter.getInstance();
+    private static final BukkitScheduler scheduler = inst.getServer().getScheduler();
+
+    private TaskUtils() {
+        throw new IllegalStateException("This class cannot be instantiated");
+    }
 
     public static void runTaskLater(Runnable runnable, long delay){
-        TreeCuter inst = TreeCuter.getInstance();
-        inst.getServer().getScheduler().runTaskLater(inst, runnable, delay);
+        scheduler.runTaskLater(inst, runnable, delay);
     }
     public static BukkitTask runTaskTimer(Runnable runnable, long delay, long period){
-        TreeCuter inst = TreeCuter.getInstance();
-        return inst.getServer().getScheduler().runTaskTimer(inst, runnable, delay, period);
+        return scheduler.runTaskTimer(inst, runnable, delay, period);
     }
 
     public static void runTaskLaterAsynchronously(Runnable runnable, long delay){
-        TreeCuter inst = TreeCuter.getInstance();
-        inst.getServer().getScheduler().runTaskLaterAsynchronously(inst, runnable, delay);
+        scheduler.runTaskLaterAsynchronously(inst, runnable, delay);
     }
 
     public static void runTaskTimerAsynchronously(Runnable runnable, long delay, long period){
-        TreeCuter inst = TreeCuter.getInstance();
-        inst.getServer().getScheduler().runTaskTimerAsynchronously(inst, runnable, delay, period);
+        scheduler.runTaskTimerAsynchronously(inst, runnable, delay, period);
     }
 }
