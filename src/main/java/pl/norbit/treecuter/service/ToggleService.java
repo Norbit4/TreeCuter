@@ -1,48 +1,37 @@
 package pl.norbit.treecuter.service;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.potion.PotionEffectType;
-import pl.norbit.treecuter.api.listeners.TreeCutEvent;
-import pl.norbit.treecuter.api.listeners.TreeGlowEvent;
-import pl.norbit.treecuter.utils.TaskUtils;
-
 import java.util.HashMap;
 import java.util.UUID;
 
-public class ToggleService implements Listener {
+public class ToggleService  {
     private static final HashMap<UUID, Boolean> toggleMap = new HashMap<>();
 
-    private static boolean getToggle(UUID uuid){
-        toggleMap.putIfAbsent(uuid, true);
-        return toggleMap.get(uuid);
+    private ToggleService() {
+        throw new IllegalStateException("This class cannot be instantiated");
     }
 
-    public static boolean changeToggle(UUID uuid){
-        boolean toggle = getToggle(uuid);
+    /**
+     * Get player toggle state
+     * @param playerUUID Player UUID
+     * @return Toggle state
+     */
 
-        toggleMap.put(uuid, !toggle);
+    public static boolean getToggle(UUID playerUUID){
+        toggleMap.putIfAbsent(playerUUID, true);
+        return toggleMap.get(playerUUID);
+    }
+
+    /**
+     * Change player toggle state
+     * @param playerUUID Player UUID
+     * @return New toggle state
+     */
+
+    public static boolean changeToggle(UUID playerUUID){
+        boolean toggle = getToggle(playerUUID);
+
+        toggleMap.put(playerUUID, !toggle);
 
         return !toggle;
-    }
-
-    @EventHandler
-    public void onTreeGlow(TreeGlowEvent e){
-        Player p = e.getPlayer();
-        if(getToggle(e.getPlayer().getUniqueId())) return;
-
-        BlockBreakService.removePlayer(p);
-        p.removePotionEffect(PotionEffectType.SLOW_DIGGING);
-        e.setCancelled(true);
-    }
-    @EventHandler
-    public void onTreeCut(TreeCutEvent e){
-        Player p = e.getPlayer();
-        if(getToggle(e.getPlayer().getUniqueId())) return;
-
-        BlockBreakService.removePlayer(p);
-        p.removePotionEffect(PotionEffectType.SLOW_DIGGING);
-        e.setCancelled(true);
     }
 }
