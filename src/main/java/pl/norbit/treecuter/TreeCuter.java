@@ -3,32 +3,49 @@ package pl.norbit.treecuter;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.norbit.treecuter.commands.TreeCuterCommand;
 import pl.norbit.treecuter.config.Settings;
-import pl.norbit.treecuter.glow.GlowingService;
-import pl.norbit.treecuter.service.BlockBreakService;
-import pl.norbit.treecuter.service.ToggleService;
-import pl.norbit.treecuter.service.TreeCutService;
+import pl.norbit.treecuter.listeners.BlockBreakListener;
+import pl.norbit.treecuter.listeners.BlockInteractListener;
+import pl.norbit.treecuter.listeners.TreeListeners;
+import pl.norbit.treecuter.listeners.UnglowListener;
+import pl.norbit.treecuter.service.EffectService;
+import pl.norbit.treecuter.utils.GlowUtils;
 
 public final class TreeCuter extends JavaPlugin {
-
     private static TreeCuter instance;
+    public static TreeCuter getInstance() {
+        return instance;
+    }
 
     @Override
     public void onEnable() {
         instance = this;
         Settings.loadConfig(false);
 
+        GlowUtils.init(this);
+        EffectService.start();
+
         infoMessage();
         checkPlugins();
 
-        TreeCutService.start();
-        BlockBreakService.start();
-        GlowingService.init();
+        registerCommand();
+        registerListeners();
+    }
 
-        getCommand("treecuter").setExecutor(new TreeCuterCommand());
+    private void registerCommand(){
+        var command = getCommand("treecuter");
+        var treeCuterCommand = new TreeCuterCommand();
 
-        var pM = getServer().getPluginManager();
-        pM.registerEvents(new BlockBreakService(), this);
-        pM.registerEvents(new ToggleService(), this);
+        command.setExecutor(treeCuterCommand);
+        command.setTabCompleter(treeCuterCommand);
+    }
+
+    private void registerListeners(){
+        var pluginManager = getServer().getPluginManager();
+
+        pluginManager.registerEvents(new TreeListeners(), this);
+        pluginManager.registerEvents(new BlockBreakListener(), this);
+        pluginManager.registerEvents(new BlockInteractListener(), this);
+        pluginManager.registerEvents(new UnglowListener(), this);
     }
 
     private void checkPlugins(){
@@ -56,9 +73,5 @@ public final class TreeCuter extends JavaPlugin {
             return true;
         }
         return false;
-    }
-
-    public static TreeCuter getInstance() {
-        return instance;
     }
 }
