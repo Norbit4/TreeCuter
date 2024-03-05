@@ -5,12 +5,10 @@ import org.bukkit.Material;
 import pl.norbit.treecuter.TreeCuter;
 import pl.norbit.treecuter.service.TreePlanterService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Settings {
-    public static int EFFECT_LEVEL,  MAX_BLOCKS, MIN_BLOCKS;
+    public static int DEFAULT_EFFECT_LEVEL,  MAX_BLOCKS, MIN_BLOCKS;
     public static boolean SHIFT_MINING, APPLY_MINING_EFFECT, ITEMS_TO_INVENTORY, WORLDGUARD_IS_ENABLED,
             ITEMS_ADDER_IS_ENABLED, AUTO_PLANT, USE_PERMISSIONS, GLOWING_BLOCKS;
     public static List<Material> ACCEPT_TOOLS, ACCEPT_WOOD_BLOCKS, AUTO_PLANT_SAPLINGS;
@@ -20,13 +18,15 @@ public class Settings {
     public static String TOOL_NAME;
     public static String TOOL_MATERIAL;
     public static boolean TOOL_ENABLE;
-
     public static String PERMISSION_MESSAGE, TOGGLE_MESSAGE_ON, TOGGLE_MESSAGE_OFF, CONSOLE_MESSAGE, RELOAD_START,
             RELOAD_END, TOOL_GET,TOOL_DISABLED;
     public static List<String> HELP_MESSAGE;
 
-    public static void loadConfig(boolean reload) {
+    private Settings() {
+        throw new IllegalStateException("This class cannot be instantiated");
+    }
 
+    public static void loadConfig(boolean reload) {
         var javaPlugin = TreeCuter.getInstance();
 
         if(!reload) javaPlugin.saveDefaultConfig();
@@ -36,10 +36,12 @@ public class Settings {
 
         MAX_BLOCKS = config.getInt("max-blocks");
         MIN_BLOCKS = config.getInt("min-blocks");
-        EFFECT_LEVEL = config.getInt("effect-level");
 
         SHIFT_MINING = config.getBoolean("shift-mining");
-        APPLY_MINING_EFFECT = config.getBoolean("apply-mining-effect");
+
+        APPLY_MINING_EFFECT = config.getBoolean("mining-effect.enable");
+        DEFAULT_EFFECT_LEVEL = config.getInt("mining-effect.default-level");
+
         ITEMS_TO_INVENTORY = config.getBoolean("items-to-inventory");
 
         AUTO_PLANT = config.getBoolean("auto-plant");
