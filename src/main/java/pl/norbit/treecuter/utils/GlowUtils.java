@@ -7,6 +7,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.norbit.treecuter.config.Settings;
+import pl.norbit.treecuter.exception.GlowException;
 import pl.norbit.treecuter.model.GlowBlock;
 
 import java.util.List;
@@ -17,7 +18,8 @@ import java.util.logging.Logger;
 
 public class GlowUtils {
     private static final Map<Player, GlowBlock> BLOCKS = new ConcurrentHashMap<>();
-    private static final List<String> SUPPORTED_VERSIONS = List.of("1.17.1", "1.18.2", "1.19.4", "1.20.2", "1.20.4");
+    private static final List<String> SUPPORTED_VERSIONS =
+            List.of("1.17.1", "1.18.2", "1.19.4", "1.20.2", "1.20.4", "1.20.5", "1.20.6");
     private static GlowingBlocks glowingBlocks;
     private static boolean enable;
 
@@ -48,7 +50,7 @@ public class GlowUtils {
         }
 
         if(enable){
-            TaskUtils.runTaskTimerAsynchronously(GlowUtils::update, 0L, 20L);
+            TaskUtils.timerAsync(GlowUtils::update,20L);
         }else {
             notSupportedMessage(server);
         }
@@ -106,7 +108,7 @@ public class GlowUtils {
         try {
             glowingBlocks.setGlowing(b, p, color);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new GlowException("Error while setting glowing block", e);
         }
     }
 
@@ -114,7 +116,7 @@ public class GlowUtils {
         try {
             glowingBlocks.unsetGlowing(b, p);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new GlowException("Error while unsetting glowing block", e);
         }
     }
 }
