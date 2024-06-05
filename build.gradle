@@ -5,7 +5,7 @@ plugins {
 apply plugin: 'maven-publish'
 
 group = 'pl.norbit'
-version = 'v1.7.0'
+version = 'v1.7.1'
 
 repositories {
     mavenCentral()
@@ -23,9 +23,9 @@ repositories {
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT"
-    implementation 'io.github.skytasul:glowingentities:1.3.2'
+    implementation 'io.github.skytasul:glowingentities:1.3.4'
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.8'
-    compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.5.0c-r5'
+    compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.2-beta-r3-b'
 }
 
 compileJava {options.encoding = "UTF-8"}
@@ -37,7 +37,6 @@ java {
         languageVersion = JavaLanguageVersion.of(17)
     }
 }
-
 
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
