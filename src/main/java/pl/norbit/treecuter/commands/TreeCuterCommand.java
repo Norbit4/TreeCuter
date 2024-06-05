@@ -26,51 +26,52 @@ public class TreeCuterCommand implements CommandExecutor, TabCompleter {
         String arg = args[0].toUpperCase();
 
         switch (arg) {
-            case "RELOAD" -> {
-                if(hasNotPermission(sender, "reload")) return true;
-
-                sender.sendMessage(ChatUtils.format(Settings.RELOAD_START));
-                Settings.loadConfig(true);
-                sender.sendMessage(ChatUtils.format(Settings.RELOAD_END));
-                return true;
-            }
-            case "GET" -> {
-                if(hasNotPermission(sender, "get")) return true;
-
-                if(!Settings.TOOL_ENABLE) {
-                    sender.sendMessage(ChatUtils.format(Settings.TOOL_DISABLED));
-                    return true;
-                }
-                var p = getPlayer(sender);
-
-                if(p == null) return true;
-
-                var item = ItemsUtils.getItem();
-
-                p.getInventory().addItem(item);
-
-                p.sendMessage(ChatUtils.format(Settings.TOOL_GET));
-                return true;
-            }
-            case "TOGGLE" -> {
-                if (hasNotPermission(sender, "toggle")) return true;
-
-                var p = getPlayer(sender);
-
-                if (p == null) return true;
-
-                boolean status = ToggleService.changeToggle(p.getUniqueId());
-
-                String message = status ? Settings.TOGGLE_MESSAGE_ON : Settings.TOGGLE_MESSAGE_OFF;
-
-                p.sendMessage(ChatUtils.format(message));
-                return true;
-            }
-            default -> {
-                sendInfo(sender);
-                return true;
-            }
+            case "RELOAD" -> reload(sender);
+            case "GET" -> get(sender);
+            case "TOGGLE" -> toggle(sender);
+            default -> sendInfo(sender);
         }
+        return true;
+    }
+
+    private void reload(CommandSender sender){
+        if(hasNotPermission(sender, "reload")) return;
+
+        sender.sendMessage(ChatUtils.format(Settings.RELOAD_START));
+        Settings.loadConfig(true);
+        sender.sendMessage(ChatUtils.format(Settings.RELOAD_END));
+    }
+
+    private void get(CommandSender sender){
+        if(hasNotPermission(sender, "get")) return;
+
+        if(!Settings.TOOL_ENABLE) {
+            sender.sendMessage(ChatUtils.format(Settings.TOOL_DISABLED));
+            return;
+        }
+        var p = getPlayer(sender);
+
+        if(p == null) return;
+
+        var item = ItemsUtils.getItem();
+
+        p.getInventory().addItem(item);
+
+        p.sendMessage(ChatUtils.format(Settings.TOOL_GET));
+    }
+
+    private void toggle(CommandSender sender){
+        if(hasNotPermission(sender, "toggle")) return;
+
+        var p = getPlayer(sender);
+
+        if(p == null) return;
+
+        boolean status = ToggleService.changeToggle(p.getUniqueId());
+
+        String message = status ? Settings.TOGGLE_MESSAGE_ON : Settings.TOGGLE_MESSAGE_OFF;
+
+        p.sendMessage(ChatUtils.format(message));
     }
 
     private boolean hasNotPermission(CommandSender sender, String permission){
