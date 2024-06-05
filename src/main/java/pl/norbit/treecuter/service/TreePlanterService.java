@@ -11,6 +11,8 @@ import pl.norbit.treecuter.utils.TaskUtils;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static pl.norbit.treecuter.utils.TaskUtils.timer;
+
 public class TreePlanterService {
     private static final ConcurrentHashMap<UUID, Integer> S_UUIDS = new  ConcurrentHashMap<>();
     private static BukkitTask task;
@@ -21,20 +23,18 @@ public class TreePlanterService {
 
     public static void start() {
         if(task != null) task.cancel();
-        timer();
+        startTimer();
     }
     public static void stop() {
         if(task != null) task.cancel();
     }
 
-    private static void timer(){
+    private static void startTimer(){
         var server = TreeCuter.getInstance().getServer();
 
-        task = TaskUtils.runTaskTimer(() -> {
-            for (World world : server.getWorlds()) {
-                updateSaplingItemsInWorld(world);
-            }
-        }, 0L, 40L);
+        List<World> worlds = server.getWorlds();
+
+        task = timer(() -> worlds.forEach(TreePlanterService::updateSaplingItemsInWorld),40L);
     }
     private static void updateSaplingItemsInWorld(World world){
         world.getEntitiesByClass(Item.class).forEach(item -> {

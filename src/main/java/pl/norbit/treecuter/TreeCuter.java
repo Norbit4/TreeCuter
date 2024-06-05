@@ -59,7 +59,6 @@ public final class TreeCuter extends JavaPlugin {
         var logger = getServer().getLogger();
         logger.info("");
         logger.info("TreeCuter by Norbit4!");
-        logger.info("Website: https://n0rbit.pl/");
         logger.info("");
     }
 

@@ -13,18 +13,19 @@ public class TaskUtils {
         throw new IllegalStateException("This class cannot be instantiated");
     }
 
-    public static void runTaskLater(Runnable runnable, long delay){
-        scheduler.runTaskLater(inst, runnable, delay);
-    }
-    public static BukkitTask runTaskTimer(Runnable runnable, long delay, long period){
-        return scheduler.runTaskTimer(inst, runnable, delay, period);
+    public static void sync(Runnable runnable){
+        scheduler.runTask(inst, runnable);
     }
 
-    public static void runTaskLaterAsynchronously(Runnable runnable, long delay){
-        scheduler.runTaskLaterAsynchronously(inst, runnable, delay);
+    public static BukkitTask timer(Runnable runnable, long period){
+        return scheduler.runTaskTimer(inst, runnable, 0L, period);
     }
 
-    public static void runTaskTimerAsynchronously(Runnable runnable, long delay, long period){
-        scheduler.runTaskTimerAsynchronously(inst, runnable, delay, period);
+    public static void async(Runnable runnable){
+        scheduler.runTaskAsynchronously(inst, runnable);
+    }
+
+    public static void timerAsync(Runnable runnable, long period){
+        scheduler.runTaskTimerAsynchronously(inst, runnable, 0L, period);
     }
 }

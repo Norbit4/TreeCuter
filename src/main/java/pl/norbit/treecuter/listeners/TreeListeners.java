@@ -18,6 +18,7 @@ public class TreeListeners implements Listener {
         EffectService.removeEffect(p);
         e.setCancelled(true);
     }
+
     @EventHandler
     public void onTreeCut(TreeCutEvent e){
         Player p = e.getPlayer();

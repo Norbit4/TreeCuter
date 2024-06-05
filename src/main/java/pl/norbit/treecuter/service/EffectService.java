@@ -11,6 +11,9 @@ import pl.norbit.treecuter.utils.TaskUtils;
 import java.util.HashSet;
 import java.util.Set;
 
+import static pl.norbit.treecuter.utils.TaskUtils.sync;
+import static pl.norbit.treecuter.utils.TaskUtils.timerAsync;
+
 public class EffectService {
     private static final Set<Player> EFFECT_PLAYERS = new HashSet<>();
 
@@ -19,7 +22,7 @@ public class EffectService {
     }
 
     public static void start(){
-        TaskUtils.runTaskTimerAsynchronously(() -> {
+        timerAsync(() -> {
             //remove players that are not sneaking
             EFFECT_PLAYERS.stream()
                     .filter(p -> !p.isSneaking())
@@ -30,14 +33,14 @@ public class EffectService {
                     });
 
             //start it in synchronized task because effects in minecraft cannot be applied in async task
-            TaskUtils.runTaskLater(() -> EFFECT_PLAYERS.forEach(p ->{
+            sync(() -> EFFECT_PLAYERS.forEach(p ->{
                 Set<Block> selectedBlocks = TreeCutService.getSelectedBlocks(p);
 
                 GlowUtils.setGlowing(selectedBlocks, p, Settings.GLOWING_COLOR);
 
                 addSlowDiggingEffect(p);
-            }), 0L);
-        }, 0L,22L);
+            }));
+        }, 22L);
     }
 
     private static void addSlowDiggingEffect(Player p){

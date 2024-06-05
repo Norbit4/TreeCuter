@@ -13,15 +13,13 @@ import pl.norbit.treecuter.utils.TaskUtils;
 
 import java.util.Collection;
 
+import static pl.norbit.treecuter.utils.TaskUtils.async;
+
 public class UnglowListener implements Listener {
     private final Server SERVER = TreeCuter.getInstance().getServer();
 
     private void unsetGlow(Block b){
-        TaskUtils.runTaskLaterAsynchronously(() -> {
-            Collection<? extends Player> onlinePlayers = SERVER.getOnlinePlayers();
-
-            onlinePlayers.forEach(p -> GlowUtils.unsetGlowing(b, p));
-        }, 0L);
+        async(() -> SERVER.getOnlinePlayers().forEach(p -> GlowUtils.unsetGlowing(b, p)));
     }
 
     @EventHandler
