@@ -37,27 +37,29 @@ public class TreeCuterCommand implements CommandExecutor, TabCompleter {
     private void reload(CommandSender sender){
         if(hasNotPermission(sender, "reload")) return;
 
-        sender.sendMessage(ChatUtils.format(Settings.RELOAD_START));
+        sender.sendMessage(ChatUtils.format(Settings.getReloadStart()));
         Settings.loadConfig(true);
-        sender.sendMessage(ChatUtils.format(Settings.RELOAD_END));
+        sender.sendMessage(ChatUtils.format(Settings.getReloadEnd()));
     }
 
     private void get(CommandSender sender){
         if(hasNotPermission(sender, "get")) return;
 
-        if(!Settings.TOOL_ENABLE) {
-            sender.sendMessage(ChatUtils.format(Settings.TOOL_DISABLED));
+        if(!Settings.isToolEnable()) {
+            sender.sendMessage(ChatUtils.format(Settings.getToolDisabled()));
             return;
         }
         var p = getPlayer(sender);
 
-        if(p == null) return;
+        if(p == null){
+            return;
+        }
 
         var item = ItemsUtils.getItem();
 
         p.getInventory().addItem(item);
 
-        p.sendMessage(ChatUtils.format(Settings.TOOL_GET));
+        p.sendMessage(ChatUtils.format(Settings.getToolGet()));
     }
 
     private void toggle(CommandSender sender){
@@ -65,11 +67,13 @@ public class TreeCuterCommand implements CommandExecutor, TabCompleter {
 
         var p = getPlayer(sender);
 
-        if(p == null) return;
+        if(p == null){
+            return;
+        }
 
         boolean status = ToggleService.changeToggle(p.getUniqueId());
 
-        String message = status ? Settings.TOGGLE_MESSAGE_ON : Settings.TOGGLE_MESSAGE_OFF;
+        String message = status ? Settings.getToggleMessageOn() : Settings.getToggleMessageOff();
 
         p.sendMessage(ChatUtils.format(message));
     }
@@ -78,7 +82,7 @@ public class TreeCuterCommand implements CommandExecutor, TabCompleter {
         String perm = "treecuter." + permission;
 
         if(!PermissionsUtils.hasPermission(sender, perm)){
-            sender.sendMessage(ChatUtils.format(Settings.PERMISSION_MESSAGE));
+            sender.sendMessage(ChatUtils.format(Settings.getPermissionMessage()));
             return true;
         }
         return false;
@@ -88,17 +92,17 @@ public class TreeCuterCommand implements CommandExecutor, TabCompleter {
         if((sender instanceof Player player)) {
             return player;
         }
-        sender.sendMessage(ChatUtils.format(Settings.CONSOLE_MESSAGE));
+        sender.sendMessage(ChatUtils.format(Settings.getConsoleMessage()));
         return null;
     }
 
     private static void sendInfo(CommandSender sender){
         if(!sender.hasPermission("treecuter.help")){
-            sender.sendMessage(ChatUtils.format(Settings.PERMISSION_MESSAGE));
+            sender.sendMessage(ChatUtils.format(Settings.getPermissionMessage()));
             return;
         }
 
-        Settings.HELP_MESSAGE.stream().map(ChatUtils::format).forEach(sender::sendMessage);
+        Settings.getHelpMessage().stream().map(ChatUtils::format).forEach(sender::sendMessage);
     }
 
     @Override

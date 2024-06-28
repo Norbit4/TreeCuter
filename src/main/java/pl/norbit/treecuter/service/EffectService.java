@@ -6,7 +6,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import pl.norbit.treecuter.config.Settings;
 import pl.norbit.treecuter.utils.GlowUtils;
-import pl.norbit.treecuter.utils.TaskUtils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -36,7 +35,7 @@ public class EffectService {
             sync(() -> EFFECT_PLAYERS.forEach(p ->{
                 Set<Block> selectedBlocks = TreeCutService.getSelectedBlocks(p);
 
-                GlowUtils.setGlowing(selectedBlocks, p, Settings.GLOWING_COLOR);
+                GlowUtils.setGlowing(selectedBlocks, p, Settings.getGlowingColor());
 
                 addSlowDiggingEffect(p);
             }));
@@ -44,7 +43,7 @@ public class EffectService {
     }
 
     private static void addSlowDiggingEffect(Player p){
-        int effectLevel = Settings.DEFAULT_EFFECT_LEVEL - 1;
+        int effectLevel = Settings.getDefaultEffectLevel() - 1;
 
         var potionEffect = new PotionEffect(PotionEffectType.SLOW_DIGGING, 24, effectLevel);
         p.addPotionEffect(potionEffect);
@@ -52,9 +51,13 @@ public class EffectService {
 
 
     public static boolean isEffectPlayer(Player p){
-        if(!Settings.SHIFT_MINING) return true;
+        if(!Settings.isShiftMining()){
+            return true;
+        }
 
-        if(!Settings.APPLY_MINING_EFFECT) return true;
+        if(!Settings.isApplyMiningEffect()){
+            return true;
+        }
 
         return EFFECT_PLAYERS.contains(p);
     }
@@ -65,11 +68,17 @@ public class EffectService {
     }
 
     public static void applyEffect(Player p){
-        if(!Settings.SHIFT_MINING) return;
+        if(!Settings.isShiftMining()){
+            return;
+        }
 
-        if(!p.isSneaking()) return;
+        if(!p.isSneaking()){
+            return;
+        }
 
-        if(!Settings.APPLY_MINING_EFFECT) return;
+        if(!Settings.isApplyMiningEffect()){
+            return;
+        }
 
         EFFECT_PLAYERS.add(p);
         addSlowDiggingEffect(p);

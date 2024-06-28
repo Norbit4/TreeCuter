@@ -9,11 +9,14 @@ import pl.norbit.treecuter.service.EffectService;
 import pl.norbit.treecuter.service.ToggleService;
 
 public class TreeListeners implements Listener {
+
     @EventHandler
     public void onTreeGlow(TreeGlowEvent e){
         Player p = e.getPlayer();
 
-        if(ToggleService.getToggle(p.getUniqueId())) return;
+        if(ToggleService.getToggle(p.getUniqueId())){
+            return;
+        }
 
         EffectService.removeEffect(p);
         e.setCancelled(true);
@@ -23,7 +26,9 @@ public class TreeListeners implements Listener {
     public void onTreeCut(TreeCutEvent e){
         Player p = e.getPlayer();
 
-        if(ToggleService.getToggle(p.getUniqueId())) return;
+        if(ToggleService.getToggle(p.getUniqueId())){
+            return;
+        }
 
         EffectService.removeEffect(p);
         e.setCancelled(true);

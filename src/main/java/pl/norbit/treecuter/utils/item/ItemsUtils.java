@@ -15,9 +15,13 @@ public class ItemsUtils {
 
     public static boolean useTool(ItemStack itemStack){
 
-        if(!Settings.TOOL_ENABLE) return true;
+        if(!Settings.isToolEnable()){
+            return true;
+        }
 
-        if(itemStack == null) return false;
+        if(itemStack == null){
+            return false;
+        }
 
         return checkTool(itemStack);
     }
@@ -25,46 +29,64 @@ public class ItemsUtils {
     private static boolean checkTool(ItemStack itemStack) {
         var type = itemStack.getType();
 
-        if(type == Material.AIR) return false;
+        if(type == Material.AIR){
+            return false;
+        }
 
-        String toolMaterial = Settings.TOOL_MATERIAL;
+        String toolMaterial = Settings.getToolMaterial();
 
         if (toolMaterial.contains("ia")) {
-            if (!Settings.ITEMS_ADDER_IS_ENABLED) throw new ItemAdderException("ItemsAdder is not enabled!");
+            if (!Settings.isItemsAdderEnabled()){
+                throw new ItemAdderException("ItemsAdder is not enabled!");
+            }
 
             String[] split = toolMaterial.split(":");
 
-            if(split.length != 2) throw new ItemAdderException("Invalid syntax: " + toolMaterial);
+            if(split.length != 2){
+                throw new ItemAdderException("Invalid syntax: " + toolMaterial);
+            }
 
             return ItemsAdderUtils.isEqual(itemStack,  split[1]);
         }
 
         Material material = Material.getMaterial(toolMaterial);
 
-        if (material == null) throw new MinecraftMaterialException("Material " + toolMaterial + " not found!");
+        if (material == null){
+            throw new MinecraftMaterialException("Material " + toolMaterial + " not found!");
+        }
 
-        if (material != type) return false;
+        if (material != type){
+            return false;
+        }
 
         var meta = itemStack.getItemMeta();
 
-        if(meta == null) return false;
+        if(meta == null){
+            return false;
+        }
 
-        if(!meta.hasDisplayName()) return false;
+        if(!meta.hasDisplayName()){
+            return false;
+        }
 
         var displayName = meta.getDisplayName();
 
-        return displayName.equals(ChatUtils.format(Settings.TOOL_NAME));
+        return displayName.equals(ChatUtils.format(Settings.getToolName()));
     }
 
     public static ItemStack getItem(){
-        String toolMaterial = Settings.TOOL_MATERIAL;
+        String toolMaterial = Settings.getToolMaterial();
 
         if (toolMaterial.contains("ia")) {
-            if (!Settings.ITEMS_ADDER_IS_ENABLED) throw new ItemAdderException("ItemsAdder is not enabled!");
+            if (!Settings.isItemsAdderEnabled()){
+                throw new ItemAdderException("ItemsAdder is not enabled!");
+            }
 
             String[] split = toolMaterial.split(":");
 
-            if(split.length != 2) throw new ItemAdderException("Invalid syntax: " + toolMaterial);
+            if(split.length != 2){
+                throw new ItemAdderException("Invalid syntax: " + toolMaterial);
+            }
 
            return ItemsAdderUtils.getItem(split[1])
                    .orElseThrow(() -> new ItemAdderException("Item " + split[1] + " not found!"));
@@ -72,13 +94,15 @@ public class ItemsUtils {
 
         Material material = Material.getMaterial(toolMaterial);
 
-        if (material == null) throw new MinecraftMaterialException("Material " + toolMaterial + " not found!");
+        if (material == null){
+            throw new MinecraftMaterialException("Material " + toolMaterial + " not found!");
+        }
 
         ItemStack itemStack = new ItemStack(material, 1);
 
         var meta = itemStack.getItemMeta();
 
-        meta.setDisplayName(ChatUtils.format(Settings.TOOL_NAME));
+        meta.setDisplayName(ChatUtils.format(Settings.getToolName()));
 
         itemStack.setItemMeta(meta);
 

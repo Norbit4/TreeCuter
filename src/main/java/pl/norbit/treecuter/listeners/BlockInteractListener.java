@@ -12,36 +12,57 @@ import pl.norbit.treecuter.utils.PermissionsUtils;
 import pl.norbit.treecuter.utils.WorldGuardUtils;
 
 public class BlockInteractListener implements Listener {
+
     @EventHandler
     public void onBlockInteract(PlayerInteractEvent e) {
         var b = e.getClickedBlock();
         var action = e.getAction();
         var p = e.getPlayer();
 
-        if(b == null) return;
+        if(b == null){
+            return;
+        }
 
-        if(action != Action.LEFT_CLICK_BLOCK) return;
+        if(action != Action.LEFT_CLICK_BLOCK){
+            return;
+        }
 
-        if(p.getGameMode() == GameMode.CREATIVE) return;
+        if(p.getGameMode() == GameMode.CREATIVE){
+            return;
+        }
 
-        if (Settings.WORLDGUARD_IS_ENABLED && (!WorldGuardUtils.canBreak(b.getLocation(), p))) return;
+        if (Settings.isWorldGuardEnabled() && (!WorldGuardUtils.canBreak(b.getLocation(), p))){
+            return;
+        }
 
         String worldName = p.getWorld().getName();
 
-        if(Settings.BLOCK_WORLDS.contains(worldName)) return;
+        if(Settings.isBlockedWorld(worldName)){
+            return;
+        }
 
-        if(Settings.USE_PERMISSIONS && (!PermissionsUtils.hasPermission(p, Settings.PERMISSION))) return;
+        if(Settings.isUsePermissions() && (!PermissionsUtils.hasPermission(p, Settings.getPermission()))){
+            return;
+        }
 
-        if(!Settings.ACCEPT_WOOD_BLOCKS.contains(b.getType())) return;
+        if(!Settings.isAcceptedWoodBlock(b.getType())){
+            return;
+        }
 
         var item = p.getInventory().getItemInMainHand();
 
-        if(!Settings.ACCEPT_TOOLS.contains(item.getType())) return;
+        if(!Settings.isAcceptedTool(item.getType())){
+            return;
+        }
 
-        if(!ItemsUtils.useTool(item)) return;
+        if(!ItemsUtils.useTool(item)){
+            return;
+        }
 
-        if(Settings.SHIFT_MINING && (!p.isSneaking())) return;
+        if(Settings.isShiftMining() && (!p.isSneaking())){
+            return;
+        }
 
-        TreeCutService.selectTreeByBlock(b, p, Settings.GLOWING_COLOR, item);
+        TreeCutService.selectTreeByBlock(b, p, Settings.getGlowingColor(), item);
     }
 }

@@ -18,7 +18,9 @@ public class ItemsAdderUtils {
     protected static Optional<ItemStack> getItem(String id){
         CustomStack stack = CustomStack.getInstance(id);
 
-        if(stack == null) return Optional.empty();
+        if(stack == null){
+            return Optional.empty();
+        }
 
         return Optional.of(stack.getItemStack());
     }
@@ -33,11 +35,15 @@ public class ItemsAdderUtils {
     protected static boolean isEqual(ItemStack item, String id) {
         CustomStack stack = CustomStack.getInstance(id);
 
-        if(stack == null) return false;
+        if(stack == null){
+            return false;
+        }
 
         CustomStack customStack = CustomStack.byItemStack(item);
 
-        if(customStack == null) return false;
+        if(customStack == null){
+            return false;
+        }
 
         return customStack.matchNamespacedID(stack);
     }

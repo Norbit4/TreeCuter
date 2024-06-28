@@ -1,5 +1,6 @@
 package pl.norbit.treecuter;
 
+import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.norbit.treecuter.commands.TreeCuterCommand;
 import pl.norbit.treecuter.config.Settings;
@@ -11,10 +12,9 @@ import pl.norbit.treecuter.service.EffectService;
 import pl.norbit.treecuter.utils.GlowUtils;
 
 public final class TreeCuter extends JavaPlugin {
+
+    @Getter
     private static TreeCuter instance;
-    public static TreeCuter getInstance() {
-        return instance;
-    }
 
     @Override
     public void onEnable() {
@@ -49,10 +49,12 @@ public final class TreeCuter extends JavaPlugin {
     }
 
     private void checkPlugins(){
-        Settings.WORLDGUARD_IS_ENABLED = checkPlugin("WorldGuard");
-        Settings.ITEMS_ADDER_IS_ENABLED = checkPlugin("ItemsAdder");
+        Settings.setWorldGuardEnabled(checkPlugin("WorldGuard"));
+        Settings.setItemsAdderEnabled(checkPlugin("ItemsAdder"));
 
-        if(Settings.WORLDGUARD_IS_ENABLED || Settings.ITEMS_ADDER_IS_ENABLED) getServer().getLogger().info("");
+        if(Settings.isWorldGuardEnabled() || Settings.isItemsAdderEnabled()){
+            getServer().getLogger().info("");
+        }
     }
 
     private void infoMessage(){

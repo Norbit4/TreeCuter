@@ -1,27 +1,16 @@
 package pl.norbit.treecuter.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.block.Block;
 
 import java.util.Set;
 
+@Getter
+@AllArgsConstructor
 public class GlowBlock {
-    private int time;
     private final Set<Block> blocks;
-
-    public GlowBlock(Set<Block> blocks, int time) {
-        this.time = time;
-        this.blocks = blocks;
-    }
-
-    public int getTime() {
-        return time;
-    }
-
-    public void setTime(int time) {
-        this.time = time;
-    }
-
-    public Set<Block> getBlocks() {
-        return blocks;
-    }
+    @Setter
+    private int time;
 }

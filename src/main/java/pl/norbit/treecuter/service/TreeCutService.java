@@ -18,7 +18,8 @@ import pl.norbit.treecuter.utils.DurabilityUtils;
 import java.util.*;
 
 public class TreeCutService {
-    private static final Map<UUID, Set<Block>> SELECTED_BLOCKS = new HashMap<>();
+
+    private static final Map<UUID, Set<Block>> selectedBlocks = new HashMap<>();
     private static final PluginManager pluginManager = TreeCuter.getInstance().getServer().getPluginManager();
 
     private TreeCutService() {
@@ -31,9 +32,11 @@ public class TreeCutService {
      * @return Set of blocks, if player has no selected blocks, return empty set
      */
     public static Set<Block> getSelectedBlocks(Player p){
-        Set<Block> blocks = SELECTED_BLOCKS.get(p.getUniqueId());
+        Set<Block> blocks = selectedBlocks.get(p.getUniqueId());
 
-        if(blocks == null) return new HashSet<>();
+        if(blocks == null){
+            return new HashSet<>();
+        }
 
         return blocks;
     }
@@ -43,12 +46,14 @@ public class TreeCutService {
      * @param p Player
      */
     public static void removeColorFromTree(Player p){
-        Set<Block> blocks = SELECTED_BLOCKS.get(p.getUniqueId());
+        Set<Block> blocks = selectedBlocks.get(p.getUniqueId());
 
-        if(blocks == null) return;
+        if(blocks == null){
+            return;
+        }
 
         GlowUtils.unsetGlowing(blocks, p);
-        SELECTED_BLOCKS.remove(p.getUniqueId());
+        selectedBlocks.remove(p.getUniqueId());
     }
 
     /**
@@ -65,8 +70,8 @@ public class TreeCutService {
         Set<Block> blocks = BlockUtils.getBlocksAround(new HashSet<>(), b, maxBlock);
         blocks.add(b);
 
-        if(blocks.size() < Settings.MIN_BLOCKS){
-            SELECTED_BLOCKS.remove(p.getUniqueId());
+        if(blocks.size() < Settings.getMinBlocks()){
+            selectedBlocks.remove(p.getUniqueId());
             return;
         }
         //apply mining effect to player
@@ -75,10 +80,12 @@ public class TreeCutService {
         var treeGlowEvent = new TreeGlowEvent(blocks, p);
         pluginManager.callEvent(treeGlowEvent);
 
-        if(treeGlowEvent.isCancelled()) return;
+        if(treeGlowEvent.isCancelled()){
+            return;
+        }
 
         GlowUtils.setGlowing(blocks, p, color);
-        SELECTED_BLOCKS.put(p.getUniqueId(), blocks);
+        selectedBlocks.put(p.getUniqueId(), blocks);
     }
 
     /**
@@ -87,17 +94,23 @@ public class TreeCutService {
      * @param p Player
      */
     public static void cutTree(Player p) {
-        if (!EffectService.isEffectPlayer(p)) return;
+        if (!EffectService.isEffectPlayer(p)){
+            return;
+        }
 
-        Set<Block> blocks = SELECTED_BLOCKS.get(p.getUniqueId());
+        Set<Block> blocks = selectedBlocks.get(p.getUniqueId());
 
-        if(blocks == null) return;
+        if(blocks == null){
+            return;
+        }
 
         var treeCutEvent = new TreeCutEvent(blocks, p);
 
         pluginManager.callEvent(treeCutEvent);
 
-        if(treeCutEvent.isCancelled()) return;
+        if(treeCutEvent.isCancelled()){
+            return;
+        }
 
         GlowUtils.unsetGlowing(blocks, p);
 
@@ -105,14 +118,16 @@ public class TreeCutService {
 
         updateItem(p, blocks.size());
 
-        SELECTED_BLOCKS.remove(p.getUniqueId());
+        selectedBlocks.remove(p.getUniqueId());
     }
 
     private static void breakBlock(Player p, Block b){
-        if (Settings.ITEMS_TO_INVENTORY) {
+        if (Settings.isItemsToInventory()) {
             Material material = b.getType();
 
-            if(material == Material.AIR) return;
+            if(material == Material.AIR){
+                return;
+            }
 
             p.getInventory().addItem(new ItemStack(material));
             b.setType(Material.AIR);
@@ -125,7 +140,9 @@ public class TreeCutService {
 
         var itemInHand = inventory.getItemInMainHand();
 
-        if(itemInHand.getType() == Material.AIR) return;
+        if(itemInHand.getType() == Material.AIR){
+            return;
+        }
 
         ItemStack itemStack = DurabilityUtils.updateDurability(itemInHand, durabilityDamage);
 

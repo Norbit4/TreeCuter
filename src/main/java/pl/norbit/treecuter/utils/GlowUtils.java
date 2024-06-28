@@ -17,8 +17,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 public class GlowUtils {
-    private static final Map<Player, GlowBlock> BLOCKS = new ConcurrentHashMap<>();
-    private static final List<String> SUPPORTED_VERSIONS =
+    private static final Map<Player, GlowBlock> blocks = new ConcurrentHashMap<>();
+    private static final List<String> supportedGlowingVersions =
             List.of("1.17.1", "1.18.2", "1.19.4", "1.20.2", "1.20.4", "1.20.5", "1.20.6");
     private static GlowingBlocks glowingBlocks;
     private static boolean enable;
@@ -28,14 +28,14 @@ public class GlowUtils {
     }
 
     public static boolean isSupportedVersion(String version){
-        return SUPPORTED_VERSIONS.stream()
+        return supportedGlowingVersions.stream()
                 .filter(version::contains)
                 .findFirst()
                 .orElse(null) != null;
     }
 
     public static List<String> getSupportedVersion(){
-        return SUPPORTED_VERSIONS;
+        return supportedGlowingVersions;
     }
 
     public static void init(JavaPlugin instance){
@@ -57,11 +57,11 @@ public class GlowUtils {
     }
 
     public static void update(){
-        BLOCKS.forEach((p, glowBlock) -> {
+        blocks.forEach((p, glowBlock) -> {
             if(glowBlock.getTime() == 0){
                 unsetGlowing(glowBlock.getBlocks(), p);
 
-                BLOCKS.compute(p, (existPlayer, gBlock) -> null);
+                blocks.compute(p, (existPlayer, gBlock) -> null);
                 return;
             }
             glowBlock.setTime(glowBlock.getTime() - 1);
@@ -72,36 +72,46 @@ public class GlowUtils {
         Logger log = server.getLogger();
 
         log.warning("Glowing is not supported on this server version: " + server.getVersion());
-        log.warning("Suported ver: " + SUPPORTED_VERSIONS.toString());
+        log.warning("Suported ver: " + supportedGlowingVersions.toString());
         log.warning("Suported engines: Paper and forks");
         log.warning("");
     }
 
     public static void setGlowing(Set<Block> blocksSet, Player p, ChatColor color){
-        if(!enable) return;
+        if(!enable){
+            return;
+        }
 
-        if(!Settings.GLOWING_BLOCKS) return;
+        if(!Settings.isGlowingBlocks()){
+            return;
+        }
 
-        if(p == null) return;
+        if(p == null){
+            return;
+        }
 
-        GlowBlock glowBlock = BLOCKS.get(p);
+        GlowBlock glowBlock = blocks.get(p);
 
         if(glowBlock != null){
             unsetGlowing(glowBlock.getBlocks(), p);
         }
         blocksSet.forEach(b -> setGlowing(b, p, color));
 
-        BLOCKS.compute(p, (player, blocks) -> new GlowBlock(blocksSet, 12));
+        blocks.compute(p, (player, blocks) -> new GlowBlock(blocksSet, 12));
     }
 
     public static void unsetGlowing(Set<Block> blocksSet, Player p){
-        if(!enable) return;
+        if(!enable){
+            return;
+        }
 
-        if(p == null) return;
+        if(p == null){
+            return;
+        }
 
         blocksSet.forEach(b -> unsetGlowing(b, p));
 
-        BLOCKS.compute(p, (player, blocks) -> null);
+        blocks.compute(p, (player, blocks) -> null);
     }
 
     public static void setGlowing(Block b, Player p, ChatColor color){

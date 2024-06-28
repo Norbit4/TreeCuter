@@ -24,16 +24,22 @@ public class WorldGuardUtils {
     public static boolean canBreak(Location loc, Player p) {
         var container = WorldGuard.getInstance().getPlatform().getRegionContainer();
 
-        if(p.isOp()) return true;
+        if(p.isOp()){
+            return true;
+        }
 
         var regionManager = container.get(BukkitAdapter.adapt(loc.getWorld()));
 
-        if (regionManager == null) return true;
+        if (regionManager == null){
+            return true;
+        }
 
         List<ProtectedRegion> regionsByLoc = getRegionsByLoc(loc, regionManager);
 
         for (ProtectedRegion protectedRegion : regionsByLoc) {
-            if (!canBreakInRegion(p, protectedRegion)) return false;
+            if (!canBreakInRegion(p, protectedRegion)){
+                return false;
+            }
         }
         return true;
     }
@@ -42,7 +48,9 @@ public class WorldGuardUtils {
         LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(p);
         StateFlag.State flag = region.getFlag(Flags.BLOCK_BREAK);
 
-        if(region.isMember(localPlayer) && flag != StateFlag.State.DENY) return true;
+        if(region.isMember(localPlayer) && flag != StateFlag.State.DENY){
+            return true;
+        }
 
         return flag == StateFlag.State.ALLOW;
     }

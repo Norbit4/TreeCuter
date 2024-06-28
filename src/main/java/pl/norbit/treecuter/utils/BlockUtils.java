@@ -17,8 +17,8 @@ public class BlockUtils {
         Arrays.stream(BlockFace.values())
                 .map(b::getRelative)
                 .filter(relativeB -> !blocks.contains(relativeB))
-                .filter(relativeB -> Settings.ACCEPT_WOOD_BLOCKS.contains(relativeB.getType()))
-                .takeWhile(relativeB -> blocks.size() < Settings.MAX_BLOCKS)
+                .filter(relativeB -> Settings.isAcceptedWoodBlock(relativeB.getType()))
+                .takeWhile(relativeB -> blocks.size() < Settings.getMaxBlocks())
                 .takeWhile(relativeB -> blocks.size() < maxBlocks)
                 .forEach(relativeB -> {
                     blocks.add(relativeB);
@@ -41,16 +41,24 @@ public class BlockUtils {
             checkBlock(blocks, b.getRelative(0, i, -1), maxBlocks);
             checkBlock(blocks, b.getRelative(0, i, 1), maxBlocks);
 
-            if(blocks.size() >= Settings.MAX_BLOCKS) return;
+            if(blocks.size() >= Settings.getMaxBlocks()){
+                return;
+            }
         }
     }
 
     private static void checkBlock(Set<Block> blocks, Block b, int maxBlocks){
-        if(blocks.contains(b)) return;
+        if(blocks.contains(b)){
+            return;
+        }
 
-        if(!Settings.ACCEPT_WOOD_BLOCKS.contains(b.getType())) return;
+        if(!Settings.isAcceptedWoodBlock(b.getType())){
+            return;
+        }
 
-        if(blocks.size() >= Settings.MAX_BLOCKS) return;
+        if(blocks.size() >= Settings.getMaxBlocks()){
+            return;
+        }
 
         getBlocksAround(blocks, b, maxBlocks);
     }
