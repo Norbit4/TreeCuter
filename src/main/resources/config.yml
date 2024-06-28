@@ -127,3 +127,12 @@ auto-plant-saplings:
   - 'DARK_OAK_SAPLING'
   - 'MANGROVE_PROPAGULE'
   - 'CHERRY_SAPLING'
+
+sapling-ground-materials:
+  - 'DIRT'
+  - 'GRASS_BLOCK'
+  - 'MUD'
+  - 'MOSS_BLOCK'
+  - 'PODZOL'
+  - 'MYCELIUM'
+  - 'COARSE_DIRT'
