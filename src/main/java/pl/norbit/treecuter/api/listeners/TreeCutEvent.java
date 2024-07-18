@@ -1,5 +1,6 @@
 package pl.norbit.treecuter.api.listeners;
 
+import lombok.Getter;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -7,33 +8,27 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Set;
 
 public class TreeCutEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    private final Set<Block> blocks;
-    private final Player p;
+    /**
+     * -- GETTER --
+     *  Get set of wood blocks.
+     */
+    @Getter
+    private final List<Block> blocks;
+    @Getter
+    private final Player player;
     private boolean cancelled;
-    public TreeCutEvent(Set<Block> blocks, Player p) {
+    public TreeCutEvent(List<Block> blocks, Player p) {
         this.blocks = blocks;
-        this.p = p;
+        this.player = p;
     }
 
     public static HandlerList getHandlerList() {
         return handlers;
-    }
-
-    /**
-     * Get set of wood blocks.
-     *
-     * @return set of wood blocks
-     */
-    public Set<Block> getBlocks() {
-        return blocks;
-    }
-
-    public Player getPlayer() {
-        return p;
     }
 
     public @NotNull HandlerList getHandlers() {

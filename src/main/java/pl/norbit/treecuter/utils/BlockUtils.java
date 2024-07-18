@@ -5,6 +5,7 @@ import org.bukkit.block.BlockFace;
 import pl.norbit.treecuter.config.Settings;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 public class BlockUtils {
@@ -13,7 +14,7 @@ public class BlockUtils {
         throw new IllegalStateException("This class cannot be instantiated");
     }
 
-    public static Set<Block> getBlocksAround(Set<Block> blocks, Block b, int maxBlocks) {
+    public static List<Block> getBlocksAround(List<Block> blocks, Block b, int maxBlocks) {
         Arrays.stream(BlockFace.values())
                 .map(b::getRelative)
                 .filter(relativeB -> !blocks.contains(relativeB))
@@ -28,7 +29,7 @@ public class BlockUtils {
         return blocks;
     }
 
-    private static void getDiagonalBlocks(Set<Block> blocks, Block b, int maxBlocks) {
+    private static void getDiagonalBlocks(List<Block> blocks, Block b, int maxBlocks) {
 
         for (int i = -1; i < 2; i++) {
             checkBlock(blocks, b.getRelative(1, i, -1), maxBlocks);
@@ -47,7 +48,7 @@ public class BlockUtils {
         }
     }
 
-    private static void checkBlock(Set<Block> blocks, Block b, int maxBlocks){
+    private static void checkBlock(List<Block> blocks, Block b, int maxBlocks){
         if(blocks.contains(b)){
             return;
         }

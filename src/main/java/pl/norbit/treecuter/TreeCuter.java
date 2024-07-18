@@ -9,6 +9,7 @@ import pl.norbit.treecuter.listeners.BlockInteractListener;
 import pl.norbit.treecuter.listeners.TreeListeners;
 import pl.norbit.treecuter.listeners.UnglowListener;
 import pl.norbit.treecuter.service.EffectService;
+import pl.norbit.treecuter.service.TreeCutService;
 import pl.norbit.treecuter.utils.GlowUtils;
 
 public final class TreeCuter extends JavaPlugin {
@@ -23,6 +24,7 @@ public final class TreeCuter extends JavaPlugin {
 
         GlowUtils.init(this);
         EffectService.start();
+        TreeCutService.start();
 
         infoMessage();
         checkPlugins();

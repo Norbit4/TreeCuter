@@ -77,7 +77,7 @@ public class GlowUtils {
         log.warning("");
     }
 
-    public static void setGlowing(Set<Block> blocksSet, Player p, ChatColor color){
+    public static void setGlowing(List<Block> blocksSet, Player p, ChatColor color){
         if(!enable){
             return;
         }
@@ -100,7 +100,7 @@ public class GlowUtils {
         blocks.compute(p, (player, blocks) -> new GlowBlock(blocksSet, 12));
     }
 
-    public static void unsetGlowing(Set<Block> blocksSet, Player p){
+    public static void unsetGlowing(List<Block> blocksSet, Player p){
         if(!enable){
             return;
         }

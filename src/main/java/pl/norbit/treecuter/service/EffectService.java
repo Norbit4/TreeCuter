@@ -8,6 +8,7 @@ import pl.norbit.treecuter.config.Settings;
 import pl.norbit.treecuter.utils.GlowUtils;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static pl.norbit.treecuter.utils.TaskUtils.sync;
@@ -32,14 +33,16 @@ public class EffectService {
                     });
 
             //start it in synchronized task because effects in minecraft cannot be applied in async task
-            sync(() -> EFFECT_PLAYERS.forEach(p ->{
-                Set<Block> selectedBlocks = TreeCutService.getSelectedBlocks(p);
-
-                GlowUtils.setGlowing(selectedBlocks, p, Settings.getGlowingColor());
-
-                addSlowDiggingEffect(p);
-            }));
+            sync(() -> EFFECT_PLAYERS.forEach(EffectService::addSlowDiggingEffect));
         }, 22L);
+
+        //update glowing blocks
+        timerAsync(() -> EFFECT_PLAYERS.forEach(p ->{
+            List<Block> selectedBlocks = TreeCutService.getSelectedBlocks(p);
+
+            GlowUtils.setGlowing(selectedBlocks, p, Settings.getGlowingColor());
+
+        }), 20 * 6L);
     }
 
     private static void addSlowDiggingEffect(Player p){

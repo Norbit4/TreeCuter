@@ -2,10 +2,9 @@ plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
-apply plugin: 'maven-publish'
 
 group = 'pl.norbit'
-version = 'v1.7.3'
+version = 'v1.7.4'
 
 repositories {
     mavenCentral()
@@ -56,7 +55,6 @@ java {
 tasks.withType(JavaCompile).configureEach {
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
         options.release = targetJavaVersion
-
     }
 }
 

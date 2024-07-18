@@ -11,31 +11,55 @@ import pl.norbit.treecuter.TreeCuter;
 import pl.norbit.treecuter.api.listeners.TreeCutEvent;
 import pl.norbit.treecuter.api.listeners.TreeGlowEvent;
 import pl.norbit.treecuter.config.Settings;
+import pl.norbit.treecuter.model.BreakTask;
 import pl.norbit.treecuter.utils.BlockUtils;
 import pl.norbit.treecuter.utils.GlowUtils;
 import pl.norbit.treecuter.utils.DurabilityUtils;
 
 import java.util.*;
 
+import static pl.norbit.treecuter.utils.TaskUtils.*;
+
 public class TreeCutService {
 
-    private static final Map<UUID, Set<Block>> selectedBlocks = new HashMap<>();
+    private static final Map<UUID, List<Block>> selectedBlocks = new HashMap<>();
+    private static final Map<UUID, Block> mainBlocks = new HashMap<>();
     private static final PluginManager pluginManager = TreeCuter.getInstance().getServer().getPluginManager();
+    private static final List<BreakTask> breakTasks = new ArrayList<>();
 
     private TreeCutService() {
         throw new IllegalStateException("This class cannot be instantiated");
     }
 
+    public static void start(){
+        timer(() -> {
+            Iterator<BreakTask> iterator = breakTasks.iterator();
+
+            while (iterator.hasNext()) {
+                BreakTask breakTree = iterator.next();
+
+                if(breakTree.isTreeBroken()){
+                    iterator.remove();
+                    continue;
+                }
+
+                List<Block> blocks = breakTree.getBlocksToBreak();
+
+                blocks.forEach(b -> breakBlock(breakTree.getPlayer(), b));
+            }
+        }, 2L);
+    }
+
     /**
      * Get selected blocks (to cut) by player
      * @param p Player
-     * @return Set of blocks, if player has no selected blocks, return empty set
+     * @return List of blocks, if player has no selected blocks, return empty set
      */
-    public static Set<Block> getSelectedBlocks(Player p){
-        Set<Block> blocks = selectedBlocks.get(p.getUniqueId());
+    public static List<Block> getSelectedBlocks(Player p){
+        List<Block> blocks = selectedBlocks.get(p.getUniqueId());
 
         if(blocks == null){
-            return new HashSet<>();
+            return new ArrayList<>();
         }
 
         return blocks;
@@ -46,7 +70,7 @@ public class TreeCutService {
      * @param p Player
      */
     public static void removeColorFromTree(Player p){
-        Set<Block> blocks = selectedBlocks.get(p.getUniqueId());
+        List<Block> blocks = selectedBlocks.get(p.getUniqueId());
 
         if(blocks == null){
             return;
@@ -67,11 +91,13 @@ public class TreeCutService {
         //check max uses of player item
         int maxBlock = DurabilityUtils.checkRemainingUses(item);
 
-        Set<Block> blocks = BlockUtils.getBlocksAround(new HashSet<>(), b, maxBlock);
+        List<Block> blocks = BlockUtils.getBlocksAround(new ArrayList<>(), b, maxBlock);
         blocks.add(b);
 
+        UUID playerUUID = p.getUniqueId();
+
         if(blocks.size() < Settings.getMinBlocks()){
-            selectedBlocks.remove(p.getUniqueId());
+            selectedBlocks.remove(playerUUID);
             return;
         }
         //apply mining effect to player
@@ -84,8 +110,26 @@ public class TreeCutService {
             return;
         }
 
+        if(lastBlocksIsSame(playerUUID, b, blocks)){
+            return;
+        }
+
         GlowUtils.setGlowing(blocks, p, color);
         selectedBlocks.put(p.getUniqueId(), blocks);
+        mainBlocks.put(p.getUniqueId(), b);
+    }
+
+    private static boolean lastBlocksIsSame(UUID playerUUID, Block mainBlock, List<Block> blocks){
+        List<Block> lastBlocks = selectedBlocks.get(playerUUID );
+        Block lastMainBlock = mainBlocks.get(playerUUID);
+
+        if(lastBlocks != null && lastMainBlock != null){
+            int lastBlocksSize = lastBlocks.size();
+            int blocksSize = blocks.size();
+
+            return lastBlocksSize == blocksSize && lastMainBlock.equals(mainBlock);
+        }
+        return false;
     }
 
     /**
@@ -98,7 +142,7 @@ public class TreeCutService {
             return;
         }
 
-        Set<Block> blocks = selectedBlocks.get(p.getUniqueId());
+        List<Block> blocks = selectedBlocks.get(p.getUniqueId());
 
         if(blocks == null){
             return;
@@ -114,7 +158,9 @@ public class TreeCutService {
 
         GlowUtils.unsetGlowing(blocks, p);
 
-        blocks.forEach(block -> breakBlock(p, block));
+        //create task to break blocks
+        BreakTask breakTask = new BreakTask(blocks, p);
+        breakTasks.add(breakTask);
 
         updateItem(p, blocks.size());
 
@@ -122,6 +168,10 @@ public class TreeCutService {
     }
 
     private static void breakBlock(Player p, Block b){
+        if(!p.isOnline()){
+            return;
+        }
+
         if (Settings.isItemsToInventory()) {
             Material material = b.getType();
 
