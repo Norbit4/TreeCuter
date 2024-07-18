@@ -3,7 +3,7 @@ version: '${version}'
 main: pl.norbit.treecuter.TreeCuter
 api-version: 1.17
 author: Norbit4
-website: 'https://n0rbit.pl'
+website: 'https://github.com/Norbit4'
 softdepend:
   - WorldGuard
   - ItemsAdder
