@@ -40,6 +40,7 @@
 - [Addons](#addons)
 - [Glowing](#glowing)
 - [API](#api)
+- [Download](#download)
 
 <h2 align="left" id="features">Features</h2>
 
