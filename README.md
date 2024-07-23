@@ -37,6 +37,7 @@
 
 - [Features](#features)
 - [Commands](#commands)
+- [Config](https://github.com/Norbit4/TreeCuter/blob/master/src/main/resources/config.yml)
 - [Addons](#addons)
 - [Glowing](#glowing)
 - [API](#api)
