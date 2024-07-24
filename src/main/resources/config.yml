@@ -61,18 +61,18 @@ mining-effect:
 
 # if true, blocks that have been cut off, will glow
 
-# [!]                                                                                                         [!]
-# [!] GLOWING - SUPPORTS ONLY PAPER OR FORKS VERSIONS: 1.17.1, 1.18.2, 1.19.4, 1.20.2, 1.20.4, 1.20.5, 1.20.6 [!]
-# [!]                                                                                                         [!]                                                                                    [!]
+# [!]                                                                                                               [!]
+# [!] GLOWING - SUPPORTS ONLY PAPER OR FORKS VERSIONS: 1.17.1, 1.18.2, 1.19.4, 1.20.2, 1.20.4, 1.20.5, 1.20.6, 1.21 [!]
+# [!]                                                                                                               [!]                                                                                    [!]
 
 glowing-blocks: true
 # colors: black, dark_blue, dark_green, dark_aqua, dark_red, dark_purple, gold, gray,
 #         dark_gray, blue, green, aqua, red, magenta, light_purple, yellow, white
 glowing-color: 'red'
 
-# [!]                                                                                                         [!]
-# [!] GLOWING - SUPPORTS ONLY PAPER OR FORKS VERSIONS: 1.17.1, 1.18.2, 1.19.4, 1.20.2, 1.20.4, 1.20.5, 1.20.6 [!]
-# [!]                                                                                                         [!]
+# [!]                                                                                                               [!]
+# [!] GLOWING - SUPPORTS ONLY PAPER OR FORKS VERSIONS: 1.17.1, 1.18.2, 1.19.4, 1.20.2, 1.20.4, 1.20.5, 1.20.6, 1.21 [!]
+# [!]                                                                                                               [!]
 
 # cut blocks automatically go to player inventory
 items-to-inventory: false
