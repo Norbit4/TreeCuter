@@ -4,9 +4,9 @@
   <img src="https://github.com/user-attachments/assets/1d4ca803-1c4e-4610-8059-4829e9e8e8be" width=380" alt="logo"/></a>
   <br><br>
 
-  [![Spigot](https://img.shields.io/badge/Download-Spigot-gold.svg)](https://www.spigotmc.org/resources/treecuter.110213/) 
-  [![builtbybit](https://img.shields.io/badge/Download-BuiltByBit-blue.svg)](https://builtbybit.com/resources/treecuter-cut-down-trees.32962/)                                                                                                          
-  [![License: GPL v3](https://img.shields.io/badge/license-GPLv3-orange.svg)](https://github.com/Norbit4/TreeCuter/blob/master/LICENSE)                                                                                                                
+  [![License: GPL v3](https://img.shields.io/badge/license-GPLv3-orange.svg)](https://github.com/Norbit4/TreeCuter/blob/master/LICENSE)
+  [![Github tag](https://badgen.net/github/tag/Norbit4/TreeCuter)](https://github.com/Norbit4/TreeCuter/tags/)
+  [![Github all releases](https://img.shields.io/github/downloads/Norbit4/TreeCuter/total.svg)](https://GitHub.com/Norbit4/TreeCuter/releases/)                                                                                                                                                                                                                
 
   <h6 align="center">Used Languages and Tools:</h6>
   
