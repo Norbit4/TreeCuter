@@ -92,7 +92,6 @@ public class TreeCutService {
         int maxBlock = DurabilityUtils.checkRemainingUses(item);
 
         List<Block> blocks = BlockUtils.getBlocksAround(new ArrayList<>(), b, maxBlock);
-        blocks.add(b);
 
         UUID playerUUID = p.getUniqueId();
 
@@ -162,7 +161,8 @@ public class TreeCutService {
         BreakTask breakTask = new BreakTask(blocks, p);
         breakTasks.add(breakTask);
 
-        updateItem(p, blocks.size());
+        int size = blocks.size();
+        updateItem(p, size - 1);
 
         selectedBlocks.remove(p.getUniqueId());
     }
