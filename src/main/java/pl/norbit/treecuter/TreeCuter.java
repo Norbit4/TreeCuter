@@ -1,6 +1,8 @@
 package pl.norbit.treecuter;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.norbit.treecuter.commands.TreeCuterCommand;
 import pl.norbit.treecuter.config.Settings;
@@ -15,11 +17,12 @@ import pl.norbit.treecuter.utils.GlowUtils;
 public final class TreeCuter extends JavaPlugin {
 
     @Getter
+    @Setter(AccessLevel.PRIVATE)
     private static TreeCuter instance;
 
     @Override
     public void onEnable() {
-        instance = this;
+        setInstance(this);
         Settings.loadConfig(false);
 
         GlowUtils.init(this);

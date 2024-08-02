@@ -105,6 +105,10 @@ public class GlowUtils {
             return;
         }
 
+        if(blocksSet == null){
+            return;
+        }
+
         if(p == null){
             return;
         }
@@ -123,6 +127,14 @@ public class GlowUtils {
     }
 
     public static void unsetGlowing(Block b, Player p){
+        if(!enable){
+            return;
+        }
+
+        if(b == null){
+            return;
+        }
+
         try {
             glowingBlocks.unsetGlowing(b, p);
         } catch (Exception e) {
