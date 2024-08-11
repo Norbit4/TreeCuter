@@ -8,7 +8,6 @@ import pl.norbit.treecuter.utils.item.ItemsUtils;
 import pl.norbit.treecuter.service.EffectService;
 import pl.norbit.treecuter.service.TreeCutService;
 
-
 public class BlockBreakListener implements Listener {
 
     @EventHandler
@@ -16,7 +15,9 @@ public class BlockBreakListener implements Listener {
         var b = e.getBlock();
         var p = e.getPlayer();
 
-        if (e.isCancelled()) return;
+        if (e.isCancelled()){
+            return;
+        }
 
         if (Settings.isShiftMining() && (!p.isSneaking())){
             return;

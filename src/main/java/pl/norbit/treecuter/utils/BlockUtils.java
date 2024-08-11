@@ -6,7 +6,6 @@ import pl.norbit.treecuter.config.Settings;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 public class BlockUtils {
 
@@ -14,7 +13,7 @@ public class BlockUtils {
         throw new IllegalStateException("This class cannot be instantiated");
     }
 
-    public static List<Block> getBlocksAround(List<Block> blocks, Block b, int maxBlocks) {
+    public static List<Block> getWoodBlocksAround(List<Block> blocks, Block b, int maxBlocks) {
         Arrays.stream(BlockFace.values())
                 .map(b::getRelative)
                 .filter(relativeB -> !blocks.contains(relativeB))
@@ -23,7 +22,7 @@ public class BlockUtils {
                 .takeWhile(relativeB -> blocks.size() < maxBlocks)
                 .forEach(relativeB -> {
                     blocks.add(relativeB);
-                    getBlocksAround(blocks, relativeB, maxBlocks);
+                    getWoodBlocksAround(blocks, relativeB, maxBlocks);
                     getDiagonalBlocks(blocks, relativeB, maxBlocks);
         });
         return blocks;
@@ -61,6 +60,6 @@ public class BlockUtils {
             return;
         }
 
-        getBlocksAround(blocks, b, maxBlocks);
+        getWoodBlocksAround(blocks, b, maxBlocks);
     }
 }

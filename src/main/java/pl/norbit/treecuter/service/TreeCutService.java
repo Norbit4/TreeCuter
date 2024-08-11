@@ -17,6 +17,7 @@ import pl.norbit.treecuter.utils.GlowUtils;
 import pl.norbit.treecuter.utils.DurabilityUtils;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static pl.norbit.treecuter.utils.TaskUtils.*;
 
@@ -25,7 +26,7 @@ public class TreeCutService {
     private static final Map<UUID, List<Block>> selectedBlocks = new HashMap<>();
     private static final Map<UUID, Block> mainBlocks = new HashMap<>();
     private static final PluginManager pluginManager = TreeCuter.getInstance().getServer().getPluginManager();
-    private static final List<BreakTask> breakTasks = new ArrayList<>();
+    private static final List<BreakTask> breakTasks = new CopyOnWriteArrayList<>();
 
     private TreeCutService() {
         throw new IllegalStateException("This class cannot be instantiated");
@@ -33,20 +34,20 @@ public class TreeCutService {
 
     public static void start(){
         timer(() -> {
-            Iterator<BreakTask> iterator = breakTasks.iterator();
+            List<BreakTask> toRemove = new ArrayList<>();
 
-            while (iterator.hasNext()) {
-                BreakTask breakTree = iterator.next();
-
-                if(breakTree.isTreeBroken()){
-                    iterator.remove();
+            for (BreakTask breakTree : breakTasks) {
+                if (breakTree.isTreeBroken()) {
+                    breakTree.leafTask();
+                    toRemove.add(breakTree);
                     continue;
                 }
 
                 List<Block> blocks = breakTree.getBlocksToBreak();
-
                 blocks.forEach(b -> breakBlock(breakTree.getPlayer(), b));
             }
+
+            breakTasks.removeAll(toRemove);
         }, 2L);
     }
 
@@ -91,7 +92,7 @@ public class TreeCutService {
         //check max uses of player item
         int maxBlock = DurabilityUtils.checkRemainingUses(item);
 
-        List<Block> blocks = BlockUtils.getBlocksAround(new ArrayList<>(), b, maxBlock);
+        List<Block> blocks = BlockUtils.getWoodBlocksAround(new ArrayList<>(), b, maxBlock);
 
         UUID playerUUID = p.getUniqueId();
 
@@ -154,7 +155,6 @@ public class TreeCutService {
         if(treeCutEvent.isCancelled()){
             return;
         }
-
         GlowUtils.unsetGlowing(blocks, p);
 
         //create task to break blocks
