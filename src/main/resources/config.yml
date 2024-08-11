@@ -46,7 +46,7 @@ permission: 'treecuter.use'
 
 # max blocks to cut at once
 # only important for GIANT custom trees!
-max-blocks: 100
+max-blocks: 150
 # min blocks to cut at once
 min-blocks: 4
 
@@ -57,7 +57,7 @@ shift-mining: true # true <- recommended
 # works only with shift-mining enabled!
 mining-effect:
   enable: true # true <- recommended
-  default-level: 2
+  default-level: 1
 
 # if true, blocks that have been cut off, will glow
 
@@ -68,7 +68,7 @@ mining-effect:
 glowing-blocks: true
 # colors: black, dark_blue, dark_green, dark_aqua, dark_red, dark_purple, gold, gray,
 #         dark_gray, blue, green, aqua, red, magenta, light_purple, yellow, white
-glowing-color: 'red'
+glowing-color: 'yellow'
 
 # [!]                                                                                                               [!]
 # [!] GLOWING - SUPPORTS ONLY PAPER OR FORKS VERSIONS: 1.17.1, 1.18.2, 1.19.4, 1.20.2, 1.20.4, 1.20.5, 1.20.6, 1.21 [!]
@@ -90,6 +90,12 @@ custom-tool:
 # blocked worlds
 block-worlds:
   - 'example_world'
+
+# speed up leaf decay
+leaves:
+  enable: true
+  # amount of leaves decay every 3 ticks
+  decay-amount: 2
 
 accept-tools:
   - 'WOODEN_AXE'
@@ -117,6 +123,16 @@ accept-wood-blocks:
   - 'DARK_OAK_WOOD'
   - 'MANGROVE_WOOD'
   - 'CHERRY_WOOD'
+
+accept-leaves-blocks:
+  - 'OAK_LEAVES'
+  - 'SPRUCE_LEAVES'
+  - 'BIRCH_LEAVES'
+  - 'JUNGLE_LEAVES'
+  - 'ACACIA_LEAVES'
+  - 'DARK_OAK_LEAVES'
+  - 'MANGROVE_LEAVES'
+  - 'CHERRY_LEAVES'
 
 auto-plant-saplings:
   - 'OAK_SAPLING'

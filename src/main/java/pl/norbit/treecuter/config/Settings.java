@@ -41,11 +41,21 @@ public class Settings {
 
     //accepted blocks
     private static List<Material> acceptTools;
+    @Getter
     private static List<Material> acceptWoodBlocks;
+    @Getter
+    private static List<Material> acceptLeavesBlocks;
     private static List<Material> autoPlantSapling;
 
     //block worlds
     private static List<String> blockWorlds;
+
+    //leaves
+    @Getter
+    private static boolean leavesEnabled;
+
+    @Getter
+    private static int decayAmount;
 
     //permission
     @Getter
@@ -140,6 +150,9 @@ public class Settings {
 
         blockWorlds = config.getStringList("block-worlds");
 
+        decayAmount = config.getInt("leaves.decay-amount");
+        leavesEnabled = config.getBoolean("leaves.enable");
+
         toolEnable = config.getBoolean("custom-tool.enable");
         toolName = config.getString("custom-tool.name");
 
@@ -147,6 +160,7 @@ public class Settings {
 
         acceptTools = new ArrayList<>();
         acceptWoodBlocks = new ArrayList<>();
+        acceptLeavesBlocks = new ArrayList<>();
         autoPlantSapling = new ArrayList<>();
 
         config.getStringList("accept-tools")
@@ -160,6 +174,12 @@ public class Settings {
                 .map(Material::getMaterial)
                 .filter(Objects::nonNull)
                 .forEach(acceptWoodBlocks::add);
+
+        config.getStringList("accept-leaves-blocks")
+                .stream()
+                .map(Material::getMaterial)
+                .filter(Objects::nonNull)
+                .forEach(acceptLeavesBlocks::add);
 
         config.getStringList("auto-plant-saplings")
                 .stream()
