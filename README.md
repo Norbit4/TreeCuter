@@ -53,6 +53,7 @@
 > - Support custom trees
 > - Support **Jobs** plugin (**need:** [TreeCuterJobs](https://www.spigotmc.org/resources/%E2%9C%A8treecuterjobs%E2%9C%A8-addon-%E2%9C%85.113357/))
 > - Destroys tools
+> - Better **leaves decay** system
 > - Auto plant trees
 > - Permissions
 > - **Worlds** blacklist!
