@@ -25,6 +25,10 @@ public class TaskUtils {
         scheduler.runTaskAsynchronously(inst, runnable);
     }
 
+    public static void asyncLater(Runnable runnable, long delay){
+        scheduler.runTaskLaterAsynchronously(inst, runnable, delay);
+    }
+
     public static void timerAsync(Runnable runnable, long period){
         scheduler.runTaskTimerAsynchronously(inst, runnable, 0L, period);
     }
