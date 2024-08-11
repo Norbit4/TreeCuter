@@ -3,6 +3,7 @@ package pl.norbit.treecuter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.norbit.treecuter.commands.TreeCuterCommand;
 import pl.norbit.treecuter.config.Settings;
@@ -11,6 +12,7 @@ import pl.norbit.treecuter.listeners.BlockInteractListener;
 import pl.norbit.treecuter.listeners.TreeListeners;
 import pl.norbit.treecuter.listeners.UnglowListener;
 import pl.norbit.treecuter.service.EffectService;
+import pl.norbit.treecuter.service.LeafDecayService;
 import pl.norbit.treecuter.service.TreeCutService;
 import pl.norbit.treecuter.utils.GlowUtils;
 
@@ -28,12 +30,15 @@ public final class TreeCuter extends JavaPlugin {
         GlowUtils.init(this);
         EffectService.start();
         TreeCutService.start();
+        LeafDecayService.start();
 
         infoMessage();
         checkPlugins();
 
         registerCommand();
         registerListeners();
+
+        loadBStats();
     }
 
     private void registerCommand(){
@@ -79,5 +84,9 @@ public final class TreeCuter extends JavaPlugin {
             return true;
         }
         return false;
+    }
+
+    private void loadBStats(){
+        new Metrics(this, 22976);
     }
 }
