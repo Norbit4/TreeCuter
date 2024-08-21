@@ -38,6 +38,7 @@
 
 - [Features](#features)
 - [Commands](#commands)
+- [PlaceholderAPI](#placeholderapi)
 - [Config](https://github.com/Norbit4/TreeCuter/blob/master/src/main/resources/config.yml)
 - [Addons](#addons)
 - [Glowing](#glowing)
@@ -73,6 +74,12 @@ Command | Permission | Info |
 **/treecuter reload** | *treecuter.reload* | **Reload** config.yml  |
 **/treecuter get** | *treecuter.get* | Get **custom** tool  |
 **/treecuter toggle** | *treecuter.toggle* | **On/off** cut trees  |
+
+<h2 align="left" id="placeholderapi">PlaceholderAPI</h2>
+
+Placeholder | Info |
+--- | --- | 
+**%treecuter_toggle%** | Get player tree cutting toggle |
 
   
 <h2 align="left" id="addons">Addons</h2>
