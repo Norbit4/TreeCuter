@@ -11,6 +11,7 @@ import pl.norbit.treecuter.listeners.BlockBreakListener;
 import pl.norbit.treecuter.listeners.BlockInteractListener;
 import pl.norbit.treecuter.listeners.TreeListeners;
 import pl.norbit.treecuter.listeners.UnglowListener;
+import pl.norbit.treecuter.placeholders.PlaceholderRegistry;
 import pl.norbit.treecuter.service.EffectService;
 import pl.norbit.treecuter.service.LeafDecayService;
 import pl.norbit.treecuter.service.TreeCutService;
@@ -37,6 +38,7 @@ public final class TreeCuter extends JavaPlugin {
 
         registerCommand();
         registerListeners();
+        registerPapi();
 
         loadBStats();
     }
@@ -47,6 +49,12 @@ public final class TreeCuter extends JavaPlugin {
 
         command.setExecutor(treeCuterCommand);
         command.setTabCompleter(treeCuterCommand);
+    }
+
+    private void registerPapi(){
+        if(Settings.isPlaceholderApiEnabled()){
+            new PlaceholderRegistry().register();
+        }
     }
 
     private void registerListeners(){
@@ -61,8 +69,9 @@ public final class TreeCuter extends JavaPlugin {
     private void checkPlugins(){
         Settings.setWorldGuardEnabled(checkPlugin("WorldGuard"));
         Settings.setItemsAdderEnabled(checkPlugin("ItemsAdder"));
+        Settings.setPlaceholderApiEnabled(checkPlugin("PlaceholderAPI"));
 
-        if(Settings.isWorldGuardEnabled() || Settings.isItemsAdderEnabled()){
+        if(Settings.isWorldGuardEnabled() || Settings.isItemsAdderEnabled() || Settings.isPlaceholderApiEnabled()){
             getServer().getLogger().info("");
         }
     }

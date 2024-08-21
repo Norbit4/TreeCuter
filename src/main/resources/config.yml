@@ -94,8 +94,13 @@ block-worlds:
 # speed up leaf decay
 leaves:
   enable: true
-  # amount of leaves decay every 3 ticks
+  # amount of leaves decay every 5 ticks
   decay-amount: 2
+
+# %treecuter_toggle% (PlaceholderAPI)
+placeholder:
+  toggle-on: '&a&lON'
+  toggle-off: '&c&lOFF'
 
 accept-tools:
   - 'WOODEN_AXE'

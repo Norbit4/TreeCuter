@@ -28,6 +28,10 @@ public class Settings {
     @Setter
     private static boolean itemsAdderEnabled;
 
+    @Getter
+    @Setter
+    private static boolean placeholderApiEnabled;
+
     //settings
     @Getter
     private static boolean shiftMining;
@@ -39,12 +43,19 @@ public class Settings {
     private static boolean glowingBlocks;
     private static boolean autoPlant;
 
+    @Getter
+    private static String placeholderToggleOn;
+
+    @Getter
+    private static String placeholderToggleOff;
+
     //accepted blocks
     private static List<Material> acceptTools;
     @Getter
     private static List<Material> acceptWoodBlocks;
     @Getter
     private static List<Material> acceptLeavesBlocks;
+    @Getter
     private static List<Material> autoPlantSapling;
 
     //block worlds
@@ -157,6 +168,9 @@ public class Settings {
         toolName = config.getString("custom-tool.name");
 
         toolMaterial = config.getString("custom-tool.material");
+
+        placeholderToggleOn = config.getString("placeholder.toggle-on");
+        placeholderToggleOff = config.getString("placeholder.toggle-off");
 
         acceptTools = new ArrayList<>();
         acceptWoodBlocks = new ArrayList<>();
