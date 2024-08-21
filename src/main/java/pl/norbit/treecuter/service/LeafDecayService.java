@@ -37,7 +37,7 @@ public class LeafDecayService {
                 }
             }
             blocksQueue.removeAll(toRemove);
-        }, 3L);
+        }, 5L);
     }
     private static void breakBlock(Block b){
         if(b == null) {
