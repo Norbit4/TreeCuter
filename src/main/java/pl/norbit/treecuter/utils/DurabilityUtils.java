@@ -3,6 +3,7 @@ package pl.norbit.treecuter.utils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import pl.norbit.treecuter.config.Settings;
 
 public class DurabilityUtils {
 
@@ -12,6 +13,10 @@ public class DurabilityUtils {
 
     public static int checkRemainingUses(ItemStack item){
         ItemMeta meta = item.getItemMeta();
+
+        if(meta.isUnbreakable()){
+            return Settings.getMaxBlocks();
+        }
 
         if (meta instanceof Damageable damageable) {
             int maxDurability = item.getType().getMaxDurability();
@@ -23,6 +28,10 @@ public class DurabilityUtils {
 
     public static ItemStack updateDurability(ItemStack item, int dmg){
         ItemMeta meta = item.getItemMeta();
+
+        if(meta.isUnbreakable()){
+            return item;
+        }
 
         if (meta instanceof Damageable damageable){
             int maxDurability = item.getType().getMaxDurability();
