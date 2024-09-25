@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'pl.norbit'
-version = 'v1.8.1'
+version = 'v1.8.2'
 
 repositories {
     mavenCentral()
@@ -26,7 +26,7 @@ repositories {
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT"
     //bstats
-    implementation 'org.bstats:bstats-bukkit:3.0.2'
+    implementation 'org.bstats:bstats-bukkit:3.1.0'
     //glowing
     implementation 'fr.skytasul:glowingentities:1.3.5'
     //worldguard
