@@ -1,13 +1,10 @@
 package pl.norbit.treecuter.commands;
 
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pl.norbit.treecuter.config.Settings;
@@ -107,7 +104,10 @@ public class TreeCuterCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
-        Settings.getHelpMessage().stream().map(ChatUtils::format).forEach(sender::sendMessage);
+        Settings.getHelpMessage()
+                .stream()
+                .map(ChatUtils::format)
+                .forEach(sender::sendMessage);
     }
 
     @Override
