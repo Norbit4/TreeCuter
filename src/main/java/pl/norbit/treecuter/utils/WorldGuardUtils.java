@@ -37,11 +37,11 @@ public class WorldGuardUtils {
         List<ProtectedRegion> regionsByLoc = getRegionsByLoc(loc, regionManager);
 
         for (ProtectedRegion protectedRegion : regionsByLoc) {
-            if (!canBreakInRegion(p, protectedRegion)){
-                return false;
+            if (canBreakInRegion(p, protectedRegion)){
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     private static boolean canBreakInRegion(Player p, ProtectedRegion region) {

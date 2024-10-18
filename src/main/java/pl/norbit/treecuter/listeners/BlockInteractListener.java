@@ -2,6 +2,7 @@ package pl.norbit.treecuter.listeners;
 
 import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -13,7 +14,7 @@ import pl.norbit.treecuter.utils.WorldGuardUtils;
 
 public class BlockInteractListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockInteract(PlayerInteractEvent e) {
         var b = e.getClickedBlock();
         var action = e.getAction();
