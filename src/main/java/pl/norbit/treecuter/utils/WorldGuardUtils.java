@@ -36,6 +36,10 @@ public class WorldGuardUtils {
 
         List<ProtectedRegion> regionsByLoc = getRegionsByLoc(loc, regionManager);
 
+        if(regionsByLoc.isEmpty()){
+            return true;
+        }
+
         for (ProtectedRegion protectedRegion : regionsByLoc) {
             if (canBreakInRegion(p, protectedRegion)){
                 return true;
