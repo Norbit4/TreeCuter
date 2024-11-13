@@ -38,6 +38,8 @@ public class Settings {
     @Getter
     private static boolean applyMiningEffect;
     @Getter
+    private static boolean hideMiningEffect;
+    @Getter
     private static boolean itemsToInventory;
     @Getter
     private static boolean glowingBlocks;
@@ -151,6 +153,7 @@ public class Settings {
         shiftMining = config.getBoolean("shift-mining");
 
         applyMiningEffect = config.getBoolean("mining-effect.enable");
+        hideMiningEffect = config.getBoolean("mining-effect.hide");
         defaultEffectLevel = config.getInt("mining-effect.default-level");
 
         itemsToInventory = config.getBoolean("items-to-inventory");

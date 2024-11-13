@@ -41,13 +41,13 @@ public class BreakTask {
     }
 
     public List<Block> getBlocksToBreak() {
-        List<Block> blocks = new LinkedList<>();
+        List<Block> blocksToBreak = new LinkedList<>();
         for (int i = 0; i < perLoopBreakSize; i++) {
             if (blocksQueue.isEmpty()) {
                 break;
             }
-            blocks.add(blocksQueue.poll());
+            blocksToBreak.add(blocksQueue.poll());
         }
-        return blocks;
+        return blocksToBreak;
     }
 }

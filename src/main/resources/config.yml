@@ -57,6 +57,7 @@ shift-mining: true # true <- recommended
 # works only with shift-mining enabled!
 mining-effect:
   enable: true # true <- recommended
+  hide: true # true <- recommended, hide particles of effect
   default-level: 1
 
 # if true, blocks that have been cut off, will glow

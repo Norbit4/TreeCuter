@@ -63,8 +63,10 @@ public class EffectService {
 
     private static void addSlowDiggingEffect(Player p){
         int effectLevel = Settings.getDefaultEffectLevel() - 1;
+        boolean hideMiningEffect = !Settings.isHideMiningEffect();
 
-        var potionEffect = new PotionEffect(PotionEffectType.SLOW_DIGGING, 12, effectLevel);
+        var potionEffect = new PotionEffect(PotionEffectType.SLOW_DIGGING, 14, effectLevel, false,
+                hideMiningEffect, hideMiningEffect);
         p.addPotionEffect(potionEffect);
     }
 
