@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'pl.norbit'
-version = 'v1.8.5'
+version = 'v1.8.6'
 
 repositories {
     mavenCentral()
@@ -28,7 +28,7 @@ dependencies {
     //bstats
     implementation 'org.bstats:bstats-bukkit:3.1.0'
     //glowing
-    implementation 'fr.skytasul:glowingentities:1.4'
+    implementation 'fr.skytasul:glowingentities:1.4.2'
     //worldguard
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.8'
     //itemsadder
