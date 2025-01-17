@@ -7,6 +7,8 @@ import pl.norbit.treecuter.exception.ItemAdderException;
 import pl.norbit.treecuter.exception.MinecraftMaterialException;
 import pl.norbit.treecuter.utils.ChatUtils;
 
+import java.util.List;
+
 public class ItemsUtils {
 
     private ItemsUtils() {
@@ -103,6 +105,12 @@ public class ItemsUtils {
         var meta = itemStack.getItemMeta();
 
         meta.setDisplayName(ChatUtils.format(Settings.getToolName()));
+
+        List<String> lore = Settings.getToolLore().stream()
+                .map(ChatUtils::format)
+                .toList();
+
+        meta.setLore(lore);
 
         itemStack.setItemMeta(meta);
 
