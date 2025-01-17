@@ -87,6 +87,9 @@ custom-tool:
   # example: 'ia:example_item_id'
   material: 'NETHERITE_AXE'
   name: '&c&lGOD AXE'
+  lore:
+    - '&7This is a custom tool!'
+    - '&7You can cut down trees with it!'
 
 # blocked worlds
 block-worlds:
@@ -129,6 +132,10 @@ accept-wood-blocks:
   - 'DARK_OAK_WOOD'
   - 'MANGROVE_WOOD'
   - 'CHERRY_WOOD'
+  - 'WARPED_STEM'
+  - 'WARPED_HYPHAE'
+  - 'CRIMSON_STEM'
+  - 'CRIMSON_HYPHAE'
 
 accept-leaves-blocks:
   - 'OAK_LEAVES'
@@ -139,6 +146,11 @@ accept-leaves-blocks:
   - 'DARK_OAK_LEAVES'
   - 'MANGROVE_LEAVES'
   - 'CHERRY_LEAVES'
+
+accept-custom-leaves-blocks:
+  - 'NETHER_WART_BLOCK'
+  - 'WARPED_WART_BLOCK'
+  - 'SHROOMLIGHT'
 
 auto-plant-saplings:
   - 'OAK_SAPLING'

@@ -58,6 +58,8 @@ public class Settings {
     @Getter
     private static List<Material> acceptLeavesBlocks;
     @Getter
+    private static List<Material> acceptCustomLeavesBlocks;
+    @Getter
     private static List<Material> autoPlantSapling;
 
     //block worlds
@@ -85,6 +87,8 @@ public class Settings {
     private static String toolName;
     @Getter
     private static String toolMaterial;
+    @Getter
+    private static List<String> toolLore;
     @Getter
     private static boolean toolEnable;
 
@@ -125,6 +129,10 @@ public class Settings {
 
     public static boolean isAcceptedWoodBlock(Material type){
         return acceptWoodBlocks.contains(type);
+    }
+
+    public static boolean isAcceptedCustomLeavesBlock(Material type){
+        return acceptCustomLeavesBlocks.contains(type);
     }
 
     public static boolean isAcceptedTool(Material type){
@@ -169,6 +177,7 @@ public class Settings {
 
         toolEnable = config.getBoolean("custom-tool.enable");
         toolName = config.getString("custom-tool.name");
+        toolLore = config.getStringList("custom-tool.lore");
 
         toolMaterial = config.getString("custom-tool.material");
 
@@ -178,6 +187,7 @@ public class Settings {
         acceptTools = new ArrayList<>();
         acceptWoodBlocks = new ArrayList<>();
         acceptLeavesBlocks = new ArrayList<>();
+        acceptCustomLeavesBlocks = new ArrayList<>();
         autoPlantSapling = new ArrayList<>();
 
         config.getStringList("accept-tools")
@@ -197,6 +207,12 @@ public class Settings {
                 .map(Material::getMaterial)
                 .filter(Objects::nonNull)
                 .forEach(acceptLeavesBlocks::add);
+
+        config.getStringList("accept-custom-leaves-blocks")
+                .stream()
+                .map(Material::getMaterial)
+                .filter(Objects::nonNull)
+                .forEach(acceptCustomLeavesBlocks::add);
 
         config.getStringList("auto-plant-saplings")
                 .stream()
