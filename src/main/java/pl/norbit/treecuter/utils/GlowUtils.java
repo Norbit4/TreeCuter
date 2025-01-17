@@ -18,7 +18,8 @@ import java.util.logging.Logger;
 public class GlowUtils {
     private static final Map<Player, GlowBlock> blocks = new ConcurrentHashMap<>();
     private static final List<String> supportedGlowingVersions =
-            List.of("1.17.1", "1.18.2", "1.19.4", "1.20.2", "1.20.4", "1.20.5", "1.20.6", "1.21");
+            List.of("1.17.1", "1.18.2", "1.19.4", "1.20.2", "1.20.4", "1.20.5", "1.20.6", "1.21.1"," 1.21.2",
+                    "1.21.3", "1.21.4");
     private static GlowingBlocks glowingBlocks;
     private static boolean enable;
 
@@ -31,10 +32,6 @@ public class GlowUtils {
                 .filter(version::contains)
                 .findFirst()
                 .orElse(null) != null;
-    }
-
-    public static List<String> getSupportedVersion(){
-        return supportedGlowingVersions;
     }
 
     public static void init(JavaPlugin instance){
