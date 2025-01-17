@@ -56,8 +56,10 @@ public class LeafDecayService {
 
         async(() -> {
             Set<Block> leaves = new HashSet<>();
+            List<Material> acceptBlocks = Settings.getAcceptLeavesBlocks();
+            acceptBlocks.addAll(Settings.getAcceptCustomLeavesBlocks());
 
-            blocks.forEach(b -> leaves.addAll(getBlocks(b, Settings.getAcceptLeavesBlocks(), 5)));
+            blocks.forEach(b -> leaves.addAll(getBlocks(b, acceptBlocks, 5)));
 
             List<Block> decayLeaves = new ArrayList<>(leaves.stream()
                     .filter(LeafDecayService::isLeafDecaying)
@@ -79,7 +81,12 @@ public class LeafDecayService {
             List<Block> blocks = getBlocks(block, Settings.getAcceptWoodBlocks(), range);
 
             return blocks.isEmpty();
+        } else if (Settings.isAcceptedCustomLeavesBlock(block.getType())) {
+            List<Block> blocks = getBlocks(block, Settings.getAcceptWoodBlocks(), range);
+
+            return blocks.isEmpty();
         }
+
         return false;
     }
 
