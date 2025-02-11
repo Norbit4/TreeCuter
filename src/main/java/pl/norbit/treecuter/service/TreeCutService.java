@@ -89,6 +89,9 @@ public class TreeCutService {
      * @param item Item in player hand
      */
     public static void selectTreeByBlock(Block b, Player p, ChatColor color, ItemStack item){
+        if (p == null || b == null){
+            return;
+        }
         //check max uses of player item
         int maxBlock = DurabilityUtils.checkRemainingUses(item);
 
@@ -138,6 +141,10 @@ public class TreeCutService {
      * @param p Player
      */
     public static void cutTree(Player p) {
+        if(p == null){
+            return;
+        }
+
         if (!EffectService.isEffectPlayer(p)){
             return;
         }
@@ -168,6 +175,10 @@ public class TreeCutService {
     }
 
     private static void breakBlock(Player p, Block b){
+        if(b == null){
+            return;
+        }
+
         if(!p.isOnline()){
             return;
         }

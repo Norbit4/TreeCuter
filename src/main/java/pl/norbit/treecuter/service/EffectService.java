@@ -30,12 +30,13 @@ public class EffectService {
             //remove players that are not sneaking
             getValues()
                     .stream()
-                    .filter(p -> !p.getPlayer().isSneaking())
+                    .map(EffectPlayer::getPlayer)
+                    .filter(Objects::nonNull)
+                    .filter(p -> !p.isSneaking())
                     .toList()
                     .forEach(p -> {
-                        Player player = p.getPlayer();
-                        effectPlayersMap.remove(p.getPlayer().getUniqueId());
-                        TreeCutService.removeColorFromTree(player);
+                        effectPlayersMap.remove(p.getUniqueId());
+                        TreeCutService.removeColorFromTree(p);
                     });
             //start it in synchronized task because effects in minecraft cannot be applied in async task
             sync(() -> effectPlayersMap.values().forEach(p -> EffectService.addSlowDiggingEffect(p.getPlayer())));
@@ -44,6 +45,10 @@ public class EffectService {
         //update glowing blocks
         timerAsync(() -> getValues().forEach(p ->{
             Player player = p.getPlayer();
+
+            if(player == null){
+                return;
+            }
 
             if(!player.isOnline()){
                 return;
@@ -62,6 +67,10 @@ public class EffectService {
     }
 
     private static void addSlowDiggingEffect(Player p){
+        if(p == null){
+            return;
+        }
+
         int effectLevel = Settings.getDefaultEffectLevel() - 1;
         boolean hideMiningEffect = !Settings.isHideMiningEffect();
 
