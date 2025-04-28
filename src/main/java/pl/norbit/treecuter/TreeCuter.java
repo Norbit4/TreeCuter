@@ -48,7 +48,6 @@ public final class TreeCuter extends JavaPlugin {
         var treeCuterCommand = new TreeCuterCommand();
 
         command.setExecutor(treeCuterCommand);
-//        command.setTabCompleter(treeCuterCommand);
     }
 
     private void registerPapi(){

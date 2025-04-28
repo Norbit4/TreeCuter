@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pl.norbit.treecuter.config.Settings;
-import pl.norbit.treecuter.utils.item.ItemsUtils;
 import pl.norbit.treecuter.service.ToggleService;
 import pl.norbit.treecuter.utils.ChatUtils;
 import pl.norbit.treecuter.utils.PermissionsUtils;
@@ -27,7 +26,16 @@ public class TreeCuterCommand implements CommandExecutor, TabCompleter {
 
         switch (arg) {
             case "RELOAD" -> reload(sender);
-            case "GET" -> get(sender);
+            case "GET" -> {
+                if(args.length < 2){
+                    sendInfo(sender);
+                    return true;
+                }
+
+                String key = args[1].toUpperCase();
+
+                get(sender, key);
+            }
             case "TOGGLE" -> toggle(sender);
             default -> sendInfo(sender);
         }
@@ -42,24 +50,27 @@ public class TreeCuterCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(ChatUtils.format(Settings.getReloadEnd()));
     }
 
-    private void get(CommandSender sender){
+    private void get(CommandSender sender, String key){
         if(hasNotPermission(sender, "get")) return;
 
-        if(!Settings.isToolEnable()) {
-            sender.sendMessage(ChatUtils.format(Settings.getToolDisabled()));
-            return;
-        }
         var p = getPlayer(sender);
 
         if(p == null){
             return;
         }
 
-        var item = ItemsUtils.getItem();
+        Settings.getCustomToolForKey(key)
+                .ifPresentOrElse(customTool -> {
+                    p.getInventory().addItem(customTool);
+                    p.sendMessage(ChatUtils.format(Settings.getToolGet()));
+                }, () -> p.sendMessage(ChatUtils.format(Settings.getToolNotFound())));
 
-        p.getInventory().addItem(item);
 
-        p.sendMessage(ChatUtils.format(Settings.getToolGet()));
+//        var item = ItemsUtils.getItem();
+//
+//        p.getInventory().addItem(item);
+//
+//        p.sendMessage(ChatUtils.format(Settings.getToolGet()));
     }
 
     private void toggle(CommandSender sender){
@@ -112,6 +123,9 @@ public class TreeCuterCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if(args.length == 2 && args[0].equalsIgnoreCase("get")){
+            return Settings.getCustomToolKeys();
+        }
         return List.of("reload", "get", "toggle");
     }
 }

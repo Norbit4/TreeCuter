@@ -15,7 +15,7 @@ public class ItemsAdderUtils {
      * @param id Item id
      * @return Optional of ItemStack
      */
-    protected static Optional<ItemStack> getItem(String id){
+    public static Optional<ItemStack> getItem(String id){
         CustomStack stack = CustomStack.getInstance(id);
 
         if(stack == null){
@@ -32,7 +32,7 @@ public class ItemsAdderUtils {
      * @return True if ItemStack is equal to ItemsAdder item
      */
 
-    protected static boolean isEqual(ItemStack item, String id) {
+    public static boolean isEqual(ItemStack item, String id) {
         CustomStack stack = CustomStack.getInstance(id);
 
         if(stack == null){

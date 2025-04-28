@@ -4,7 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
 import pl.norbit.treecuter.TreeCuter;
+import pl.norbit.treecuter.config.model.CustomItem;
+import pl.norbit.treecuter.config.model.CustomTool;
+import pl.norbit.treecuter.config.model.CutShape;
 import pl.norbit.treecuter.service.TreePlanterService;
 
 import java.util.*;
@@ -82,16 +88,6 @@ public class Settings {
     @Getter
     private static ChatColor glowingColor;
 
-    //custom tool
-    @Getter
-    private static String toolName;
-    @Getter
-    private static String toolMaterial;
-    @Getter
-    private static List<String> toolLore;
-    @Getter
-    private static boolean toolEnable;
-
     //messages
     @Getter
     private static String permissionMessage;
@@ -112,15 +108,40 @@ public class Settings {
     @Getter
     private static String toolGet;
     @Getter
-    private static String toolDisabled;
+    private static String toolNotFound;
 
     @Getter
     private static List<String> helpMessage;
 
     private static List<Material> groundBlocks;
 
+    private static List<CutShape> woodBlocks;
+
     private Settings() {
         throw new IllegalStateException("This class cannot be instantiated");
+    }
+
+    public static Optional<ItemStack> getCustomToolForKey(String key){
+        return woodBlocks.stream()
+                .filter(shape -> shape.getId().equalsIgnoreCase(key))
+                .filter(shape -> shape.getCustomTool() != null)
+                .map(CutShape::getCustomToolItem)
+                .findFirst();
+    }
+
+    public static CutShape getCutShape(Block block, ItemStack tool){
+        return woodBlocks.stream()
+                .filter(woodBlock -> woodBlock.isAcceptBlock(block.getType()))
+                .filter(woodBlock -> woodBlock.isAcceptTool(tool))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static List<String> getCustomToolKeys(){
+        return woodBlocks.stream()
+                .filter(shape -> shape.getCustomTool() != null)
+                .map(CutShape::getId)
+                .toList();
     }
 
     public static boolean isAcceptedSapling(Material type){
@@ -175,12 +196,6 @@ public class Settings {
         decayAmount = config.getInt("leaves.decay-amount");
         leavesEnabled = config.getBoolean("leaves.enable");
 
-        toolEnable = config.getBoolean("custom-tool.enable");
-        toolName = config.getString("custom-tool.name");
-        toolLore = config.getStringList("custom-tool.lore");
-
-        toolMaterial = config.getString("custom-tool.material");
-
         placeholderToggleOn = config.getString("placeholder.toggle-on");
         placeholderToggleOff = config.getString("placeholder.toggle-off");
 
@@ -189,6 +204,7 @@ public class Settings {
         acceptLeavesBlocks = new ArrayList<>();
         acceptCustomLeavesBlocks = new ArrayList<>();
         autoPlantSapling = new ArrayList<>();
+        woodBlocks = new ArrayList<>();
 
         config.getStringList("accept-tools")
                 .stream()
@@ -238,7 +254,7 @@ public class Settings {
         reloadStart = config.getString("messages.reload.start");
         reloadEnd = config.getString("messages.reload.end");
         toolGet = config.getString("messages.tool.get");
-        toolDisabled = config.getString("messages.tool.disabled");
+        toolNotFound = config.getString("messages.tool.not-found");
         helpMessage = config.getStringList("messages.help");
 
         groundBlocks = config.getStringList("sapling-ground-materials")
@@ -248,7 +264,77 @@ public class Settings {
                 .filter(Objects::nonNull)
                 .toList();
 
+        ConfigurationSection section = config.getConfigurationSection("wood-blocks");
+
+        if (section == null) {
+            javaPlugin.getLogger().warning("No wood blocks found in config");
+        }else {
+            for (String key : section.getKeys(false)) {
+                ConfigurationSection woodBlockSection = section.getConfigurationSection(key);
+
+                if (woodBlockSection == null) {
+                    javaPlugin.getLogger().warning("No wood block found in config: " + key);
+                    continue;
+                }
+
+                CutShape woodBlock = getCutShape(woodBlockSection, key);
+                woodBlocks.add(woodBlock);
+            }
+        }
+
         if(autoPlant) TreePlanterService.start();
         else TreePlanterService.stop();
+    }
+
+    private static CutShape getCutShape(ConfigurationSection section, String key) {
+        CutShape cutShape = new CutShape();
+        cutShape.setId(key);
+
+        String color = section.getString("glowing-color");
+
+        if (color == null) {
+            cutShape.setGlowingColor(glowingColor);
+        } else {
+            try {
+                cutShape.setGlowingColor(ChatColor.valueOf(color.toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                TreeCuter.getInstance().getLogger().warning("Wrong glowing color: " + color);
+                cutShape.setGlowingColor(glowingColor);
+            }
+        }
+
+        List<CustomItem> acceptTools = section.getStringList("accept-tools")
+                .stream()
+                .map(CustomItem::new)
+                .toList();
+
+        cutShape.setAcceptTools(acceptTools);
+
+        ConfigurationSection customToolSection = section.getConfigurationSection("custom-tool");
+
+        if (customToolSection != null) {
+            CustomTool customTool = getCustomTool(customToolSection);
+            cutShape.setCustomTool(customTool);
+        }
+
+        List<Material> acceptBlocks = new ArrayList<>();
+        section.getStringList("accept-blocks")
+                .stream()
+                .map(Material::getMaterial)
+                .filter(Objects::nonNull)
+                .forEach(acceptBlocks::add);
+
+        cutShape.setAcceptBlocks(acceptBlocks);
+
+        return cutShape;
+    }
+
+    private static CustomTool getCustomTool(ConfigurationSection section) {
+        CustomTool customTool = new CustomTool();
+        customTool.setName(section.getString("name"));
+        customTool.setMaterial(section.getString("material"));
+        customTool.setLore(section.getStringList("lore"));
+
+        return customTool;
     }
 }

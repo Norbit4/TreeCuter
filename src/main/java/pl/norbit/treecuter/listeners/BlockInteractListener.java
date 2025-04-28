@@ -7,7 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import pl.norbit.treecuter.config.Settings;
-import pl.norbit.treecuter.utils.item.ItemsUtils;
+import pl.norbit.treecuter.config.model.CutShape;
 import pl.norbit.treecuter.service.TreeCutService;
 import pl.norbit.treecuter.utils.PermissionsUtils;
 import pl.norbit.treecuter.utils.WorldGuardUtils;
@@ -46,17 +46,11 @@ public class BlockInteractListener implements Listener {
             return;
         }
 
-        if(!Settings.isAcceptedWoodBlock(b.getType())){
-            return;
-        }
-
         var item = p.getInventory().getItemInMainHand();
 
-        if(!Settings.isAcceptedTool(item.getType())){
-            return;
-        }
+        CutShape shape = Settings.getCutShape(b, item);
 
-        if(!ItemsUtils.useTool(item)){
+        if (shape == null) {
             return;
         }
 
@@ -64,6 +58,6 @@ public class BlockInteractListener implements Listener {
             return;
         }
 
-        TreeCutService.selectTreeByBlock(b, p, Settings.getGlowingColor(), item);
+        TreeCutService.selectTreeByBlock(b, p, shape, item);
     }
 }

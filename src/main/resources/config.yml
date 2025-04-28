@@ -26,7 +26,7 @@ messages:
     - '&8[&m------------------------------------------------]'
     - ''
     - ' &8&l» &8/&atreecuter reload &8- &7reload plugin!'
-    - ' &8&l» &8/&atreecuter get &8- &7get tool!'
+    - ' &8&l» &8/&atreecuter get <id> &8- &7get tool!'
     - ' &8&l» &8/&atreecuter toggle &8- &7on/off!'
     - ''
     - '&8[&m------------------------------------------------]'
@@ -35,7 +35,7 @@ messages:
     end: '&a&l» &7Plugin reloaded!'
   tool:
     get: '&a&l» &7You got tool!'
-    disabled: '&c&l» &7Tool is disabled! Enable it in config!'
+    not-found: '&c&l» &7Tool not found!'
   toggle:
     enable: '&a&l» &7Enabled cutting down trees!'
     disable: '&c&l» &7Disabled cutting down trees!'
@@ -81,16 +81,6 @@ items-to-inventory: false
 # automatically plants saplings that lie on the ground!
 auto-plant: false
 
-custom-tool:
-  enable: false
-  # material support ItemsAdder, when you use item from ItemsAdder, you must use 'ia:<ID>' instead of 'MATERIAL'
-  # example: 'ia:example_item_id'
-  material: 'NETHERITE_AXE'
-  name: '&c&lGOD AXE'
-  lore:
-    - '&7This is a custom tool!'
-    - '&7You can cut down trees with it!'
-
 # blocked worlds
 block-worlds:
   - 'example_world'
@@ -106,36 +96,51 @@ placeholder:
   toggle-on: '&a&lON'
   toggle-off: '&c&lOFF'
 
-accept-tools:
-  - 'WOODEN_AXE'
-  - 'STONE_AXE'
-  - 'IRON_AXE'
-  - 'GOLDEN_AXE'
-  - 'DIAMOND_AXE'
-  - 'NETHERITE_AXE'
-
-accept-wood-blocks:
-  - 'OAK_LOG'
-  - 'SPRUCE_LOG'
-  - 'BIRCH_LOG'
-  - 'JUNGLE_LOG'
-  - 'ACACIA_LOG'
-  - 'DARK_OAK_LOG'
-  - 'MANGROVE_LOG'
-  - 'MANGROVE_ROOTS'
-  - 'CHERRY_LOG'
-  - 'OAK_WOOD'
-  - 'SPRUCE_WOOD'
-  - 'BIRCH_WOOD'
-  - 'JUNGLE_WOOD'
-  - 'ACACIA_WOOD'
-  - 'DARK_OAK_WOOD'
-  - 'MANGROVE_WOOD'
-  - 'CHERRY_WOOD'
-  - 'WARPED_STEM'
-  - 'WARPED_HYPHAE'
-  - 'CRIMSON_STEM'
-  - 'CRIMSON_HYPHAE'
+wood-blocks:
+  nether:
+    glowing-color: 'gold' # overwrites color set in glowing-color, if not set uses default
+#    custom-tool:  You can add custom tool for wood types
+#      material: 'NETHERITE_AXE'
+#      name: '&c&lNETHER AXE'
+#      lore:
+#      - '&7This is a custom tool!'
+    accept-tools:
+      - 'NETHERITE_AXE'
+    accept-blocks:
+    - 'WARPED_STEM'
+    - 'WARPED_HYPHAE'
+    - 'CRIMSON_STEM'
+    - 'CRIMSON_HYPHAE'
+  normal:
+    glowing-color: 'aqua' # overwrites color set in glowing-color, if not set uses default
+    accept-tools:
+    - 'WOODEN_AXE'
+    - 'STONE_AXE'
+    - 'IRON_AXE'
+    - 'GOLDEN_AXE'
+    - 'DIAMOND_AXE'
+    - 'NETHERITE_AXE'
+    # - 'ia:example_item_id' # example for ItemsAdder
+    accept-blocks:
+    - 'OAK_LOG'
+    - 'SPRUCE_LOG'
+    - 'BIRCH_LOG'
+    - 'JUNGLE_LOG'
+    - 'ACACIA_LOG'
+    - 'DARK_OAK_LOG'
+    - 'MANGROVE_LOG'
+    - 'MANGROVE_ROOTS'
+    - 'CHERRY_LOG'
+    - 'PALE_OAK_LOG'
+    - 'OAK_WOOD'
+    - 'SPRUCE_WOOD'
+    - 'BIRCH_WOOD'
+    - 'JUNGLE_WOOD'
+    - 'ACACIA_WOOD'
+    - 'DARK_OAK_WOOD'
+    - 'MANGROVE_WOOD'
+    - 'CHERRY_WOOD'
+    - 'PALE_OAK_WOOD'
 
 accept-leaves-blocks:
   - 'OAK_LEAVES'
@@ -146,6 +151,9 @@ accept-leaves-blocks:
   - 'DARK_OAK_LEAVES'
   - 'MANGROVE_LEAVES'
   - 'CHERRY_LEAVES'
+  - 'AZALEA_LEAVES'
+  - 'FLOWERING_AZALEA_LEAVES'
+  - 'PALE_OAK_LEAVES'
 
 accept-custom-leaves-blocks:
   - 'NETHER_WART_BLOCK'
@@ -161,6 +169,7 @@ auto-plant-saplings:
   - 'DARK_OAK_SAPLING'
   - 'MANGROVE_PROPAGULE'
   - 'CHERRY_SAPLING'
+  - 'PALE_OAK_SAPLING'
 
 sapling-ground-materials:
   - 'DIRT'

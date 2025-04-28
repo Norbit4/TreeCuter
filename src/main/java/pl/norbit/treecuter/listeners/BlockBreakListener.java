@@ -5,7 +5,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import pl.norbit.treecuter.config.Settings;
-import pl.norbit.treecuter.utils.item.ItemsUtils;
+import pl.norbit.treecuter.config.model.CutShape;
 import pl.norbit.treecuter.service.EffectService;
 import pl.norbit.treecuter.service.TreeCutService;
 
@@ -28,21 +28,11 @@ public class BlockBreakListener implements Listener {
             return;
         }
 
-        if (Settings.isBlockedWorld(p.getWorld().getName())){
-            return;
-        }
+        var item = p.getInventory().getItemInMainHand();
 
-        var item = e.getPlayer().getInventory().getItemInMainHand();
+        CutShape woodBlocks = Settings.getCutShape(b, item);
 
-        if (!Settings.isAcceptedTool(item.getType())){
-            return;
-        }
-
-        if(!Settings.isAcceptedWoodBlock(b.getType())){
-            return;
-        }
-
-        if (!ItemsUtils.useTool(item)){
+        if (woodBlocks == null){
             return;
         }
 

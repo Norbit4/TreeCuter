@@ -1,6 +1,5 @@
 package pl.norbit.treecuter.service;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -11,7 +10,9 @@ import pl.norbit.treecuter.TreeCuter;
 import pl.norbit.treecuter.api.listeners.TreeCutEvent;
 import pl.norbit.treecuter.api.listeners.TreeGlowEvent;
 import pl.norbit.treecuter.config.Settings;
+import pl.norbit.treecuter.config.model.CutShape;
 import pl.norbit.treecuter.model.BreakTask;
+import pl.norbit.treecuter.model.SelectedBreak;
 import pl.norbit.treecuter.utils.BlockUtils;
 import pl.norbit.treecuter.utils.GlowUtils;
 import pl.norbit.treecuter.utils.DurabilityUtils;
@@ -23,8 +24,9 @@ import static pl.norbit.treecuter.utils.TaskUtils.*;
 
 public class TreeCutService {
 
-    private static final Map<UUID, List<Block>> selectedBlocks = new HashMap<>();
-    private static final Map<UUID, Block> mainBlocks = new HashMap<>();
+//    private static final Map<UUID, List<Block>> selectedBlocks = new HashMap<>();
+//    private static final Map<UUID, Block> mainBlocks = new HashMap<>();
+    private static final Map<UUID, SelectedBreak> selectedMap = new HashMap<>();
     private static final PluginManager pluginManager = TreeCuter.getInstance().getServer().getPluginManager();
     private static final List<BreakTask> breakTasks = new CopyOnWriteArrayList<>();
 
@@ -57,13 +59,13 @@ public class TreeCutService {
      * @return List of blocks, if player has no selected blocks, return empty set
      */
     public static List<Block> getSelectedBlocks(Player p){
-        List<Block> blocks = selectedBlocks.get(p.getUniqueId());
+        SelectedBreak selected = selectedMap.get(p.getUniqueId());
 
-        if(blocks == null){
+        if(selected == null){
             return new ArrayList<>();
         }
 
-        return blocks;
+        return selected.getSelectedBlocks();
     }
 
     /**
@@ -71,36 +73,38 @@ public class TreeCutService {
      * @param p Player
      */
     public static void removeColorFromTree(Player p){
-        List<Block> blocks = selectedBlocks.get(p.getUniqueId());
+        SelectedBreak selected = selectedMap.get(p.getUniqueId());
 
-        if(blocks == null){
+        if(selected == null){
             return;
         }
 
+        List<Block> blocks = selected.getSelectedBlocks();
+
         GlowUtils.unsetGlowing(blocks, p);
-        selectedBlocks.remove(p.getUniqueId());
+        selectedMap.remove(p.getUniqueId());
     }
 
     /**
      * Select tree to player and apply glowing effect to blocks
      * @param b Block
      * @param p Player
-     * @param color Color of glowing effect
+     * @param shape Wood blocks to select
      * @param item Item in player hand
      */
-    public static void selectTreeByBlock(Block b, Player p, ChatColor color, ItemStack item){
+    public static void selectTreeByBlock(Block b, Player p, CutShape shape, ItemStack item){
         if (p == null || b == null){
             return;
         }
         //check max uses of player item
         int maxBlock = DurabilityUtils.checkRemainingUses(item);
 
-        List<Block> blocks = BlockUtils.getWoodBlocksAround(new ArrayList<>(), b, maxBlock);
+        List<Block> blocks = BlockUtils.getWoodBlocksAround(new ArrayList<>(), b, maxBlock, shape);
 
         UUID playerUUID = p.getUniqueId();
 
         if(blocks.size() < Settings.getMinBlocks()){
-            selectedBlocks.remove(playerUUID);
+            selectedMap.remove(playerUUID);
             return;
         }
         //apply mining effect to player
@@ -117,14 +121,22 @@ public class TreeCutService {
             return;
         }
 
-        GlowUtils.setGlowing(blocks, p, color);
-        selectedBlocks.put(p.getUniqueId(), blocks);
-        mainBlocks.put(p.getUniqueId(), b);
+        GlowUtils.setGlowing(blocks, p, shape.getGlowingColor());
+//        selectedBlocks.put(p.getUniqueId(), blocks);
+//        mainBlocks.put(p.getUniqueId(), b);
+
+        selectedMap.put(playerUUID, new SelectedBreak(b,blocks, shape));
     }
 
     private static boolean lastBlocksIsSame(UUID playerUUID, Block mainBlock, List<Block> blocks){
-        List<Block> lastBlocks = selectedBlocks.get(playerUUID );
-        Block lastMainBlock = mainBlocks.get(playerUUID);
+        SelectedBreak selected = selectedMap.get(playerUUID);
+
+        if(selected == null){
+            return false;
+        }
+
+        Block lastMainBlock = selected.getMainBlock();
+        List<Block> lastBlocks = selected.getSelectedBlocks();
 
         if(lastBlocks != null && lastMainBlock != null){
             int lastBlocksSize = lastBlocks.size();
@@ -149,7 +161,13 @@ public class TreeCutService {
             return;
         }
 
-        List<Block> blocks = selectedBlocks.get(p.getUniqueId());
+        SelectedBreak selected = selectedMap.get(p.getUniqueId());
+
+        if(selected == null){
+            return;
+        }
+
+        List<Block> blocks = selected.getSelectedBlocks();
 
         if(blocks == null){
             return;
@@ -165,13 +183,13 @@ public class TreeCutService {
         GlowUtils.unsetGlowing(blocks, p);
 
         //create task to break blocks
-        BreakTask breakTask = new BreakTask(blocks, p);
+        BreakTask breakTask = new BreakTask(blocks, p, selected.getCutShape());
         breakTasks.add(breakTask);
 
         int size = blocks.size();
         updateItem(p, size - 1);
 
-        selectedBlocks.remove(p.getUniqueId());
+        selectedMap.remove(p.getUniqueId());
     }
 
     private static void breakBlock(Player p, Block b){

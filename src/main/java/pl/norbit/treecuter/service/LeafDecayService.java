@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Leaves;
 import pl.norbit.treecuter.config.Settings;
+import pl.norbit.treecuter.config.model.CutShape;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -49,7 +50,7 @@ public class LeafDecayService {
         }
     }
 
-    public static void scanLeaves(List<Block> blocks) {
+    public static void scanLeaves(List<Block> blocks, CutShape cutShape) {
         if(!Settings.isLeavesEnabled()){
             return;
         }
@@ -62,27 +63,28 @@ public class LeafDecayService {
             blocks.forEach(b -> leaves.addAll(getBlocks(b, acceptBlocks, 5)));
 
             List<Block> decayLeaves = new ArrayList<>(leaves.stream()
-                    .filter(LeafDecayService::isLeafDecaying)
+                    .filter(bl -> isLeafDecaying(bl, cutShape))
                     .toList());
 
+            // Shuffle the leaves to break them in random order
             Collections.shuffle(decayLeaves);
 
             blocksQueue.add(new LinkedList<>(decayLeaves));
         });
     }
 
-    private static boolean isLeafDecaying(Block block) {
+    private static boolean isLeafDecaying(Block block, CutShape cutShape) {
         int range = 2;
 
         if (block.getBlockData() instanceof Leaves leaves) {
             if (leaves.isPersistent()) {
                 return false;
             }
-            List<Block> blocks = getBlocks(block, Settings.getAcceptWoodBlocks(), range);
+            List<Block> blocks = getBlocks(block, cutShape.getAcceptBlocks(), range);
 
             return blocks.isEmpty();
         } else if (Settings.isAcceptedCustomLeavesBlock(block.getType())) {
-            List<Block> blocks = getBlocks(block, Settings.getAcceptWoodBlocks(), range);
+            List<Block> blocks = getBlocks(block, cutShape.getAcceptBlocks(), range);
 
             return blocks.isEmpty();
         }
