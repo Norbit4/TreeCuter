@@ -6,7 +6,7 @@
 
   [![License: GPL v3](https://img.shields.io/badge/license-GPLv3-orange.svg)](https://github.com/Norbit4/TreeCuter/blob/master/LICENSE)
   [![Github tag](https://badgen.net/github/tag/Norbit4/TreeCuter)](https://github.com/Norbit4/TreeCuter/tags/)
-  [![Spigot](https://pluginbadges.glitch.me/api/v1/dl/Downloads-limegreen.svg?spigot=treecuter.110213&style=flat)](https://www.spigotmc.org/resources/treecuter-1-17-1-21-%E2%9C%A8-cut-down-trees-%E2%9C%85.110213/)
+  [![Github all releases](https://img.shields.io/github/downloads/Norbit4/TreeCuter/total.svg)](https://GitHub.com/Norbit4/TreeCuter/releases/)
   [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c45f631577c6409da328266b585b085e)](https://app.codacy.com/gh/Norbit4/TreeCuter/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
   <h6 align="center">Used Languages and Tools:</h6>
