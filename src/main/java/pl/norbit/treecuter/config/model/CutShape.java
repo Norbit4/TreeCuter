@@ -27,7 +27,6 @@ public class CutShape {
 
     public boolean isAcceptTool(ItemStack item) {
         if(customTool != null){
-            System.out.println("Custom tool: " + customTool);
             ItemStack itemStack = customTool.getItemStack();
             ItemMeta itemMeta = itemStack.getItemMeta();
 
