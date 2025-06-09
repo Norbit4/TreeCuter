@@ -10,6 +10,29 @@ public class ItemsAdderUtils {
         throw new IllegalStateException("This class cannot be instantiated");
     }
 
+
+    public static int checkRemainUses(ItemStack itemStack) {
+        CustomStack stack = CustomStack.byItemStack(itemStack);
+
+        if(stack == null){
+            return -1; // Not an ItemsAdder item
+        }
+
+        return stack.getDurability();
+    }
+
+    public static ItemStack updateDurability(ItemStack itemStack, int dmg) {
+        CustomStack stack = CustomStack.byItemStack(itemStack);
+
+        if(stack == null){
+            return null;
+        }
+
+        stack.setDurability(stack.getDurability() - dmg);
+
+        return stack.getItemStack();
+    }
+
     /**
      * Get itemsadder item by id
      * @param id Item id

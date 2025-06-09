@@ -18,6 +18,14 @@ public class DurabilityUtils {
             return Settings.getMaxBlocks();
         }
 
+//        if(Settings.isItemsAdderEnabled()){
+//            int uses = ItemsAdderUtils.checkRemainUses(item);
+//
+//            if(uses != -1){
+//                return uses;
+//            }
+//        }
+
         if (meta instanceof Damageable damageable) {
             int maxDurability = item.getType().getMaxDurability();
             int currentDamage = damageable.getDamage();
@@ -32,6 +40,14 @@ public class DurabilityUtils {
         if(meta.isUnbreakable()){
             return item;
         }
+
+//        if(Settings.isItemsAdderEnabled()){
+//            ItemStack itemStack = ItemsAdderUtils.updateDurability(item, dmg);
+//
+//            if(itemStack != null){
+//                return item;
+//            }
+//        }
 
         if (meta instanceof Damageable damageable){
             int maxDurability = item.getType().getMaxDurability();

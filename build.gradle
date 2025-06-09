@@ -16,6 +16,9 @@ repositories {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/groups/public/"
     }
+    maven {
+        url = 'https://repo.extendedclip.com/releases/'
+    }
     maven { url "https://maven.enginehub.org/repo/" }
     maven { url 'https://jitpack.io' }
     maven {
@@ -34,8 +37,7 @@ dependencies {
     //itemsadder
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.2-beta-r3-b'
 
-    //placeholdrapi
-    compileOnly 'me.clip:placeholderapi:2.11.3'
+    compileOnly 'me.clip:placeholderapi:2.11.6'
     //lombok
     compileOnly 'org.projectlombok:lombok:1.18.26'
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
