@@ -201,18 +201,19 @@ public class TreeCutService {
             return;
         }
 
+        Material mat = b.getType();
+
+        if(mat == Material.AIR){
+            return;
+        }
+        //log block break to CoreProtect
+        CoreProtectService.logBreak(p.getName(), b.getState());
+
         if (Settings.isItemsToInventory()) {
-            Material material = b.getType();
-
-            if(material == Material.AIR){
-                return;
-            }
-
-            p.getInventory().addItem(new ItemStack(material));
+            p.getInventory().addItem(new ItemStack(mat));
             b.setType(Material.AIR);
         } else b.breakNaturally();
     }
-
 
     private static void updateItem(Player p, int durabilityDamage){
         PlayerInventory inventory = p.getInventory();

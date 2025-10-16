@@ -46,6 +46,8 @@ public class LeafDecayService {
         }
 
         if (b.getType() != Material.AIR) {
+            //log block break to CoreProtect
+            CoreProtectService.logBreak("TreeCutter-decay", b.getState());
             b.breakNaturally();
         }
     }

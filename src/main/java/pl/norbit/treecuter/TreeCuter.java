@@ -12,6 +12,7 @@ import pl.norbit.treecuter.listeners.BlockInteractListener;
 import pl.norbit.treecuter.listeners.TreeListeners;
 import pl.norbit.treecuter.listeners.UnglowListener;
 import pl.norbit.treecuter.placeholders.PlaceholderRegistry;
+import pl.norbit.treecuter.service.CoreProtectService;
 import pl.norbit.treecuter.service.EffectService;
 import pl.norbit.treecuter.service.LeafDecayService;
 import pl.norbit.treecuter.service.TreeCutService;
@@ -32,6 +33,7 @@ public final class TreeCuter extends JavaPlugin {
         EffectService.start();
         TreeCutService.start();
         LeafDecayService.start();
+        CoreProtectService.load();
 
         infoMessage();
         checkPlugins();
