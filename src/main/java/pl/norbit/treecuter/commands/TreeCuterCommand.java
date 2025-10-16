@@ -64,13 +64,6 @@ public class TreeCuterCommand implements CommandExecutor, TabCompleter {
                     p.getInventory().addItem(customTool);
                     p.sendMessage(ChatUtils.format(Settings.getToolGet()));
                 }, () -> p.sendMessage(ChatUtils.format(Settings.getToolNotFound())));
-
-
-//        var item = ItemsUtils.getItem();
-//
-//        p.getInventory().addItem(item);
-//
-//        p.sendMessage(ChatUtils.format(Settings.getToolGet()));
     }
 
     private void toggle(CommandSender sender){
