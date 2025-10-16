@@ -30,7 +30,12 @@ public class PlaceholderRegistry extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer player, String params) {
-        if (params.contains("toggle")) {
+        if (params.contains("toggle_raw")) {
+            if(!ToggleService.getToggle(player.getUniqueId())){
+                return  "false";
+            }
+            return "true";
+        }else if (params.contains("toggle")) {
             if(!ToggleService.getToggle(player.getUniqueId())){
                 return ChatUtils.format(Settings.getPlaceholderToggleOff());
             }
