@@ -1,6 +1,7 @@
 package pl.norbit.treecuter.service;
 
 import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -190,6 +191,19 @@ public class TreeCutService {
         updateItem(p, size - 1);
 
         selectedMap.remove(p.getUniqueId());
+
+        if(Settings.isActionsEnabled()){
+            String playerName = p.getName();
+            Server server = p.getServer();
+
+            Settings.getActions().forEach(action ->{
+                String command = action
+                        .replace("{player}", playerName)
+                        .replace("{count}", String.valueOf(size));
+
+                server.dispatchCommand(server.getConsoleSender(), command);
+            });
+        }
     }
 
     private static void breakBlock(Player p, Block b){

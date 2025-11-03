@@ -60,6 +60,13 @@ mining-effect:
   hide: true # true <- recommended, hide particles of effect
   default-level: 1
 
+# actions to execute after cutting down a tree
+actions:
+  enable: false
+  # list of actions to execute
+  action-list:
+    - "say {player} cut a tree logs: {count}"
+
 # if true, blocks that have been cut off, will glow
 
 # [!]                                                                                                               [!]

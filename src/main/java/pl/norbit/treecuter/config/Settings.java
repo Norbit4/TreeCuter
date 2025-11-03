@@ -117,6 +117,11 @@ public class Settings {
 
     private static List<CutShape> woodBlocks;
 
+    @Getter
+    private static boolean actionsEnabled;
+    @Getter
+    private static List<String> actions;
+
     private Settings() {
         throw new IllegalStateException("This class cannot be instantiated");
     }
@@ -198,6 +203,9 @@ public class Settings {
 
         placeholderToggleOn = config.getString("placeholder.toggle-on");
         placeholderToggleOff = config.getString("placeholder.toggle-off");
+
+        actions = config.getStringList("actions.action-list");
+        actionsEnabled = config.getBoolean("actions.enable");
 
         acceptTools = new ArrayList<>();
         acceptWoodBlocks = new ArrayList<>();
