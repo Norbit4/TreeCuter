@@ -153,7 +153,7 @@ public class TreeCutService {
      * When player has no selected blocks, do nothing.
      * @param p Player
      */
-    public static void cutTree(Player p) {
+    public static void cutTree(Player p, Material type, CutShape shape) {
         if(p == null){
             return;
         }
@@ -199,6 +199,8 @@ public class TreeCutService {
             Settings.getActions().forEach(action ->{
                 String command = action
                         .replace("{player}", playerName)
+                        .replace("{type}", type.name().toUpperCase())
+                        .replace("{shape}", shape.getId())
                         .replace("{count}", String.valueOf(size));
 
                 server.dispatchCommand(server.getConsoleSender(), command);

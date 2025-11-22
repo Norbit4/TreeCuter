@@ -10,25 +10,41 @@ import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WorldGuardUtils {
+    private static final Map<String, RegionManager> REGION_CACHE = new HashMap<>();
 
     private WorldGuardUtils() {
         throw new IllegalStateException("This class cannot be instantiated");
     }
 
-    public static boolean canBreak(Location loc, Player p) {
-        var container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+    public static RegionManager getRegionManager(World world) {
+        var cached = REGION_CACHE.get(world.getName());
 
+        if(cached != null){
+            return cached;
+        }
+
+        var container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        var current = container.get(BukkitAdapter.adapt(world));
+        REGION_CACHE.put(world.getName(), current);
+
+        return current;
+    }
+
+    public static boolean canBreak(Location loc, Player p) {
         if(p.isOp()){
             return true;
         }
 
-        var regionManager = container.get(BukkitAdapter.adapt(loc.getWorld()));
+        var regionManager = getRegionManager(loc.getWorld());
 
         if (regionManager == null){
             return true;
@@ -51,6 +67,10 @@ public class WorldGuardUtils {
     private static boolean canBreakInRegion(Player p, ProtectedRegion region) {
         LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(p);
         StateFlag.State flag = region.getFlag(Flags.BLOCK_BREAK);
+
+        if(region.isOwner(localPlayer)){
+            return true;
+        }
 
         if(region.isMember(localPlayer) && flag != StateFlag.State.DENY){
             return true;

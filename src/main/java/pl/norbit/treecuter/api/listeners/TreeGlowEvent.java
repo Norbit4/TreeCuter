@@ -9,14 +9,12 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Set;
-
 
 public class TreeGlowEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     /**
      * -- GETTER --
-     *  Get set of wood blocks.
+     *  Get list of wood blocks.
      */
     @Getter
     private final List<Block> blocks;

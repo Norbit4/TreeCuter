@@ -30,12 +30,12 @@ public class BlockBreakListener implements Listener {
 
         var item = p.getInventory().getItemInMainHand();
 
-        CutShape woodBlocks = Settings.getCutShape(b, item);
+        CutShape shape = Settings.getCutShape(b, item);
 
-        if (woodBlocks == null){
+        if (shape == null){
             return;
         }
 
-        TreeCutService.cutTree(p);
+        TreeCutService.cutTree(p, b.getType(), shape);
     }
 }
