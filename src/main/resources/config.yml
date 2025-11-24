@@ -60,17 +60,6 @@ mining-effect:
   hide: true # true <- recommended, hide particles of effect
   default-level: 1
 
-# actions to execute after cutting down a tree
-#  {player} - player name
-#  {type}   - type of wood
-#  {count}  - amount of cut blocks
-#  {shape}  - shape id of cut tree
-actions:
-  enable: false
-  # list of commands to execute
-  action-list:
-    - "say {player} cut a tree logs: {type} {count} id: {shape}"
-
 # if true, blocks that have been cut off, will glow
 
 # [!]
@@ -196,3 +185,52 @@ sapling-ground-materials:
   - 'PODZOL'
   - 'MYCELIUM'
   - 'COARSE_DIRT'
+
+# actions to execute after cutting down a tree
+#  {player} - player name
+#  {count}  - amount of cut blocks
+#  {shape}  - shape id of cut tree
+actions:
+  enable: false
+  # list of commands to execute
+  action-list:
+    global:
+      - "say {player} cut a tree logs: {count} id: {shape}"
+    # per wood type actions
+    types:
+      OAK_LOG:
+        - "say {player} cut an oak tree with {count} logs!"
+      OAK_WOOD:
+        - "say {player} cut an oak tree with {count} logs!"
+      SPRUCE_LOG:
+        - "say {player} cut a spruce tree with {count} logs!"
+      SPRUCE_WOOD:
+        - "say {player} cut a spruce tree with {count} logs!"
+      BIRCH_LOG:
+        - "say {player} cut a birch tree with {count} logs!"
+      BIRCH_WOOD:
+        - "say {player} cut a birch tree with {count} logs!"
+      JUNGLE_LOG:
+        - "say {player} cut a jungle tree with {count} logs!"
+      JUNGLE_WOOD:
+        - "say {player} cut a jungle tree with {count} logs!"
+      ACACIA_LOG:
+        - "say {player} cut an acacia tree with {count} logs!"
+      ACACIA_WOOD:
+        - "say {player} cut an acacia tree with {count} logs!"
+      DARK_OAK_LOG:
+        - "say {player} cut a dark oak tree with {count} logs!"
+      DARK_OAK_WOOD:
+        - "say {player} cut a dark oak tree with {count} logs!"
+      MANGROVE_LOG:
+        - "say {player} cut a mangrove tree with {count} logs!"
+      MANGROVE_WOOD:
+        - "say {player} cut a mangrove tree with {count} logs!"
+      CHERRY_LOG:
+        - "say {player} cut a cherry tree with {count} logs!"
+      CHERRY_WOOD:
+        - "say {player} cut a cherry tree with {count} logs!"
+      PALE_OAK_LOG:
+        - "say {player} cut a pale oak tree with {count} logs!"
+      PALE_OAK_WOOD:
+        - "say {player} cut a pale oak tree with {count} logs!"

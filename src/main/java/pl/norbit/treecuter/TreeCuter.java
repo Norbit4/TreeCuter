@@ -46,10 +46,7 @@ public final class TreeCuter extends JavaPlugin {
     }
 
     private void registerCommand(){
-        var command = getCommand("treecuter");
-        var treeCuterCommand = new TreeCuterCommand();
-
-        command.setExecutor(treeCuterCommand);
+        getCommand("treecuter").setExecutor(new TreeCuterCommand());
     }
 
     private void registerPapi(){
@@ -90,7 +87,9 @@ public final class TreeCuter extends JavaPlugin {
 
         if(plugin != null && plugin.isEnabled()){
             var logger = getServer().getLogger();
-            logger.info("Hooked to: " + pluginName);
+            String message = "Hooked to: " + pluginName;
+
+            logger.info(message);
             return true;
         }
         return false;

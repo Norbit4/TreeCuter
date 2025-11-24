@@ -14,6 +14,7 @@ import pl.norbit.treecuter.config.model.CutShape;
 import pl.norbit.treecuter.service.TreePlanterService;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 public class Settings {
 
@@ -67,6 +68,9 @@ public class Settings {
     private static List<Material> acceptCustomLeavesBlocks;
     @Getter
     private static List<Material> autoPlantSapling;
+
+    @Getter
+    private static Map<Material, List<String>> actionsTypeMap;
 
     //block worlds
     private static List<String> blockWorlds;
@@ -124,6 +128,11 @@ public class Settings {
 
     private Settings() {
         throw new IllegalStateException("This class cannot be instantiated");
+    }
+
+
+    public static List<String> getActions(Material material){
+        return actionsTypeMap.get(material);
     }
 
     public static Optional<ItemStack> getCustomToolForKey(String key){
@@ -204,7 +213,7 @@ public class Settings {
         placeholderToggleOn = config.getString("placeholder.toggle-on");
         placeholderToggleOff = config.getString("placeholder.toggle-off");
 
-        actions = config.getStringList("actions.action-list");
+        actions = config.getStringList("actions.action-list.global");
         actionsEnabled = config.getBoolean("actions.enable");
 
         acceptTools = new ArrayList<>();
@@ -274,6 +283,7 @@ public class Settings {
 
         ConfigurationSection section = config.getConfigurationSection("wood-blocks");
 
+
         if (section == null) {
             javaPlugin.getLogger().warning("No wood blocks found in config");
         }else {
@@ -290,9 +300,34 @@ public class Settings {
             }
         }
 
+        loadActionsTypes(config.getConfigurationSection("actions.action-list.types"));
+
         if(autoPlant) TreePlanterService.start();
         else TreePlanterService.stop();
     }
+
+    public static void loadActionsTypes(ConfigurationSection section) {
+        actionsTypeMap = new EnumMap<>(Material.class);
+
+        if (section == null) {
+            return;
+        }
+
+        Logger logger = TreeCuter.getInstance().getLogger();
+
+        for (String key : section.getKeys(false)) {
+            Material material = Material.getMaterial(key.toUpperCase());
+
+            if (material == null) {
+                logger.warning("Wrong action material: " + key);
+                continue;
+            }
+
+            List<String> commands = section.getStringList(key);
+            actionsTypeMap.put(material, commands);
+        }
+    }
+
 
     private static CutShape getCutShape(ConfigurationSection section, String key) {
         CutShape cutShape = new CutShape();

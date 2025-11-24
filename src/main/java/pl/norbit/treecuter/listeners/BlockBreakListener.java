@@ -36,6 +36,6 @@ public class BlockBreakListener implements Listener {
             return;
         }
 
-        TreeCutService.cutTree(p, b.getType(), shape);
+        TreeCutService.cutTree(p, shape);
     }
 }

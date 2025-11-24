@@ -1,9 +1,11 @@
 package pl.norbit.treecuter.service;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.PluginManager;
@@ -25,8 +27,6 @@ import static pl.norbit.treecuter.utils.TaskUtils.*;
 
 public class TreeCutService {
 
-//    private static final Map<UUID, List<Block>> selectedBlocks = new HashMap<>();
-//    private static final Map<UUID, Block> mainBlocks = new HashMap<>();
     private static final Map<UUID, SelectedBreak> selectedMap = new HashMap<>();
     private static final PluginManager pluginManager = TreeCuter.getInstance().getServer().getPluginManager();
     private static final List<BreakTask> breakTasks = new CopyOnWriteArrayList<>();
@@ -153,7 +153,7 @@ public class TreeCutService {
      * When player has no selected blocks, do nothing.
      * @param p Player
      */
-    public static void cutTree(Player p, Material type, CutShape shape) {
+    public static void cutTree(Player p, CutShape shape) {
         if(p == null){
             return;
         }
@@ -192,20 +192,7 @@ public class TreeCutService {
 
         selectedMap.remove(p.getUniqueId());
 
-        if(Settings.isActionsEnabled()){
-            String playerName = p.getName();
-            Server server = p.getServer();
-
-            Settings.getActions().forEach(action ->{
-                String command = action
-                        .replace("{player}", playerName)
-                        .replace("{type}", type.name().toUpperCase())
-                        .replace("{shape}", shape.getId())
-                        .replace("{count}", String.valueOf(size));
-
-                server.dispatchCommand(server.getConsoleSender(), command);
-            });
-        }
+        ActionsService.triggerActions(p, shape, blocks);
     }
 
     private static void breakBlock(Player p, Block b){
@@ -222,13 +209,25 @@ public class TreeCutService {
         if(mat == Material.AIR){
             return;
         }
+
+        //simulate event for plugins compatibility
+        simulateBlockBreakEvent(p, b);
+
         //log block break to CoreProtect
-        CoreProtectService.logBreak(p.getName(), b.getState());
+//        CoreProtectService.logBreak(p.getName(), b.getState());
 
         if (Settings.isItemsToInventory()) {
             p.getInventory().addItem(new ItemStack(mat));
             b.setType(Material.AIR);
         } else b.breakNaturally();
+    }
+
+    private static void simulateBlockBreakEvent(Player p, Block b){
+        BlockBreakEvent e = new BlockBreakEvent(b, p);
+        TreeCuter.getInstance().getServer().getPluginManager().callEvent(e);
+
+        e.setDropItems(false);
+        e.setExpToDrop(0);
     }
 
     private static void updateItem(Player p, int durabilityDamage){
