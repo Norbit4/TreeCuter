@@ -211,10 +211,10 @@ public class TreeCutService {
         }
 
         //simulate event for plugins compatibility
-        simulateBlockBreakEvent(p, b);
+//        simulateBlockBreakEvent(p, b);
 
         //log block break to CoreProtect
-//        CoreProtectService.logBreak(p.getName(), b.getState());
+        CoreProtectService.logBreak(p.getName(), b.getState());
 
         if (Settings.isItemsToInventory()) {
             p.getInventory().addItem(new ItemStack(mat));
