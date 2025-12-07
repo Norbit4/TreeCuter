@@ -132,7 +132,7 @@ public class Settings {
 
 
     public static List<String> getActions(Material material){
-        return actionsTypeMap.get(material);
+        return actionsTypeMap.getOrDefault(material, List.of());
     }
 
     public static Optional<ItemStack> getCustomToolForKey(String key){
