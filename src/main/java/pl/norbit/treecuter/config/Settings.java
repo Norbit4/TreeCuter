@@ -95,7 +95,6 @@ public class Settings {
     //messages
     @Getter
     private static String permissionMessage;
-
     @Getter
     private static String toggleMessageOn;
     @Getter
