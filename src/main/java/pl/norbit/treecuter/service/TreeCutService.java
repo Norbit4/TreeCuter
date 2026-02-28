@@ -1,8 +1,6 @@
 package pl.norbit.treecuter.service;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -57,7 +55,7 @@ public class TreeCutService {
     /**
      * Get selected blocks (to cut) by player
      * @param p Player
-     * @return List of blocks, if player has no selected blocks, return empty set
+     * @return List of blocks, if the player has no selected blocks, return an empty set
      */
     public static List<Block> getSelectedBlocks(Player p){
         SelectedBreak selected = selectedMap.get(p.getUniqueId());
@@ -87,7 +85,7 @@ public class TreeCutService {
     }
 
     /**
-     * Select tree to player and apply glowing effect to blocks
+     * Select a tree to player and apply glowing effect to blocks
      * @param b Block
      * @param p Player
      * @param shape Wood blocks to select
@@ -123,8 +121,6 @@ public class TreeCutService {
         }
 
         GlowUtils.setGlowing(blocks, p, shape.getGlowingColor());
-//        selectedBlocks.put(p.getUniqueId(), blocks);
-//        mainBlocks.put(p.getUniqueId(), b);
 
         selectedMap.put(playerUUID, new SelectedBreak(b,blocks, shape));
     }
@@ -150,7 +146,7 @@ public class TreeCutService {
 
     /**
      * Cut selected tree by player, when player cut tree, remove glowing effect from blocks and break blocks.
-     * When player has no selected blocks, do nothing.
+     * When a player has no selected blocks, do nothing.
      * @param p Player
      */
     public static void cutTree(Player p, CutShape shape) {
@@ -183,7 +179,7 @@ public class TreeCutService {
         }
         GlowUtils.unsetGlowing(blocks, p);
 
-        //create task to break blocks
+        //create a task to break blocks
         BreakTask breakTask = new BreakTask(blocks, p, selected.getCutShape());
         breakTasks.add(breakTask);
 

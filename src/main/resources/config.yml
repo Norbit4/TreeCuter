@@ -53,14 +53,14 @@ min-blocks: 4
 # if true, the player must hold shift to cut down trees
 shift-mining: true # true <- recommended
 
-# apply mining fatigue effect when player is cutting down trees
+# apply mining fatigue effect when a player is cutting down trees
 # works only with shift-mining enabled!
 mining-effect:
   enable: true # true <- recommended
   hide: true # true <- recommended, hide particles of effect
   default-level: 1
 
-# if true, blocks that have been cut off, will glow
+# if true, blocks that have been cut off will glow
 
 # [!]
 # [!]                                                                                                               [!]
@@ -94,7 +94,7 @@ block-worlds:
 # speed up leaf decay
 leaves:
   enable: true
-  # amount of leaves decay every 5 ticks
+  # number of leaves decay every 5 ticks
   decay-amount: 2
 
 # %treecuter_toggle% (PlaceholderAPI)
@@ -189,8 +189,8 @@ sapling-ground-materials:
 
 # actions to execute after cutting down a tree
 #  {player} - player name
-#  {count}  - amount of cut blocks
-#  {shape}  - shape id of cut tree
+#  {count} - number of cut blocks
+#  {shape} - shape id of a cut tree
 actions:
   enable: false
   # list of commands to execute
