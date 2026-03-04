@@ -16,6 +16,7 @@ import pl.norbit.treecuter.service.CoreProtectService;
 import pl.norbit.treecuter.service.EffectService;
 import pl.norbit.treecuter.service.LeafDecayService;
 import pl.norbit.treecuter.service.TreeCutService;
+import pl.norbit.treecuter.treeplant.TreePlantListener;
 import pl.norbit.treecuter.utils.GlowUtils;
 
 public final class TreeCuter extends JavaPlugin {
@@ -62,6 +63,7 @@ public final class TreeCuter extends JavaPlugin {
         pluginManager.registerEvents(new BlockBreakListener(), this);
         pluginManager.registerEvents(new BlockInteractListener(), this);
         pluginManager.registerEvents(new UnglowListener(), this);
+        pluginManager.registerEvents(new TreePlantListener(), this);
     }
 
     private void checkPlugins(){
