@@ -8,12 +8,11 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import pl.norbit.treecuter.utils.GlowUtils;
 import pl.norbit.treecuter.utils.PlayerUtils;
 
-import static pl.norbit.treecuter.utils.TaskUtils.async;
-
 public class UnglowListener implements Listener {
 
     private void unsetGlow(Block b){
-        async(() -> PlayerUtils.getOnlinePlayers().forEach(p -> GlowUtils.unsetGlowing(b, p)));
+         PlayerUtils.getOnlinePlayers()
+                .forEach(p -> GlowUtils.unsetGlowing(b, p));
     }
 
     @EventHandler
