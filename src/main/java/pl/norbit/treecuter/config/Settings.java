@@ -11,7 +11,8 @@ import pl.norbit.treecuter.TreeCuter;
 import pl.norbit.treecuter.config.model.CustomItem;
 import pl.norbit.treecuter.config.model.CustomTool;
 import pl.norbit.treecuter.config.model.CutShape;
-import pl.norbit.treecuter.service.TreePlanterService;
+import pl.norbit.treecuter.service.EffectService;
+import pl.norbit.treecuter.treeplant.TreePlanterService;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -303,6 +304,8 @@ public class Settings {
 
         if(autoPlant) TreePlanterService.start();
         else TreePlanterService.stop();
+
+        EffectService.reloadEffect();
     }
 
     public static void loadActionsTypes(ConfigurationSection section) {

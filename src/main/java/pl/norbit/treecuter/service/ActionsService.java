@@ -39,7 +39,7 @@ public class ActionsService {
             server.dispatchCommand(consoleSender, command);
         });
 
-        //material specific actions
+        //material-specific actions
         countMaterials(blocks).forEach(mCount -> Settings.getActions(mCount.material)
                 .forEach(action -> {
             String command = action

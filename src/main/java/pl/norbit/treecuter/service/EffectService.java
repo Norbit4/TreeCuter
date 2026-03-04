@@ -9,118 +9,109 @@ import pl.norbit.treecuter.model.EffectPlayer;
 import pl.norbit.treecuter.utils.GlowUtils;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
-import static pl.norbit.treecuter.utils.TaskUtils.sync;
-import static pl.norbit.treecuter.utils.TaskUtils.timerAsync;
+import static pl.norbit.treecuter.utils.TaskUtils.*;
 
 public class EffectService {
-    private static final Map<UUID, EffectPlayer> effectPlayersMap = new ConcurrentHashMap<>();
 
-    private EffectService() {
-        throw new IllegalStateException("This class cannot be instantiated");
-    }
+    private static final Map<UUID, EffectPlayer> effectPlayersMap = new HashMap<>();
+    private static PotionEffect slowDiggingEffect;
 
-    private static List<EffectPlayer> getValues(){
-        return new ArrayList<>(effectPlayersMap.values());
-    }
+    private EffectService() {}
 
-    public static void start(){
-        timerAsync(() -> {
-            //remove players that are not sneaking
-            getValues()
-                    .stream()
-                    .map(EffectPlayer::getPlayer)
-                    .filter(Objects::nonNull)
-                    .filter(p -> !p.isSneaking())
-                    .toList()
-                    .forEach(p -> {
-                        effectPlayersMap.remove(p.getUniqueId());
-                        TreeCutService.removeColorFromTree(p);
-                    });
-            //start it in synchronized task because effects in minecraft cannot be applied in async task
-            sync(() -> effectPlayersMap.values().forEach(p -> EffectService.addSlowDiggingEffect(p.getPlayer())));
+    public static void start() {
+        reloadEffect();
+
+        timer(() -> {
+            Iterator<Map.Entry<UUID, EffectPlayer>> iterator = effectPlayersMap.entrySet().iterator();
+
+            while (iterator.hasNext()) {
+                Map.Entry<UUID, EffectPlayer> entry = iterator.next();
+                EffectPlayer effectPlayer = entry.getValue();
+
+                Player player = effectPlayer.getPlayer();
+
+                if (player == null || !player.isSneaking()) {
+                    if (player != null) {
+                        TreeCutService.removeColorFromTree(player);
+                    }
+
+                    iterator.remove();
+                    continue;
+                }
+
+                int time = effectPlayer.getUpdateTime() - 1;
+
+                if (time <= 0) {
+
+                    if (player.isOnline()) {
+                        List<Block> selectedBlocks = TreeCutService.getSelectedBlocks(player);
+                        GlowUtils.setGlowing(selectedBlocks, player, Settings.getGlowingColor());
+                    }
+
+                    effectPlayer.setUpdateTime(9);
+
+                } else {
+                    effectPlayer.setUpdateTime(time);
+                }
+
+                if (player.isOnline()) {
+                    player.addPotionEffect(slowDiggingEffect);
+                }
+            }
         }, 10L);
-
-        //update glowing blocks
-        timerAsync(() -> getValues().forEach(p ->{
-            Player player = p.getPlayer();
-
-            if(player == null){
-                return;
-            }
-
-            if(!player.isOnline()){
-                return;
-            }
-
-            int time = p.getUpdateTime() - 1;
-
-            if(time == 0){
-                List<Block> selectedBlocks = TreeCutService.getSelectedBlocks(player);
-                GlowUtils.setGlowing(selectedBlocks, player, Settings.getGlowingColor());
-                p.setUpdateTime(9);
-            }else {
-                p.setUpdateTime(time);
-            }
-        }), 20L);
     }
 
-    private static void addSlowDiggingEffect(Player p){
-        if(p == null){
-            return;
-        }
-
+    public static void reloadEffect() {
         int effectLevel = Settings.getDefaultEffectLevel() - 1;
         boolean hideMiningEffect = !Settings.isHideMiningEffect();
 
-        var potionEffect = new PotionEffect(PotionEffectType.SLOW_DIGGING, 14, effectLevel, false,
-                hideMiningEffect, hideMiningEffect);
-        p.addPotionEffect(potionEffect);
+        slowDiggingEffect = new PotionEffect(
+                PotionEffectType.SLOW_DIGGING,
+                14,
+                effectLevel,
+                false,
+                hideMiningEffect,
+                hideMiningEffect
+        );
     }
 
-    public static boolean isEffectPlayer(Player p){
-        if(!Settings.isShiftMining()){
+    public static boolean isEffectPlayer(Player player) {
+
+        if (!Settings.isShiftMining() || !Settings.isApplyMiningEffect()) {
             return true;
         }
 
-        if(!Settings.isApplyMiningEffect()){
-            return true;
-        }
-
-        UUID uniqueId = p.getUniqueId();
-
-        return effectPlayersMap.containsKey(uniqueId);
+        return effectPlayersMap.containsKey(player.getUniqueId());
     }
 
-    public static void removeEffect(Player p){
-        effectPlayersMap.remove(p.getUniqueId());
-        p.removePotionEffect(PotionEffectType.SLOW_DIGGING);
+    public static void removeEffect(Player player) {
+
+        UUID uuid = player.getUniqueId();
+
+        effectPlayersMap.remove(uuid);
+        player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
     }
 
-    public static void applyEffect(Player p){
-        if(!Settings.isShiftMining()){
+    public static void applyEffect(Player player) {
+        if (!Settings.isShiftMining() || !Settings.isApplyMiningEffect()) {
             return;
         }
 
-        if(!p.isSneaking()){
+        if (!player.isSneaking()) {
             return;
         }
 
-        if(!Settings.isApplyMiningEffect()){
-            return;
-        }
+        UUID uuid = player.getUniqueId();
 
-        EffectPlayer effectPlayer = effectPlayersMap.get(p.getUniqueId());
+        EffectPlayer effectPlayer = effectPlayersMap.get(uuid);
 
-        if(effectPlayer != null){
+        if (effectPlayer != null) {
             effectPlayer.setUpdateTime(9);
             return;
         }
 
-        UUID playerUUID = p.getUniqueId();
-
-        effectPlayersMap.compute(playerUUID, (k, v) -> new EffectPlayer(playerUUID, 9));
-        addSlowDiggingEffect(p);
+        effectPlayersMap.put(uuid, new EffectPlayer(uuid, 9));
+        player.addPotionEffect(slowDiggingEffect);
     }
 }
