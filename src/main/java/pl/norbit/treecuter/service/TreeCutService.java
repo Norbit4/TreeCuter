@@ -19,36 +19,38 @@ import pl.norbit.treecuter.utils.GlowUtils;
 import pl.norbit.treecuter.utils.DurabilityUtils;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 
-import static pl.norbit.treecuter.utils.TaskUtils.*;
+import static pl.norbit.treecuter.utils.TaskUtils.timer;
 
 public class TreeCutService {
 
     private static final Map<UUID, SelectedBreak> selectedMap = new HashMap<>();
     private static final PluginManager pluginManager = TreeCuter.getInstance().getServer().getPluginManager();
-    private static final List<BreakTask> breakTasks = new CopyOnWriteArrayList<>();
+    private static final List<BreakTask> breakTasks = new ArrayList<>();
 
-    private TreeCutService() {
-        throw new IllegalStateException("This class cannot be instantiated");
-    }
+    private TreeCutService() {}
 
-    public static void start(){
+    public static void start() {
         timer(() -> {
-            List<BreakTask> toRemove = new ArrayList<>();
+            Iterator<BreakTask> iterator = breakTasks.iterator();
 
-            for (BreakTask breakTree : breakTasks) {
+            while (iterator.hasNext()) {
+
+                BreakTask breakTree = iterator.next();
+
                 if (breakTree.isTreeBroken()) {
                     breakTree.leafTask();
-                    toRemove.add(breakTree);
+                    iterator.remove();
                     continue;
                 }
 
-                List<Block> blocks = breakTree.getBlocksToBreak();
-                blocks.forEach(b -> breakBlock(breakTree.getPlayer(), b));
+                Player player = breakTree.getPlayer();
+
+                for (Block block : breakTree.getBlocksToBreak()) {
+                    breakBlock(player, block);
+                }
             }
 
-            breakTasks.removeAll(toRemove);
         }, 2L);
     }
 
@@ -61,7 +63,7 @@ public class TreeCutService {
         SelectedBreak selected = selectedMap.get(p.getUniqueId());
 
         if(selected == null){
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
         return selected.getSelectedBlocks();
@@ -72,16 +74,14 @@ public class TreeCutService {
      * @param p Player
      */
     public static void removeColorFromTree(Player p){
-        SelectedBreak selected = selectedMap.get(p.getUniqueId());
+
+        SelectedBreak selected = selectedMap.remove(p.getUniqueId());
 
         if(selected == null){
             return;
         }
 
-        List<Block> blocks = selected.getSelectedBlocks();
-
-        GlowUtils.unsetGlowing(blocks, p);
-        selectedMap.remove(p.getUniqueId());
+        GlowUtils.unsetGlowing(selected.getSelectedBlocks(), p);
     }
 
     /**
@@ -92,6 +92,7 @@ public class TreeCutService {
      * @param item Item in player hand
      */
     public static void selectTreeByBlock(Block b, Player p, CutShape shape, ItemStack item){
+
         if (p == null || b == null){
             return;
         }
@@ -100,32 +101,33 @@ public class TreeCutService {
 
         List<Block> blocks = BlockUtils.getWoodBlocksAround(new ArrayList<>(), b, maxBlock, shape);
 
-        UUID playerUUID = p.getUniqueId();
-
         if(blocks.size() < Settings.getMinBlocks()){
-            selectedMap.remove(playerUUID);
+            selectedMap.remove(p.getUniqueId());
             return;
         }
+
+        UUID uuid = p.getUniqueId();
         //apply mining effect to player
         EffectService.applyEffect(p);
 
-        var treeGlowEvent = new TreeGlowEvent(blocks, p);
-        pluginManager.callEvent(treeGlowEvent);
+        TreeGlowEvent event = new TreeGlowEvent(blocks, p);
+        pluginManager.callEvent(event);
 
-        if(treeGlowEvent.isCancelled()){
+        if(event.isCancelled()){
             return;
         }
 
-        if(lastBlocksIsSame(playerUUID, b, blocks)){
+        if(lastBlocksIsSame(uuid, b, blocks)){
             return;
         }
 
         GlowUtils.setGlowing(blocks, p, shape.getGlowingColor());
 
-        selectedMap.put(playerUUID, new SelectedBreak(b,blocks, shape));
+        selectedMap.put(uuid, new SelectedBreak(b, blocks, shape));
     }
 
     private static boolean lastBlocksIsSame(UUID playerUUID, Block mainBlock, List<Block> blocks){
+
         SelectedBreak selected = selectedMap.get(playerUUID);
 
         if(selected == null){
@@ -136,11 +138,9 @@ public class TreeCutService {
         List<Block> lastBlocks = selected.getSelectedBlocks();
 
         if(lastBlocks != null && lastMainBlock != null){
-            int lastBlocksSize = lastBlocks.size();
-            int blocksSize = blocks.size();
-
-            return lastBlocksSize == blocksSize && lastMainBlock.equals(mainBlock);
+            return lastBlocks.size() == blocks.size() && lastMainBlock.equals(mainBlock);
         }
+
         return false;
     }
 
@@ -150,6 +150,7 @@ public class TreeCutService {
      * @param p Player
      */
     public static void cutTree(Player p, CutShape shape) {
+
         if(p == null){
             return;
         }
@@ -158,7 +159,7 @@ public class TreeCutService {
             return;
         }
 
-        SelectedBreak selected = selectedMap.get(p.getUniqueId());
+        SelectedBreak selected = selectedMap.remove(p.getUniqueId());
 
         if(selected == null){
             return;
@@ -170,33 +171,27 @@ public class TreeCutService {
             return;
         }
 
-        var treeCutEvent = new TreeCutEvent(blocks, p);
+        TreeCutEvent event = new TreeCutEvent(blocks, p);
 
-        pluginManager.callEvent(treeCutEvent);
+        pluginManager.callEvent(event);
 
-        if(treeCutEvent.isCancelled()){
+        if(event.isCancelled()){
             return;
         }
+
         GlowUtils.unsetGlowing(blocks, p);
 
-        //create a task to break blocks
         BreakTask breakTask = new BreakTask(blocks, p, selected.getCutShape());
         breakTasks.add(breakTask);
 
-        int size = blocks.size();
-        updateItem(p, size - 1);
-
-        selectedMap.remove(p.getUniqueId());
+        updateItem(p, blocks.size() - 1);
 
         ActionsService.triggerActions(p, shape, blocks);
     }
 
     private static void breakBlock(Player p, Block b){
-        if(b == null){
-            return;
-        }
 
-        if(!p.isOnline()){
+        if (p == null || !p.isOnline() || b == null){
             return;
         }
 
@@ -206,37 +201,29 @@ public class TreeCutService {
             return;
         }
 
-        //simulate event for plugins compatibility
-//        simulateBlockBreakEvent(p, b);
-
         //log block break to CoreProtect
         CoreProtectService.logBreak(p.getName(), b.getState());
 
         if (Settings.isItemsToInventory()) {
             p.getInventory().addItem(new ItemStack(mat));
             b.setType(Material.AIR);
-        } else b.breakNaturally();
-    }
-
-    private static void simulateBlockBreakEvent(Player p, Block b){
-        BlockBreakEvent e = new BlockBreakEvent(b, p);
-        TreeCuter.getInstance().getServer().getPluginManager().callEvent(e);
-
-        e.setDropItems(false);
-        e.setExpToDrop(0);
+        } else {
+            b.breakNaturally();
+        }
     }
 
     private static void updateItem(Player p, int durabilityDamage){
+
         PlayerInventory inventory = p.getInventory();
 
-        var itemInHand = inventory.getItemInMainHand();
+        ItemStack item = inventory.getItemInMainHand();
 
-        if(itemInHand.getType() == Material.AIR){
+        if(item.getType() == Material.AIR){
             return;
         }
 
-        ItemStack itemStack = DurabilityUtils.updateDurability(itemInHand, durabilityDamage);
+        ItemStack updated = DurabilityUtils.updateDurability(item, durabilityDamage);
 
-        inventory.setItemInMainHand(itemStack);
+        inventory.setItemInMainHand(updated);
     }
 }
