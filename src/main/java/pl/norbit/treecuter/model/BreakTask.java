@@ -7,9 +7,7 @@ import pl.norbit.treecuter.config.model.CutShape;
 import pl.norbit.treecuter.service.LeafDecayService;
 
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class BreakTask {
 
@@ -21,14 +19,17 @@ public class BreakTask {
     private final Player player;
 
     public BreakTask(List<Block> blocks, Player player, CutShape cutShape) {
-        this.blocksQueue = new LinkedList<>(blocks);
+        this.blocksQueue = new ArrayDeque<>(blocks);
         this.blocks = blocks;
         this.cutShape = cutShape;
 
-        int perLoopSize = blocks.size()/10;
+        int size = blocks.size();
+        int perLoopSize;
 
-        if(perLoopSize == 0){
-            perLoopSize = 1;
+        if (size < 15) {
+            perLoopSize = 2;
+        } else {
+            perLoopSize = 5;
         }
 
         this.perLoopBreakSize = perLoopSize;
@@ -44,11 +45,8 @@ public class BreakTask {
     }
 
     public List<Block> getBlocksToBreak() {
-        List<Block> blocksToBreak = new LinkedList<>();
-        for (int i = 0; i < perLoopBreakSize; i++) {
-            if (blocksQueue.isEmpty()) {
-                break;
-            }
+        List<Block> blocksToBreak = new ArrayList<>();
+        for (int i = 0; i < perLoopBreakSize && !blocksQueue.isEmpty(); i++) {
             blocksToBreak.add(blocksQueue.poll());
         }
         return blocksToBreak;

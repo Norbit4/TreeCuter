@@ -4,6 +4,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.ItemStack;
 import pl.norbit.treecuter.config.Settings;
 import pl.norbit.treecuter.config.model.CutShape;
 import pl.norbit.treecuter.service.EffectService;
@@ -28,7 +29,7 @@ public class BlockBreakListener implements Listener {
             return;
         }
 
-        var item = p.getInventory().getItemInMainHand();
+        ItemStack item = p.getInventory().getItemInMainHand();
 
         CutShape shape = Settings.getCutShape(b, item);
 
