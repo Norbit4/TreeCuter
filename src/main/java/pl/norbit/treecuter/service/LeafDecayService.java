@@ -7,105 +7,141 @@ import pl.norbit.treecuter.config.Settings;
 import pl.norbit.treecuter.config.model.CutShape;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.IntStream;
 
 import static pl.norbit.treecuter.utils.TaskUtils.*;
 
 public class LeafDecayService {
 
-    private static final List<Queue<Block>> blocksQueue = new CopyOnWriteArrayList<>();
-    private LeafDecayService() {
-        throw new IllegalStateException("This class cannot be instantiated");
-    }
+    private static final List<Queue<Block>> blocksQueue = new ArrayList<>();
+
+    //precomputed offsets for scanning cubes
+    private static final int[][] OFFSETS_RANGE5 = generateOffsets(5,5);
+    private static final int[][] OFFSETS_RANGE2 = generateOffsets(2,2);
+
+    private LeafDecayService() {}
 
     public static void start() {
         timer(() -> {
-            List<Queue<Block>> toRemove = new ArrayList<>();
-            int decayAmount = Settings.getDecayAmount();
+            int decayAmount = Math.max(1, Settings.getDecayAmount());
 
-            if(decayAmount < 1){
-                decayAmount = 1;
-            }
+            Iterator<Queue<Block>> iterator = blocksQueue.iterator();
 
-            for (Queue<Block> queue : blocksQueue) {
+            while (iterator.hasNext()) {
+
+                Queue<Block> queue = iterator.next();
+
                 for (int i = 0; i < decayAmount; i++) {
-                    if (queue.isEmpty()) {
-                        toRemove.add(queue);
+
+                    Block block = queue.poll();
+
+                    if (block == null) {
+                        iterator.remove();
                         break;
                     }
-                    breakBlock(queue.poll());
+                    breakBlock(block);
                 }
             }
-            blocksQueue.removeAll(toRemove);
         }, 5L);
     }
+
     private static void breakBlock(Block b){
-        if(b == null) {
+        if(b == null){
             return;
         }
 
         if (b.getType() != Material.AIR) {
-            //log block break to CoreProtect
             CoreProtectService.logBreak("TreeCutter-decay", b.getState());
             b.breakNaturally();
         }
     }
 
     public static void scanLeaves(List<Block> blocks, CutShape cutShape) {
-        if(!Settings.isLeavesEnabled()){
+        if (!Settings.isLeavesEnabled()) {
             return;
         }
 
         async(() -> {
             Set<Block> leaves = new HashSet<>();
-            List<Material> acceptBlocks = Settings.getAcceptLeavesBlocks();
+
+            Set<Material> acceptBlocks = new HashSet<>(Settings.getAcceptLeavesBlocks());
             acceptBlocks.addAll(Settings.getAcceptCustomLeavesBlocks());
 
-            blocks.forEach(b -> leaves.addAll(getBlocks(b, acceptBlocks, 5)));
+            for (Block block : blocks) {
+                collectBlocks(block, acceptBlocks, OFFSETS_RANGE5, leaves);
+            }
 
-            List<Block> decayLeaves = new ArrayList<>(leaves.stream()
-                    .filter(bl -> isLeafDecaying(bl, cutShape))
-                    .toList());
+            List<Block> decayLeaves = new ArrayList<>();
 
-            // Shuffle the leaves to break them in random order
+            Set<Material> woodBlocks = new HashSet<>(cutShape.getAcceptBlocks());
+
+            for (Block leaf : leaves) {
+                if (isLeafDecaying(leaf, woodBlocks)) {
+                    decayLeaves.add(leaf);
+                }
+            }
+
             Collections.shuffle(decayLeaves);
 
-            blocksQueue.add(new LinkedList<>(decayLeaves));
+            blocksQueue.add(new ArrayDeque<>(decayLeaves));
         });
     }
 
-    private static boolean isLeafDecaying(Block block, CutShape cutShape) {
-        int range = 2;
-
+    private static boolean isLeafDecaying(Block block, Set<Material> woodBlocks) {
         if (block.getBlockData() instanceof Leaves leaves) {
+
             if (leaves.isPersistent()) {
                 return false;
             }
-            List<Block> blocks = getBlocks(block, cutShape.getAcceptBlocks(), range);
 
-            return blocks.isEmpty();
+            return !hasNearby(block, woodBlocks, OFFSETS_RANGE2);
+
         } else if (Settings.isAcceptedCustomLeavesBlock(block.getType())) {
-            List<Block> blocks = getBlocks(block, cutShape.getAcceptBlocks(), range);
 
-            return blocks.isEmpty();
+            return !hasNearby(block, woodBlocks, OFFSETS_RANGE2);
         }
 
         return false;
     }
 
-    private static List<Block> getBlocks(Block block, List<Material> mat, int range) {
-        return getBlocks(block, mat, range, range);
+    private static boolean hasNearby(Block block, Set<Material> materials, int[][] offsets){
+        for (int[] off : offsets) {
+
+            Block relative = block.getRelative(off[0], off[1], off[2]);
+
+            if (materials.contains(relative.getType())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    private static List<Block> getBlocks(Block block, List<Material> mat, int range, int yRange) {
-        return IntStream.rangeClosed(-range, range)
-                .boxed()
-                .flatMap(dx -> IntStream.rangeClosed(-range, range)
-                        .boxed()
-                        .flatMap(dy -> IntStream.rangeClosed(-yRange, yRange)
-                                .mapToObj(dz -> block.getRelative(dx, dy, dz))))
-                .filter(bl -> mat.contains(bl.getType()))
-                .toList();
+    private static void collectBlocks(Block block,
+                                      Set<Material> materials,
+                                      int[][] offsets,
+                                      Set<Block> output){
+
+        for (int[] off : offsets) {
+
+            Block relative = block.getRelative(off[0], off[1], off[2]);
+
+            if (materials.contains(relative.getType())) {
+                output.add(relative);
+            }
+        }
+    }
+
+    private static int[][] generateOffsets(int range, int yRange){
+        List<int[]> offsets = new ArrayList<>();
+
+        for (int dx = -range; dx <= range; dx++) {
+            for (int dy = -range; dy <= range; dy++) {
+                for (int dz = -yRange; dz <= yRange; dz++) {
+                    offsets.add(new int[]{dx,dy,dz});
+                }
+            }
+        }
+
+        return offsets.toArray(new int[0][]);
     }
 }
