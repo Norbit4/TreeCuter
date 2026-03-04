@@ -37,7 +37,7 @@ public class TreePlanterService {
     }
 
     public static void track(Item item) {
-        items.put(item.getUniqueId(), new TrackedItem(item, 3));
+        items.put(item.getUniqueId(), new TrackedItem(item, 3, 10));
     }
 
     private static void updateItems() {
@@ -81,7 +81,12 @@ public class TreePlanterService {
             }
 
             if (!Settings.isGround(ground.getType())) {
-                iterator.remove();
+                tracked.attempts--;
+
+                if (tracked.attempts <= 0) {
+                    iterator.remove();
+                }
+
                 continue;
             }
 
@@ -110,10 +115,12 @@ public class TreePlanterService {
     private static class TrackedItem {
         Item item;
         int time;
+        int attempts;
 
-        TrackedItem(Item item, int time) {
+        TrackedItem(Item item, int time, int attempts) {
             this.item = item;
             this.time = time;
+            this.attempts = attempts;
         }
     }
 }
