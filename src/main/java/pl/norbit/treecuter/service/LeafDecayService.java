@@ -1,11 +1,14 @@
 package pl.norbit.treecuter.service;
 
+import com.nexomc.nexo.api.NexoBlocks;
+import com.nexomc.nexo.mechanics.custom_block.CustomBlockMechanic;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Leaves;
 import org.codehaus.plexus.util.cli.StreamFeeder;
 import pl.norbit.treecuter.config.Settings;
 import pl.norbit.treecuter.config.model.CutShape;
+import pl.norbit.treecuter.utils.item.MaterialMatcherUtils;
 
 import java.util.*;
 
@@ -52,7 +55,15 @@ public class LeafDecayService {
 
         if (b.getType() != Material.AIR) {
             CoreProtectService.logBreak("TreeCutter-decay", b.getState());
-            b.breakNaturally();
+            if(Settings.isNexoAdderEnabled()) {
+                CustomBlockMechanic customBlockMechanic = NexoBlocks.customBlockMechanic(b);
+
+                if (customBlockMechanic != null) {
+                    NexoBlocks.remove(b.getLocation());
+                } else {
+                    b.breakNaturally();
+                }
+            }
         }
     }
 
@@ -64,7 +75,7 @@ public class LeafDecayService {
         async(() -> {
             Set<Block> leaves = new HashSet<>();
 
-            Set<Material> acceptBlocks = new HashSet<>(Settings.getAcceptLeavesBlocks());
+            Set<String> acceptBlocks = new HashSet<>(Settings.getAcceptLeavesBlocks());
             acceptBlocks.addAll(Settings.getAcceptCustomLeavesBlocks());
 
             for (Block block : blocks) {
@@ -87,18 +98,16 @@ public class LeafDecayService {
         });
     }
 
-    private static boolean isLeafDecaying(Block block, Set<String> woodBlocks) {
-        if (block.getBlockData() instanceof Leaves leaves) {
+    private static boolean isLeafDecaying(Block b, Set<String> woodBlocks) {
+        if (b.getBlockData() instanceof Leaves leaves) {
 
             if (leaves.isPersistent()) {
                 return false;
             }
+            return !hasNearby(b, woodBlocks, OFFSETS_RANGE2);
 
-            return !hasNearby(block, woodBlocks, OFFSETS_RANGE2);
-
-        } else if (Settings.isAcceptedCustomLeavesBlock(block.getType())) {
-
-            return !hasNearby(block, woodBlocks, OFFSETS_RANGE2);
+        } else if (Settings.isAcceptedCustomLeavesBlock(b)) {
+            return !hasNearby(b, woodBlocks, OFFSETS_RANGE2);
         }
 
         return false;
@@ -118,15 +127,14 @@ public class LeafDecayService {
     }
 
     private static void collectBlocks(Block block,
-                                      Set<Material> materials,
+                                      Set<String> materials,
                                       int[][] offsets,
                                       Set<Block> output){
 
         for (int[] off : offsets) {
-
             Block relative = block.getRelative(off[0], off[1], off[2]);
 
-            if (materials.contains(relative.getType())) {
+            if (MaterialMatcherUtils.isEqual(relative, materials)) {
                 output.add(relative);
             }
         }

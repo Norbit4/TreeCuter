@@ -2,7 +2,6 @@ package pl.norbit.treecuter.service;
 
 import com.nexomc.nexo.api.NexoBlocks;
 import com.nexomc.nexo.mechanics.custom_block.CustomBlockMechanic;
-import dev.lone.itemsadder.api.CustomBlock;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -37,7 +36,6 @@ public class TreeCutService {
             Iterator<BreakTask> iterator = breakTasks.iterator();
 
             while (iterator.hasNext()) {
-
                 BreakTask breakTree = iterator.next();
 
                 if (breakTree.isTreeBroken()) {

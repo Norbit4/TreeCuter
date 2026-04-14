@@ -5,12 +5,25 @@ import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import pl.norbit.treecuter.config.model.ItemType;
 
+import java.util.Set;
+
 public class MaterialMatcherUtils {
     private MaterialMatcherUtils (){}
 
     public static boolean isEqual(ItemStack itemStack, String materialId) {
         if (itemStack == null) return false;
         return match(materialId, itemStack.getType(), itemStack, null);
+    }
+
+    public static boolean isEqual(Block block, Set<String> materials) {
+        if (block == null) return false;
+
+        for (String material : materials) {
+            if(match(material, block.getType(), null, block)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public static boolean isEqual(Block block, String materialId) {
@@ -21,7 +34,7 @@ public class MaterialMatcherUtils {
     private static boolean match(String materialId, Material material, ItemStack itemStack, Block block) {
         String[] split = materialId.split(":");
 
-        // VANILLA np. "STONE"
+        // VANILLA
         if (split.length < 2) {
             Material mat = Material.getMaterial(materialId.toUpperCase());
             return mat != null && material == mat;

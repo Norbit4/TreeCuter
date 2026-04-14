@@ -13,6 +13,7 @@ import pl.norbit.treecuter.config.model.CustomTool;
 import pl.norbit.treecuter.config.model.CutShape;
 import pl.norbit.treecuter.service.EffectService;
 import pl.norbit.treecuter.treeplant.TreePlanterService;
+import pl.norbit.treecuter.utils.item.MaterialMatcherUtils;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -68,9 +69,9 @@ public class Settings {
     @Getter
     private static List<Material> acceptWoodBlocks;
     @Getter
-    private static List<Material> acceptLeavesBlocks;
+    private static List<String> acceptLeavesBlocks;
     @Getter
-    private static List<Material> acceptCustomLeavesBlocks;
+    private static List<String> acceptCustomLeavesBlocks;
     @Getter
     private static List<Material> autoPlantSapling;
 
@@ -170,8 +171,13 @@ public class Settings {
         return acceptWoodBlocks.contains(type);
     }
 
-    public static boolean isAcceptedCustomLeavesBlock(Material type){
-        return acceptCustomLeavesBlocks.contains(type);
+    public static boolean isAcceptedCustomLeavesBlock(Block b){
+        for (String blockId : acceptCustomLeavesBlocks) {
+            if(MaterialMatcherUtils.isEqual(b, blockId)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public static boolean isAcceptedTool(Material type){
@@ -239,17 +245,21 @@ public class Settings {
                 .filter(Objects::nonNull)
                 .forEach(acceptWoodBlocks::add);
 
-        config.getStringList("accept-leaves-blocks")
-                .stream()
-                .map(Material::getMaterial)
-                .filter(Objects::nonNull)
-                .forEach(acceptLeavesBlocks::add);
+        acceptLeavesBlocks = config.getStringList("accept-leaves-blocks");
 
-        config.getStringList("accept-custom-leaves-blocks")
-                .stream()
-                .map(Material::getMaterial)
-                .filter(Objects::nonNull)
-                .forEach(acceptCustomLeavesBlocks::add);
+//        config.getStringList("accept-leaves-blocks")
+//                .stream()
+//                .map(Material::getMaterial)
+//                .filter(Objects::nonNull)
+//                .forEach(acceptLeavesBlocks::add);
+
+        acceptCustomLeavesBlocks = config.getStringList("accept-custom-leaves-blocks");
+
+//        config.getStringList("accept-custom-leaves-blocks")
+//                .stream()
+//                .map(Material::getMaterial)
+//                .filter(Objects::nonNull)
+//                .forEach(acceptCustomLeavesBlocks::add);
 
         config.getStringList("auto-plant-saplings")
                 .stream()
