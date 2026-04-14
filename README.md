@@ -157,6 +157,9 @@ versions: **1.17.1, 1.18.2, 1.19.4, 1.20.2, 1.20.4, 1,20.6, 1.21!**
 
 
 <h2 align="left" id="download">Download</h2>
- 
- [![spigot](https://img.shields.io/badge/Download-Spigot-gold.svg)](https://www.spigotmc.org/resources/treecuter.110213/)    
- [![builtbybit](https://img.shields.io/badge/Download-BuiltByBit-blue.svg)](https://builtbybit.com/resources/treecuter-cut-down-trees.32962/)    
+
+<p>
+  <img src="https://cdn.simpleicons.org/modrinth/00AF5C" width="16" />
+  modrinth:
+  <b><a href="https://modrinth.com/plugin/treecuter">Download</a></b>
+</p>
