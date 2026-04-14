@@ -72,7 +72,7 @@ public record Version(int major, int minor, int patch) implements Comparable<Ver
 
         // String[] parts = string.split("\\.");
         // Narrow parts down to the last numeric part before the first non-numerical part, supporting versions like "26.1.1.build.1234"
-        String[] parts = Stream.of(string.split("\\.")).filter(s -> s.matches("\\d+")).toArray(String[]::new);
+        String[] parts = Stream.of(str.split("\\.")).filter(s -> s.matches("\\d+")).toArray(String[]::new);
         if (parts.length < 2 || parts.length > 3) {
             throw new IllegalArgumentException("Malformed version: " + string);
         }
