@@ -1,33 +1,26 @@
 package pl.norbit.treecuter.listeners;
 
 
-import org.bukkit.Material;
+import com.nexomc.nexo.api.events.custom_block.NexoBlockBreakEvent;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import pl.norbit.treecuter.config.Settings;
 import pl.norbit.treecuter.config.model.CutShape;
 import pl.norbit.treecuter.service.EffectService;
 import pl.norbit.treecuter.service.TreeCutService;
 
-public class BlockBreakListener implements Listener {
+public class NexoBreakListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onBlockBreak(BlockBreakEvent e) {
+    public void onBlockBreak(NexoBlockBreakEvent e) {
         Block b = e.getBlock();
         Player p = e.getPlayer();
-        Material type = b.getType();
 
         if (e.isCancelled()){
-            return;
-        }
-
-        //block custom blocks
-        if(type == Material.NOTE_BLOCK){
             return;
         }
 

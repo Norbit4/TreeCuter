@@ -67,7 +67,7 @@ public class EffectService {
         boolean hideMiningEffect = !Settings.isHideMiningEffect();
 
         slowDiggingEffect = new PotionEffect(
-                PotionEffectType.SLOW_DIGGING,
+                PotionEffectType.SLOWNESS,
                 14,
                 effectLevel,
                 false,
@@ -90,7 +90,7 @@ public class EffectService {
         UUID uuid = player.getUniqueId();
 
         effectPlayersMap.remove(uuid);
-        player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
+        player.removePotionEffect(PotionEffectType.SLOWNESS);
     }
 
     public static void applyEffect(Player player) {

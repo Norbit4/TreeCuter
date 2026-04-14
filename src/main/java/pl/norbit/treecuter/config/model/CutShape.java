@@ -3,8 +3,10 @@ package pl.norbit.treecuter.config.model;
 import lombok.Data;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import pl.norbit.treecuter.utils.item.MaterialMatcherUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +18,7 @@ public class CutShape {
     private List<CustomItem> acceptTools;
 
     private CustomTool customTool;
-    private List<Material> acceptBlocks;
+    private List<String> acceptBlocks;
 
     public ItemStack getCustomToolItem() {
         if (customTool != null) {
@@ -41,8 +43,8 @@ public class CutShape {
                 .anyMatch(acceptTool -> acceptTool.isEqual(item));
     }
 
-    public boolean isAcceptBlock(Material mat) {
+    public boolean isAcceptBlock(Block b) {
         return acceptBlocks.stream()
-                .anyMatch(acceptBlock -> acceptBlock == mat);
+                .anyMatch(acceptBlock -> MaterialMatcherUtils.isEqual(b, acceptBlock));
     }
 }

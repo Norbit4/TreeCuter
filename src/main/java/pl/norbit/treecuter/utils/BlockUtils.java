@@ -16,7 +16,7 @@ public class BlockUtils {
     public static List<Block> getWoodBlocksAround(List<Block> blocks, Block start, int maxBlocks, CutShape woodBlocks) {
         int max = Math.min(Settings.getMaxBlocks(), maxBlocks);
 
-        Set<Block> visited = new HashSet<>(max * 2);
+        Set<Block> visited = HashSet.newHashSet(max * 2);
         Deque<Block> queue = new ArrayDeque<>();
 
         blocks.add(start);
@@ -35,7 +35,7 @@ public class BlockUtils {
                     continue;
                 }
 
-                if (!woodBlocks.isAcceptBlock(relative.getType())) {
+                if (!woodBlocks.isAcceptBlock(relative)) {
                     continue;
                 }
 
@@ -87,7 +87,7 @@ public class BlockUtils {
             return;
         }
 
-        if (!woodBlocks.isAcceptBlock(b.getType())) {
+        if (!woodBlocks.isAcceptBlock(b)) {
             return;
         }
 

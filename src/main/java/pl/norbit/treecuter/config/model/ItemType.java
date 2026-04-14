@@ -2,5 +2,6 @@ package pl.norbit.treecuter.config.model;
 
 public enum ItemType {
     MINECRAFT,
-    ITEMS_ADDER
+    ITEMS_ADDER,
+    NEXO
 }

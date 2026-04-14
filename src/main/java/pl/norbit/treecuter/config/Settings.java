@@ -38,6 +38,10 @@ public class Settings {
 
     @Getter
     @Setter
+    private static boolean nexoAdderEnabled;
+
+    @Getter
+    @Setter
     private static boolean placeholderApiEnabled;
 
     //settings
@@ -145,7 +149,7 @@ public class Settings {
 
     public static CutShape getCutShape(Block block, ItemStack tool){
         return woodBlocks.stream()
-                .filter(woodBlock -> woodBlock.isAcceptBlock(block.getType()))
+                .filter(woodBlock -> woodBlock.isAcceptBlock(block))
                 .filter(woodBlock -> woodBlock.isAcceptTool(tool))
                 .findFirst()
                 .orElse(null);
@@ -362,12 +366,14 @@ public class Settings {
             cutShape.setCustomTool(customTool);
         }
 
-        List<Material> acceptBlocks = new ArrayList<>();
-        section.getStringList("accept-blocks")
-                .stream()
-                .map(Material::getMaterial)
-                .filter(Objects::nonNull)
-                .forEach(acceptBlocks::add);
+//        List<Material> acceptBlocks = new ArrayList<>();
+//        section.getStringList("accept-blocks")
+//                .stream()
+//                .map(Material::getMaterial)
+//                .filter(Objects::nonNull)
+//                .forEach(acceptBlocks::add);
+
+        List<String> acceptBlocks = section.getStringList("accept-blocks");
 
         cutShape.setAcceptBlocks(acceptBlocks);
 

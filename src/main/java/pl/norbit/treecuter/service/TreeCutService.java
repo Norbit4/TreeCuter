@@ -1,5 +1,8 @@
 package pl.norbit.treecuter.service;
 
+import com.nexomc.nexo.api.NexoBlocks;
+import com.nexomc.nexo.mechanics.custom_block.CustomBlockMechanic;
+import dev.lone.itemsadder.api.CustomBlock;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -126,7 +129,6 @@ public class TreeCutService {
     }
 
     private static boolean lastBlocksIsSame(UUID playerUUID, Block mainBlock, List<Block> blocks){
-
         SelectedBreak selected = selectedMap.get(playerUUID);
 
         if(selected == null){
@@ -149,7 +151,6 @@ public class TreeCutService {
      * @param p Player
      */
     public static void cutTree(Player p, CutShape shape) {
-
         if(p == null){
             return;
         }
@@ -175,6 +176,7 @@ public class TreeCutService {
         pluginManager.callEvent(event);
 
         if(event.isCancelled()){
+            GlowUtils.unsetGlowing(blocks, p);
             return;
         }
 
@@ -189,7 +191,6 @@ public class TreeCutService {
     }
 
     private static void breakBlock(Player p, Block b){
-
         if (p == null || !p.isOnline() || b == null){
             return;
         }
@@ -207,7 +208,15 @@ public class TreeCutService {
             p.getInventory().addItem(new ItemStack(mat));
             b.setType(Material.AIR);
         } else {
-            b.breakNaturally();
+            if(Settings.isNexoAdderEnabled()){
+                CustomBlockMechanic customBlockMechanic = NexoBlocks.customBlockMechanic(b);
+
+                if(customBlockMechanic != null){
+                   NexoBlocks.remove(b.getLocation(), p);
+                }else {
+                    b.breakNaturally();
+                }
+            }
         }
     }
 

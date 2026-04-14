@@ -1,20 +1,22 @@
 package pl.norbit.treecuter.utils.item;
 
-import dev.lone.itemsadder.api.CustomBlock;
-import dev.lone.itemsadder.api.CustomStack;
+import com.nexomc.nexo.api.NexoBlocks;
+import com.nexomc.nexo.api.NexoItems;
+import com.nexomc.nexo.mechanics.custom_block.CustomBlockMechanic;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
-public class ItemsAdderUtils {
-    private ItemsAdderUtils() {}
+public class NexoUtils {
+    private NexoUtils() {}
 
     public static boolean isEqualBlock(Block b, String id) {
-        CustomBlock customBlock = CustomBlock.byAlreadyPlaced(b);
+        CustomBlockMechanic customBlock = NexoBlocks.customBlockMechanic(b);
 
         if(customBlock == null){
             return false;
         }
-        return id.equals(customBlock.getId());
+
+        return id.equals(customBlock.getItemID());
     }
 
     /**
@@ -24,18 +26,12 @@ public class ItemsAdderUtils {
      * @return True if ItemStack is equal to ItemsAdder item
      */
     public static boolean isEqualItem(ItemStack item, String id) {
-        CustomStack stack = CustomStack.getInstance(id);
+        String itemId = NexoItems.idFromItem(item);
 
-        if(stack == null){
+        if(itemId == null){
             return false;
         }
 
-        CustomStack customStack = CustomStack.byItemStack(item);
-
-        if(customStack == null){
-            return false;
-        }
-
-        return customStack.matchNamespacedID(stack);
+        return id.equals(itemId);
     }
 }

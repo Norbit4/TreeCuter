@@ -3,6 +3,7 @@ package pl.norbit.treecuter.service;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Leaves;
+import org.codehaus.plexus.util.cli.StreamFeeder;
 import pl.norbit.treecuter.config.Settings;
 import pl.norbit.treecuter.config.model.CutShape;
 
@@ -72,7 +73,7 @@ public class LeafDecayService {
 
             List<Block> decayLeaves = new ArrayList<>();
 
-            Set<Material> woodBlocks = new HashSet<>(cutShape.getAcceptBlocks());
+            Set<String> woodBlocks = new HashSet<>(cutShape.getAcceptBlocks());
 
             for (Block leaf : leaves) {
                 if (isLeafDecaying(leaf, woodBlocks)) {
@@ -86,7 +87,7 @@ public class LeafDecayService {
         });
     }
 
-    private static boolean isLeafDecaying(Block block, Set<Material> woodBlocks) {
+    private static boolean isLeafDecaying(Block block, Set<String> woodBlocks) {
         if (block.getBlockData() instanceof Leaves leaves) {
 
             if (leaves.isPersistent()) {
@@ -103,12 +104,12 @@ public class LeafDecayService {
         return false;
     }
 
-    private static boolean hasNearby(Block block, Set<Material> materials, int[][] offsets){
+    private static boolean hasNearby(Block block, Set<String> materials, int[][] offsets){
         for (int[] off : offsets) {
 
             Block relative = block.getRelative(off[0], off[1], off[2]);
 
-            if (materials.contains(relative.getType())) {
+            if (materials.contains(relative.getType().toString())) {
                 return true;
             }
         }
