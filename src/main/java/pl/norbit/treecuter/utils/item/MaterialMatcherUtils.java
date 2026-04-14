@@ -3,6 +3,7 @@ package pl.norbit.treecuter.utils.item;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
+import pl.norbit.treecuter.config.Settings;
 import pl.norbit.treecuter.config.model.ItemType;
 
 import java.util.Set;
@@ -47,6 +48,9 @@ public class MaterialMatcherUtils {
 
         return switch (type) {
             case ITEMS_ADDER -> {
+                if(!Settings.isItemsAdderEnabled()){
+                    yield false;
+                }
                 if (itemStack != null) {
                     yield ItemsAdderUtils.isEqualItem(itemStack, id);
                 }
@@ -56,6 +60,9 @@ public class MaterialMatcherUtils {
                 yield false;
             }
             case NEXO -> {
+                if(!Settings.isNexoAdderEnabled()){
+                    yield false;
+                }
                 if (itemStack != null) {
                     yield NexoUtils.isEqualItem(itemStack, id);
                 }
