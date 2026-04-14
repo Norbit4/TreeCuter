@@ -18,21 +18,13 @@ public class DurabilityUtils {
             return Settings.getMaxBlocks();
         }
         
-//        if(Settings.isItemsAdderEnabled()){
-//            int uses = ItemsAdderUtils.checkRemainUses(item);
-//
-//            if(uses != -1){
-//                return uses;
-//            }
-//        }
-        
         if (meta instanceof Damageable damageable) {
             int maxDurability = item.getType().getMaxDurability();
             int currentDamage = damageable.getDamage();
             int remainingDurability = maxDurability - currentDamage;
 
             //Check for durability enchantment
-            int unbreakingLevel = item.getEnchantmentLevel(Enchantment.DURABILITY);
+            int unbreakingLevel = item.getEnchantmentLevel(Enchantment.UNBREAKING);
             if (unbreakingLevel > 0) return remainingDurability * (unbreakingLevel + 1);
             
             return remainingDurability;
@@ -47,19 +39,11 @@ public class DurabilityUtils {
             return item;
         }
         
-//        if(Settings.isItemsAdderEnabled()){
-//            ItemStack itemStack = ItemsAdderUtils.updateDurability(item, dmg);
-//
-//            if(itemStack != null){
-//                return item;
-//            }
-//        }
-        
         if (meta instanceof Damageable damageable){
             int maxDurability = item.getType().getMaxDurability();
 
             //Check for durability enchantment
-            int unbreakingLevel = item.getEnchantmentLevel(Enchantment.DURABILITY);
+            int unbreakingLevel = item.getEnchantmentLevel(Enchantment.UNBREAKING);
             int actualDamage = dmg;
             if (unbreakingLevel > 0) actualDamage = dmg / (unbreakingLevel + 1);
 
