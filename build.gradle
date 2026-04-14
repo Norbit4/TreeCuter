@@ -1,10 +1,10 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id("com.gradleup.shadow") version "9.4.1"
 }
 
 group = 'pl.norbit'
-version = 'v2.0.8'
+version = 'v2.1.0'
 
 repositories {
     mavenCentral()
@@ -24,10 +24,14 @@ repositories {
     maven {
         url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
     }
+    maven {
+        name "nexomcReleases"
+        url "https://repo.nexomc.com/releases"
+    }
 }
 
 dependencies {
-    compileOnly "io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT"
+    compileOnly "io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT"
     compileOnly files('libs/CoreProtect-CE-23.0.jar')
     //bstats
     implementation 'org.bstats:bstats-bukkit:3.1.0'
@@ -40,13 +44,14 @@ dependencies {
 
     compileOnly 'me.clip:placeholderapi:2.11.6'
     //lombok
-    compileOnly 'org.projectlombok:lombok:1.18.26'
-    annotationProcessor 'org.projectlombok:lombok:1.18.26'
+    compileOnly 'org.projectlombok:lombok:1.18.44'
+    annotationProcessor 'org.projectlombok:lombok:1.18.44'
+    compileOnly "com.nexomc:nexo:1.21.0"
 }
 
 compileJava {options.encoding = "UTF-8"}
 
-def targetJavaVersion = 17
+def targetJavaVersion = 21
 
 shadowJar {
     relocate 'org.bstats', 'pl.norbit.treecuter'
@@ -55,7 +60,7 @@ shadowJar {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
