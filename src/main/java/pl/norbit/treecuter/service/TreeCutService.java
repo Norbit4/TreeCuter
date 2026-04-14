@@ -18,6 +18,8 @@ import pl.norbit.treecuter.model.SelectedBreak;
 import pl.norbit.treecuter.utils.BlockUtils;
 import pl.norbit.treecuter.utils.GlowUtils;
 import pl.norbit.treecuter.utils.DurabilityUtils;
+import pl.norbit.treecuter.utils.item.ItemsAdderUtils;
+import pl.norbit.treecuter.utils.item.NexoUtils;
 
 import java.util.*;
 
@@ -205,15 +207,13 @@ public class TreeCutService {
         if (Settings.isItemsToInventory()) {
             p.getInventory().addItem(new ItemStack(mat));
             b.setType(Material.AIR);
-        } else {
+        }else {
             if(Settings.isNexoAdderEnabled()){
-                CustomBlockMechanic customBlockMechanic = NexoBlocks.customBlockMechanic(b);
-
-                if(customBlockMechanic != null){
-                   NexoBlocks.remove(b.getLocation(), p);
-                }else {
-                    b.breakNaturally();
-                }
+                NexoUtils.nexoBreak(b, p);
+            } else if (Settings.isItemsAdderEnabled()) {
+                ItemsAdderUtils.iaBreak(b);
+            }else {
+                b.breakNaturally();
             }
         }
     }

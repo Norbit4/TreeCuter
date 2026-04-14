@@ -8,6 +8,16 @@ import org.bukkit.inventory.ItemStack;
 public class ItemsAdderUtils {
     private ItemsAdderUtils() {}
 
+    public static void iaBreak(Block b){
+        CustomBlock customBlock = CustomBlock.byAlreadyPlaced(b);
+
+        if(customBlock != null){
+            CustomBlock.remove(b.getLocation());
+        }else {
+            b.breakNaturally();
+        }
+    }
+
     public static boolean isEqualBlock(Block b, String id) {
         CustomBlock customBlock = CustomBlock.byAlreadyPlaced(b);
 

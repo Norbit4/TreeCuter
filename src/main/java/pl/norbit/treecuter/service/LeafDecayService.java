@@ -8,7 +8,9 @@ import org.bukkit.block.data.type.Leaves;
 import org.codehaus.plexus.util.cli.StreamFeeder;
 import pl.norbit.treecuter.config.Settings;
 import pl.norbit.treecuter.config.model.CutShape;
+import pl.norbit.treecuter.utils.item.ItemsAdderUtils;
 import pl.norbit.treecuter.utils.item.MaterialMatcherUtils;
+import pl.norbit.treecuter.utils.item.NexoUtils;
 
 import java.util.*;
 
@@ -55,14 +57,12 @@ public class LeafDecayService {
 
         if (b.getType() != Material.AIR) {
             CoreProtectService.logBreak("TreeCutter-decay", b.getState());
-            if(Settings.isNexoAdderEnabled()) {
-                CustomBlockMechanic customBlockMechanic = NexoBlocks.customBlockMechanic(b);
-
-                if (customBlockMechanic != null) {
-                    NexoBlocks.remove(b.getLocation());
-                } else {
-                    b.breakNaturally();
-                }
+            if(Settings.isNexoAdderEnabled()){
+                NexoUtils.nexoBreak(b);
+            } else if (Settings.isItemsAdderEnabled()) {
+                ItemsAdderUtils.iaBreak(b);
+            }else {
+                b.breakNaturally();
             }
         }
     }
