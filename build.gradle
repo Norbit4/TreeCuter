@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'com.gradleup.shadow' version '9.4.1'
 }
 
 group = 'pl.norbit'
@@ -49,8 +49,12 @@ compileJava {options.encoding = "UTF-8"}
 def targetJavaVersion = 17
 
 shadowJar {
-    relocate 'org.bstats', 'pl.norbit.treecuter'
+    relocate 'org.bstats', 'pl.norbit.treecuter.bstats'
+    relocate 'fr.skytasul.glowingentities', 'pl.norbit.treecuter.skytasul.glowingentities'
+    exclude "fr/skytasul/reflection/Version*.class"
+    relocate 'fr.skytasul.reflection', 'pl.norbit.treecuter.skytasul.reflection'
     archiveClassifier.set("")
+    mergeServiceFiles()
 }
 
 java {
@@ -74,10 +78,21 @@ tasks.withType(JavaCompile).configureEach {
     }
 }
 
+build {
+    dependsOn shadowJar
+}
+
 processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+    from(sourceSets.main.resources.srcDirs) {
+        include '**/*'
+    }
+
     def props = [version: version]
     inputs.properties props
     filteringCharset 'UTF-8'
+
     filesMatching('plugin.yml') {
         expand props
     }
