@@ -67,7 +67,7 @@ public class EffectService {
         boolean hideMiningEffect = !Settings.isHideMiningEffect();
 
         slowDiggingEffect = new PotionEffect(
-                PotionEffectType.SLOWNESS,
+                PotionEffectType.MINING_FATIGUE,
                 14,
                 effectLevel,
                 false,
