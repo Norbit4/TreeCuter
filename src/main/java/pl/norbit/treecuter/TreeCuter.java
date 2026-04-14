@@ -64,6 +64,8 @@ public final class TreeCuter extends JavaPlugin {
 
         if(Settings.isNexoAdderEnabled()){
             pluginManager.registerEvents(new NexoBreakListener(), this);
+        }else if(Settings.isItemsAdderEnabled()){
+            pluginManager.registerEvents(new ItemsAdderBreakListener(), this);
         }
     }
 
