@@ -54,10 +54,10 @@ compileJava {options.encoding = "UTF-8"}
 def targetJavaVersion = 21
 
 shadowJar {
-    relocate 'org.bstats', 'pl.norbit.treecuter.bstats'
-    relocate 'fr.skytasul.glowingentities', 'pl.norbit.treecuter.skytasul.glowingentities'
+    relocate 'org.bstats', 'pl.norbit.treecuter.libs.bstats'
+    relocate 'fr.skytasul.glowingentities', 'pl.norbit.treecuter.libs.skytasul.glowingentities'
     exclude "fr/skytasul/reflection/Version*.class"
-    relocate 'fr.skytasul.reflection', 'pl.norbit.treecuter.skytasul.reflection'
+    relocate 'fr.skytasul.reflection', 'pl.norbit.treecuter.libs.skytasul.reflection'
     archiveClassifier.set("")
     mergeServiceFiles()
 }
