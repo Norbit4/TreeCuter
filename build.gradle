@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'pl.norbit'
-version = 'v2.1.0'
+version = 'v2.2.0'
 
 repositories {
     mavenCentral()
@@ -28,25 +28,32 @@ repositories {
         name "nexomcReleases"
         url "https://repo.nexomc.com/releases"
     }
+    maven {
+        name = "playpro-repo"
+        url = uri("https://maven.playpro.com")
+    }
 }
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT"
-    compileOnly files('libs/CoreProtect-CE-23.0.jar')
+    //coreprotect
+//    compileOnly files('libs/CoreProtect-CE-23.0.jar')
+    compileOnly("net.coreprotect:coreprotect:23.2")
     //bstats
     implementation 'org.bstats:bstats-bukkit:3.1.0'
     //glowing
-    implementation 'fr.skytasul:glowingentities:1.4.10'
+    implementation 'fr.skytasul:glowingentities:1.4.11'
     //worldguard
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.8'
     //itemsadder
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.2-beta-r3-b'
-
+    //nexo
+    compileOnly "com.nexomc:nexo:1.21.0"
+    //papi
     compileOnly 'me.clip:placeholderapi:2.11.6'
     //lombok
     compileOnly 'org.projectlombok:lombok:1.18.44'
     annotationProcessor 'org.projectlombok:lombok:1.18.44'
-    compileOnly "com.nexomc:nexo:1.21.0"
 }
 
 compileJava {options.encoding = "UTF-8"}
