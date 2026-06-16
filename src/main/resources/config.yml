@@ -50,6 +50,11 @@ max-blocks: 150
 # min blocks to cut at once
 min-blocks: 4
 
+# Beta feature - may not work correctly.
+# Checks if leaves are present near the top part of the detected tree.
+# Prevents cutting player-built log structures.
+check-natural-tree: true
+
 # if true, the player must hold shift to cut down trees
 shift-mining: true # true <- recommended
 

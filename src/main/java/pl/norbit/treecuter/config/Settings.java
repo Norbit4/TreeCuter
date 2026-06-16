@@ -49,6 +49,8 @@ public class Settings {
     @Getter
     private static boolean shiftMining;
     @Getter
+    private static boolean checkNaturalTree;
+    @Getter
     private static boolean applyMiningEffect;
     @Getter
     private static boolean hideMiningEffect;
@@ -202,6 +204,7 @@ public class Settings {
 
         maxBlocks = config.getInt("max-blocks");
         minBlocks = config.getInt("min-blocks");
+        checkNaturalTree = config.getBoolean("check-natural-tree");
 
         shiftMining = config.getBoolean("shift-mining");
 

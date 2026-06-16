@@ -4,6 +4,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import pl.norbit.treecuter.config.Settings;
 import pl.norbit.treecuter.config.model.CutShape;
+import pl.norbit.treecuter.service.LeafDecayService;
 
 import java.util.*;
 
@@ -49,7 +50,7 @@ public class BlockUtils {
                 getDiagonalBlocks(blocks, queue, visited, relative, max, woodBlocks);
             }
         }
-        return blocks;
+        return hasLeavesOnTop(blocks) ? blocks : null;
     }
 
     private static void getDiagonalBlocks(List<Block> blocks,
@@ -74,6 +75,43 @@ public class BlockUtils {
                 return;
             }
         }
+    }
+
+    private static boolean hasLeavesOnTop(List<Block> woodBlocks) {
+        if (!Settings.isCheckNaturalTree()) {
+            return true;
+        }
+
+        int maxY = woodBlocks.stream()
+                .mapToInt(Block::getY)
+                .max()
+                .orElse(Integer.MIN_VALUE);
+
+        for (Block wood : woodBlocks) {
+            if (wood.getY() >= maxY - 2 && hasNearbyLeaves(wood)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean hasNearbyLeaves(Block block) {
+        for (int x = -2; x <= 2; x++) {
+            for (int y = -1; y <= 2; y++) {
+                for (int z = -2; z <= 2; z++) {
+
+                    if (x == 0 && y == 0 && z == 0) {
+                        continue;
+                    }
+
+                    if (LeafDecayService.isLeaves(block.getRelative(x, y, z))) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private static void checkBlock(List<Block> blocks,

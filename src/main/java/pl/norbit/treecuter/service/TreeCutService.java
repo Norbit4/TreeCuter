@@ -1,7 +1,5 @@
 package pl.norbit.treecuter.service;
 
-import com.nexomc.nexo.api.NexoBlocks;
-import com.nexomc.nexo.mechanics.custom_block.CustomBlockMechanic;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -102,6 +100,10 @@ public class TreeCutService {
         int maxBlock = DurabilityUtils.checkRemainingUses(item);
 
         List<Block> blocks = BlockUtils.getWoodBlocksAround(new ArrayList<>(), b, maxBlock, shape);
+
+        if(blocks == null){
+            return;
+        }
 
         if(blocks.size() < Settings.getMinBlocks()){
             selectedMap.remove(p.getUniqueId());
@@ -219,7 +221,6 @@ public class TreeCutService {
     }
 
     private static void updateItem(Player p, int durabilityDamage){
-
         PlayerInventory inventory = p.getInventory();
 
         ItemStack item = inventory.getItemInMainHand();

@@ -1,11 +1,8 @@
 package pl.norbit.treecuter.service;
 
-import com.nexomc.nexo.api.NexoBlocks;
-import com.nexomc.nexo.mechanics.custom_block.CustomBlockMechanic;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Leaves;
-import org.codehaus.plexus.util.cli.StreamFeeder;
 import pl.norbit.treecuter.config.Settings;
 import pl.norbit.treecuter.config.model.CutShape;
 import pl.norbit.treecuter.utils.item.ItemsAdderUtils;
@@ -87,7 +84,7 @@ public class LeafDecayService {
             Set<String> woodBlocks = new HashSet<>(cutShape.getAcceptBlocks());
 
             for (Block leaf : leaves) {
-                if (isLeafDecaying(leaf, woodBlocks)) {
+                if (checkBlock(leaf, woodBlocks)) {
                     decayLeaves.add(leaf);
                 }
             }
@@ -98,7 +95,7 @@ public class LeafDecayService {
         });
     }
 
-    private static boolean isLeafDecaying(Block b, Set<String> woodBlocks) {
+    private static boolean checkBlock(Block b, Set<String> woodBlocks) {
         if (b.getBlockData() instanceof Leaves leaves) {
 
             if (leaves.isPersistent()) {
@@ -111,6 +108,14 @@ public class LeafDecayService {
         }
 
         return false;
+    }
+
+    public static boolean isLeaves(Block b) {
+        if (b.getBlockData() instanceof Leaves leaves) {
+
+            return !leaves.isPersistent();
+
+        } else return Settings.isAcceptedCustomLeavesBlock(b);
     }
 
     private static boolean hasNearby(Block block, Set<String> materials, int[][] offsets){
