@@ -28,7 +28,8 @@
   **Cut down trees in a more realistic way! 🪓🌳**    
                   
   <a href="https://github.com/Norbit4/TreeCuter/" target="_blank" rel="noreferrer"> 
-  <img src="https://github.com/Norbit4/TreeCuter/assets/46154743/8f97482e-d239-427c-8398-c61ba2c815ed" width=50" alt="logo"/></a>
+  <img src="https://github.com/user-attachments/assets/69402d75-9b03-4b39-9845-4f19c1de8509" width=300" alt="logo"/></a>
+
                                                                                                                 
   ⚠️**DEAFULT**: You need use **SHIFT** key to cut tree!
 </div> 
