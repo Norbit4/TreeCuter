@@ -7,12 +7,18 @@ import pl.norbit.treecuter.TreeCuter;
 
 public class CoreProtectUtils {
 
-    private CoreProtectUtils() {
-        throw new IllegalStateException("This class cannot be instantiated");
-    }
+    private CoreProtectUtils() {}
 
     public static CoreProtectAPI getCoreProtect() {
         Plugin plugin = TreeCuter.getInstance().getServer().getPluginManager().getPlugin("CoreProtect");
+
+        if(plugin == null){
+            return null;
+        }
+
+        if(!plugin.isEnabled()){
+            return null;
+        }
 
         // Check that CoreProtect is loaded
         if (!(plugin instanceof CoreProtect)) {
