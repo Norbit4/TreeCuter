@@ -26,16 +26,16 @@ public class CoreProtectUtils {
         }
 
         // Check that the API is enabled
-        CoreProtectAPI CoreProtect = ((CoreProtect) plugin).getAPI();
-        if (!CoreProtect.isEnabled()) {
+        CoreProtectAPI coreProtect = ((CoreProtect) plugin).getAPI();
+        if (!coreProtect.isEnabled()) {
             return null;
         }
 
         // Check that a compatible version of the API is loaded
-        if (CoreProtect.APIVersion() < 10) {
+        if (coreProtect.APIVersion() < 10) {
             return null;
         }
 
-        return CoreProtect;
+        return coreProtect;
     }
 }
