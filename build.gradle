@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'pl.norbit'
-version = 'v2.5.0'
+version = 'v2.6.0'
 
 repositories {
     mavenCentral()
@@ -65,6 +65,10 @@ dependencies {
     //oraxen
     compileOnly('io.th0rgal:oraxen:1.163.0:dev')
     compileOnly files('libs/SCore-5.26.7.5.jar')
+
+    //aurora
+    compileOnly files('libs/AuroraCollections-1.5.7.jar')
+    compileOnly files('libs/Aurora-2.5.1.jar')
 }
 
 compileJava {options.encoding = "UTF-8"}

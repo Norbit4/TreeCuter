@@ -3,30 +3,38 @@ package pl.norbit.treecuter.utils.item;
 import com.nexomc.nexo.api.NexoBlocks;
 import com.nexomc.nexo.api.NexoItems;
 import com.nexomc.nexo.mechanics.custom_block.CustomBlockMechanic;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
 public class NexoUtils {
     private NexoUtils() {}
 
-    public static void nexoBreak(Block b, Player p){
+    public static ItemStack nexoBreak(Block b, Player p){
         CustomBlockMechanic customBlockMechanic = NexoBlocks.customBlockMechanic(b);
 
         if(customBlockMechanic != null){
+            String itemID = customBlockMechanic.getItemID();
             NexoBlocks.remove(b.getLocation(), p);
+            return NexoItems.itemFromId(itemID).build();
         }else {
+            Material type = b.getType();
             b.breakNaturally();
+            return new ItemStack(type);
         }
     }
 
-    public static void nexoBreak(Block b){
+    public static ItemStack nexoBreak(Block b){
         CustomBlockMechanic customBlockMechanic = NexoBlocks.customBlockMechanic(b);
 
         if(customBlockMechanic != null){
+            String itemID = customBlockMechanic.getItemID();
             NexoBlocks.remove(b.getLocation());
+            return NexoItems.itemFromId(itemID).build();
         }else {
+            Material type = b.getType();
             b.breakNaturally();
+            return new ItemStack(type);
         }
     }
 

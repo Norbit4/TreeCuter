@@ -13,6 +13,8 @@ softdepend:
   - SCore
   - CraftEngine
   - Oraxen
+  - Aurora
+  - AuroraCollections
 commands:
   treecuter:
     aliases:

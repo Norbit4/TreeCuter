@@ -203,6 +203,8 @@ public class TreeCutService {
             return;
         }
 
+        ItemStack itemStack = new ItemStack(mat);
+
         //log block break to CoreProtect
         CoreProtectService.logBreak(p.getName(), b.getState());
 
@@ -211,12 +213,17 @@ public class TreeCutService {
             b.setType(Material.AIR);
         }else {
             if(Settings.isNexoAdderEnabled()){
-                NexoUtils.nexoBreak(b, p);
+                itemStack = NexoUtils.nexoBreak(b, p);
             } else if (Settings.isItemsAdderEnabled()) {
                 ItemsAdderUtils.iaBreak(b);
             }else {
                 b.breakNaturally();
             }
+        }
+
+        //Add to collection
+        if(Settings.isAuroraCollectionsEnabled()){
+            AuroraService.trigger(p, itemStack);
         }
     }
 

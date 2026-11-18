@@ -55,6 +55,13 @@ public class Settings {
 
     @Getter
     @Setter
+    private static boolean auroraCollectionsEnabled;
+    @Getter
+    @Setter
+    private static boolean treecuterConfigEnabled;
+
+    @Getter
+    @Setter
     private static boolean placeholderApiEnabled;
 
     //settings
